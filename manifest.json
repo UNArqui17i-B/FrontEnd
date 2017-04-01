@@ -1,0 +1,7 @@
+{
+  "name": "BlinkBox",
+  "short_name": "BlinkBox",
+  "description": "Share and download your favorite files",
+  "start_url": "/",
+  "display": "standalone"
+}
