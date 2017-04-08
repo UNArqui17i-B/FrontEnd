@@ -2,50 +2,86 @@
 
 >Share and download your favorite files
 
-## Prerequisites and install
+This template is a starting point for building apps using a drawer-based
+layout. The layout is provided by `app-layout` elements.
 
+This template, along with the `polymer-cli` toolchain, also demonstrates use
+of the "PRPL pattern" This pattern allows fast first delivery and interaction with
+the content at the initial route requested by the user, along with fast subsequent
+navigation by pre-caching the remaining components required by the app and
+progressively loading them on-demand as the user navigates through the app.
+
+The PRPL pattern, in a nutshell:
+
+* **Push** components required for the initial route
+* **Render** initial route ASAP
+* **Pre-cache** components for remaining routes
+* **Lazy-load** and progressively upgrade next routes on-demand
+
+### Setup
+
+##### Prerequisites and installing
+      
   1. Install [NVM](https://github.com/creationix/nvm#installation)
   2. Install [NodeJS v7](https://github.com/creationix/nvm#usage)
   3. Install the latest version of Bower `npm install -g bower`
   4. Install Polymer CLI `npm install -g polymer-cli`
   5. Read [tutorials and docs](https://github.com/UNArqui17i-B/Knowledge#polymer)
 
-## Create new application
+##### Initialize project from template
 
-```
-$ polymer init
-```
+    mkdir my-app
+    cd my-app
+    polymer init starter-kit
 
-## Viewing your application
+### Start the development server
 
-```
-$ polymer serve
-```
+This command serves the app at `http://localhost:8080` and provides basic URL
+routing for the app:
 
-## Building your application
+    polymer serve --open
 
-```
-$ polymer build
-```
+### Build
 
-This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
-containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
-CSS, and JS optimizers.
+This command performs HTML, CSS, and JS minification on the application
+dependencies, and generates a service-worker.js file with code to pre-cache the
+dependencies based on the entrypoint and fragments specified in `polymer.json`.
+The minified files are output to the `build/unbundled` folder, and are suitable
+for serving from a HTTP/2+Push compatible server.
 
-You can serve the built versions by giving `polymer serve` a folder to serve
-from:
+In addition the command also creates a fallback `build/bundled` folder,
+generated using fragment bundling, suitable for serving from non
+H2/push-compatible servers or to clients that do not support H2/Push.
 
-```
-$ polymer serve build/bundled
-```
+    polymer build
 
-## Running tests
+### Preview the build
 
-```
-$ polymer test
-```
+This command serves the minified version of the app at `http://localhost:8080`
+in an unbundled state, as it would be served by a push-compatible server:
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+    polymer serve build/unbundled
+
+This command serves the minified version of the app at `http://localhost:8080`
+generated using fragment bundling:
+
+    polymer serve build/bundled
+
+### Run tests
+
+This command will run [Web Component Tester](https://github.com/Polymer/web-component-tester)
+against the browsers currently installed on your machine:
+
+    polymer test
+
+### Adding a new view
+
+You can extend the app by adding more views that will be demand-loaded
+e.g. based on the route, or to progressively render non-critical sections of the
+application. Each new demand-loaded fragment should be added to the list of
+`fragments` in the included `polymer.json` file. This will ensure those
+components and their dependencies are added to the list of pre-cached components
+and will be included in the `bundled` build.
 
 ## License
   - [MIT](./LICENSE)
