@@ -1,0 +1,46 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="custom-header">
+  <template>
+    <style>
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+
+      paper-button {
+        font-size: 15px;
+      }
+    </style>
+
+    <app-header condenses reveals effects="waterfall">
+      <app-toolbar>
+        <div main-title>BlinkBox</div>
+        <paper-button on-tap="redirect">view1</paper-button>
+        <paper-button on-tap="redirect">view2</paper-button>
+        <paper-button>Ingresar</paper-button>
+        <paper-button>Crear cuenta</paper-button>
+      </app-toolbar>
+    </app-header>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'custom-header',
+
+      properties: {
+        backendUrl: {
+          type: String,
+        },
+      },
+
+      redirect: function (event) {
+        location.href = '/' + event.target.textContent;
+      }
+    });
+  </script>
+</dom-module>
