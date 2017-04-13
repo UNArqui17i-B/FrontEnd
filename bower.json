@@ -25,6 +25,3 @@
   },
   "private": true
 }
-//if (item.value == null && this.previousItem != null)
-//this.selectedItem=this.previousItem;
-//else

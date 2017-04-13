@@ -69,72 +69,70 @@
                        last-error="{{ajaxError}}"
                        on-response="handleResponse"
                        debounce-duration="300"></iron-ajax>
-            <template is="dom-if" if="{{ajaxError}}">
+            <template is="dom-if" if="[[ajaxError]]">
                 <span>Error in url</span>
             </template>
-            <template is="dom-if" if="{{ajaxResponse}}">
-                <vaadin-grid id="grid" items="[[ajaxResponse]]" active-item="{{selectedItem}}" multi-sort
-                             on-click="_activeItemChanged">
-                    <vaadin-grid-column width="300px">
-                        <template class="header">
-                            <vaadin-grid-sorter path="name">
-                                <vaadin-grid-filter path="name" value="[[filterName]]">
-                                    <paper-input placeholder="Nombre" value="{{filterName}}" focus-target></paper-input>
-                                </vaadin-grid-filter>
-                            </vaadin-grid-sorter>
-                        </template>
-                        <template>[[item.name]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">
-                            <vaadin-grid-sorter path="extension">
-                                <vaadin-grid-filter path="extension" value="[[filterExtension]]">
-                                    <vaadin-combo-box label="Extensión"
-                                                      items="[[extensionsArray]]"
-                                                      value="{{filterExtension}}"
-                                                      allow-custom-value></vaadin-combo-box>
-                                </vaadin-grid-filter>
-                            </vaadin-grid-sorter>
-                        </template>
-                        <template>[[item.extension]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">
-                            <vaadin-grid-sorter path="size">
-                                <vaadin-grid-filter path="size" value="[[filterSize]]">
-                                    <paper-input placeholder="Tamaño(MB)" value="{{filterSize}}"
-                                                 focus-target></paper-input>
-                                </vaadin-grid-filter>
-                            </vaadin-grid-sorter>
-                        </template>
-                        <template>[[item.size]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">
-                            <vaadin-grid-sorter path="name">
-                                <vaadin-grid-filter path="owner_id" value="[[filterOwner]]">
-                                    <paper-input placeholder="Dueño" value="{{filterOwner}}" focus-target></paper-input>
-                                </vaadin-grid-filter>
-                            </vaadin-grid-sorter>
-                        </template>
-                        <template>[[item.owner_id]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Descarga</template>
-                        <template>
-                            <a href="http://127.0.0.1:5984/blinkbox_files/[[item._id]]/[[item.name]]" download>
-                                <iron-icon icon="icons:file-download"></iron-icon>
-                            </a>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Dueño</template>
-                        <template>
-                            <iron-icon icon="info" on-click="handleToggle"></iron-icon>
-                        </template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
-            </template>
+            <vaadin-grid id="grid" items="[[ajaxResponse]]" active-item="{{activeItem}}" multi-sort
+                         on-active-item-changed="_activeItemChanged">
+                <vaadin-grid-column width="300px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="name">
+                            <vaadin-grid-filter path="name" value="[[filterName]]">
+                                <paper-input placeholder="Nombre" value="{{filterName}}" focus-target></paper-input>
+                            </vaadin-grid-filter>
+                        </vaadin-grid-sorter>
+                    </template>
+                    <template>[[item.name]]</template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">
+                        <vaadin-grid-sorter path="extension">
+                            <vaadin-grid-filter path="extension" value="[[filterExtension]]">
+                                <vaadin-combo-box label="Extensión"
+                                                  items="[[extensionsArray]]"
+                                                  value="{{filterExtension}}"
+                                                  allow-custom-value></vaadin-combo-box>
+                            </vaadin-grid-filter>
+                        </vaadin-grid-sorter>
+                    </template>
+                    <template>[[item.extension]]</template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">
+                        <vaadin-grid-sorter path="size">
+                            <vaadin-grid-filter path="size" value="[[filterSize]]">
+                                <paper-input placeholder="Tamaño(MB)" value="{{filterSize}}"
+                                             focus-target></paper-input>
+                            </vaadin-grid-filter>
+                        </vaadin-grid-sorter>
+                    </template>
+                    <template>[[item.size]]</template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">
+                        <vaadin-grid-sorter path="name">
+                            <vaadin-grid-filter path="owner_id" value="[[filterOwner]]">
+                                <paper-input placeholder="Dueño" value="{{filterOwner}}" focus-target></paper-input>
+                            </vaadin-grid-filter>
+                        </vaadin-grid-sorter>
+                    </template>
+                    <template>[[item.owner_id]]</template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">Descarga</template>
+                    <template>
+                        <a href="http://127.0.0.1:5984/blinkbox_files/[[item._id]]/[[item.name]]" download>
+                            <iron-icon icon="icons:file-download"></iron-icon>
+                        </a>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">Dueño</template>
+                    <template>
+                        <iron-icon icon="info" on-click="handleToggle"></iron-icon>
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
             <paper-dialog id="toggleDialog">
                 <h2>Detalles del archivo</h2>
                 <paper-dialog-scrollable>
@@ -142,31 +140,31 @@
                         <div class="flexchild">
                             <div>
                                 <div><b>Nombre</b></div>
-                                <p>[[selectedItem.name]]</p>
+                                <p>[[activeItem.name]]</p>
                             </div>
                             <div>
                                 <div><b>Extension</b></div>
-                                <p>[[selectedItem.extension]]</p>
+                                <p>[[activeItem.extension]]</p>
                             </div>
                             <div>
                                 <div><b>Tamaño (MB)</b></div>
-                                <p>[[selectedItem.size]]</p>
+                                <p>[[activeItem.size]]</p>
                             </div>
                             <div>
                                 <div><b>Fecha vencimiento</b></div>
-                                <p>[[selectedItem.expiring_date]]</p>
+                                <p>[[activeItem.expiring_date]]</p>
                             </div>
                         </div>
                         <div class="flexchild2">
                             <div class="flex-center">
-                                <a href="http://127.0.0.1:5984/blinkbox_files/[[selectedItem._id]]/[[selectedItem.name]]"
+                                <a href="http://127.0.0.1:5984/blinkbox_files/[[activeItem._id]]/[[activeItem.name]]"
                                    download>
                                     <iron-icon icon="icons:file-download" class="big-icon"></iron-icon>
                                 </a>
                             </div>
                             <div>
                                 <div><b>Checksum</b></div>
-                                <p>[[selectedItem.md5]]</p>
+                                <p>[[activeItem.md5]]</p>
                             </div>
                         </div>
                     </div>
@@ -179,7 +177,7 @@
     </template>
 
     <script>
-        /* eslint-disable max-len */
+
 
         Polymer({
             is: 'my-view2',
@@ -202,8 +200,11 @@
             handleToggle: function () {
                 this.$.toggleDialog.toggle();
             },
-            _activeItemChanged: function (e, item) {
-                this.previousItem = item;
+            _activeItemChanged: function () {
+                this._clickedItem = this.$.grid.activeItem ? this.$.grid.activeItem : this._clickedItem;
+                if (this.$.grid.activeItem == null && this._clickedItem != null) {
+                    this.$.grid.activeItem = this._clickedItem;
+                }
             },
         });
     </script>
