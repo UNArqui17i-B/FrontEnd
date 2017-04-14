@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="feature-card.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-index">
@@ -10,7 +11,19 @@
                 padding: 10px;
             }
 
+            #features {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+                @apply(--layout-center-justified);
+            }
+
         </style>
+
+        <div id="features">
+            <feature-card></feature-card>
+            <feature-card></feature-card>
+            <feature-card></feature-card>
+        </div>
 
     </template>
 
