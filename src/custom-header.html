@@ -19,8 +19,13 @@
         background-color: var(--app-primary-color);
       }
 
+      paper-menu-button {
+        padding: 0;
+      }
+
       paper-button {
-        font-size: 15px;
+        color: #3b6caa;
+        font-size: 16px;
         text-transform: none;
         font-weight: normal;
       }
@@ -53,50 +58,46 @@
           <a href="/" class="logo">BlinkBox</a>
         </div>
 
-        <ibm-tabs spacer role="navigation">
-          <a href="/view1" tabindex="-1">
-            <ibm-tab>Registrarse</ibm-tab>
-          </a>
-          <a href="/view2" tabindex="-1">
-            <ibm-tab>Iniciar sesión</ibm-tab>
-          </a>
-        </ibm-tabs>
-
-      </ibm-toolbar>
-
-
-
-      <ibm-toolbar>
-
-        <div main-title>
-          <a href="/" class="logo">BlinkBox</a>
-        </div>
-
-        <ibm-tabs spacer role="navigation">
-          <a href="/view1" tabindex="-1">
-            <ibm-tab>Mis archivos</ibm-tab>
-          </a>
-          <a href="/view2" tabindex="-1">
-            <ibm-tab>Compartidos conmigo</ibm-tab>
-          </a>
-        </ibm-tabs>
-
-        <paper-menu-button>
-            <paper-button class="dropdown-trigger">
-            <span>Nombre</span>
-            <paper-icon-button noink icon="more-vert"></paper-icon-button>
-            </paper-button>
-
-          <div class="dropdown-content"></div>
-          <paper-menu class="dropdown-content">
-            <a href="/view1" class="link-menu">
-              <paper-item>Mi cuenta</paper-item>
+        <!-- not logged -->
+        <template is="dom-if" if="{{!username}}">
+          <ibm-tabs spacer role="navigation">
+            <a href="/view1" tabindex="-1">
+              <ibm-tab>Registrarse</ibm-tab>
             </a>
-            <a href="/view2" class="link-menu">
-            <paper-item>Cerrar sesión</paper-item>
+            <a href="/view2" tabindex="-1">
+              <ibm-tab>Iniciar sesión</ibm-tab>
             </a>
-          </paper-menu>
-        </paper-menu-button>
+          </ibm-tabs>
+        </template>
+
+        <!-- logged -->
+        <template is="dom-if" if="{{username}}">
+          <ibm-tabs spacer role="navigation">
+            <a href="/view1" tabindex="-1">
+              <ibm-tab>Mis archivos</ibm-tab>
+            </a>
+            <a href="/view2" tabindex="-1">
+              <ibm-tab>Compartidos conmigo</ibm-tab>
+            </a>
+          </ibm-tabs>
+
+          <paper-menu-button>
+              <paper-button class="dropdown-trigger">
+              <span>[[ username ]]</span>
+              <paper-icon-button noink icon="more-vert"></paper-icon-button>
+              </paper-button>
+
+            <div class="dropdown-content"></div>
+            <paper-menu class="dropdown-content">
+              <a href="/view1" class="link-menu">
+                <paper-item>Mi cuenta</paper-item>
+              </a>
+              <a href="/view2" class="link-menu">
+              <paper-item>Cerrar sesión</paper-item>
+              </a>
+            </paper-menu>
+          </paper-menu-button>
+        </template>
 
       </ibm-toolbar>
 
