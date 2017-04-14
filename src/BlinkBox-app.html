@@ -7,6 +7,8 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="custom-header.html">
 <link rel="import" href="my-icons.html">
@@ -17,6 +19,13 @@
       :host {
         --app-primary-color: #4285f4;
         --app-secondary-color: black;
+
+        --paper-button-raised-keyboard-focus: {
+          font-weight: normal;
+        };
+        --paper-button-flat-keyboard-focus: {
+          font-weight: normal;
+        };
 
         display: block;
       }
@@ -57,7 +66,6 @@
     <app-drawer-layout fullbleed>
       <!-- Main content -->
       <app-header-layout has-scrolling-region>
-
         <custom-header></custom-header>
 
         <iron-pages

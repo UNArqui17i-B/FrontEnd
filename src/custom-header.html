@@ -2,6 +2,13 @@
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">}
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/ibm-toolbar/ibm-toolbar.html">
+<link rel="import" href="../bower_components/ibm-tabs/ibm-tabs.html">
+<link rel="import" href="../bower_components/ibm-tabs/ibm-tab.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="custom-header">
@@ -14,17 +21,85 @@
 
       paper-button {
         font-size: 15px;
+        text-transform: none;
+        font-weight: normal;
       }
+
+      paper-button:active {
+        font-weight: normal;
+      }
+
+      a.link-menu, a.link-menu:visited, a.link-menu:active{
+        text-decoration: none;
+        font-weight: normal;
+        color: #000;
+      }
+
+      a.logo, a.logo:visited, a.logo:active{
+        text-decoration: none;
+        color: #000;
+      }
+
+      a.logo paper-item:hover{
+        background-color: #ccc;
+      }
+
     </style>
 
     <app-header condenses reveals effects="waterfall">
-      <app-toolbar>
-        <div main-title>BlinkBox</div>
-        <paper-button on-tap="redirect">view1</paper-button>
-        <paper-button on-tap="redirect">view2</paper-button>
-        <paper-button>Ingresar</paper-button>
-        <paper-button>Crear cuenta</paper-button>
-      </app-toolbar>
+      <ibm-toolbar>
+
+        <div main-title>
+          <a href="/" class="logo">BlinkBox</a>
+        </div>
+
+        <ibm-tabs spacer role="navigation">
+          <a href="/view1" tabindex="-1">
+            <ibm-tab>Registrarse</ibm-tab>
+          </a>
+          <a href="/view2" tabindex="-1">
+            <ibm-tab>Iniciar sesión</ibm-tab>
+          </a>
+        </ibm-tabs>
+
+      </ibm-toolbar>
+
+
+
+      <ibm-toolbar>
+
+        <div main-title>
+          <a href="/" class="logo">BlinkBox</a>
+        </div>
+
+        <ibm-tabs spacer role="navigation">
+          <a href="/view1" tabindex="-1">
+            <ibm-tab>Mis archivos</ibm-tab>
+          </a>
+          <a href="/view2" tabindex="-1">
+            <ibm-tab>Compartidos conmigo</ibm-tab>
+          </a>
+        </ibm-tabs>
+
+        <paper-menu-button>
+            <paper-button class="dropdown-trigger">
+            <span>Nombre</span>
+            <paper-icon-button noink icon="more-vert"></paper-icon-button>
+            </paper-button>
+
+          <div class="dropdown-content"></div>
+          <paper-menu class="dropdown-content">
+            <a href="/view1" class="link-menu">
+              <paper-item>Mi cuenta</paper-item>
+            </a>
+            <a href="/view2" class="link-menu">
+            <paper-item>Cerrar sesión</paper-item>
+            </a>
+          </paper-menu>
+        </paper-menu-button>
+
+      </ibm-toolbar>
+
     </app-header>
   </template>
 
