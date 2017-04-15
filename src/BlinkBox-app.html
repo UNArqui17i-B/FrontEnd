@@ -82,13 +82,13 @@
       properties: {
         backendURL: {
           type: String,
-          value: 'http://localhost:5000' // backend url
+          value: 'http://localhost:5000', // backend url
         },
         token: {
-          type: String
+          type: String,
         },
         user: {
-          type: Object
+          type: Object,
         },
         page: {
           type: String,
@@ -101,16 +101,16 @@
         '_routePageChanged(routeData.page)',
       ],
 
-      initializeDefaultToken: function () {
+      initializeDefaultToken: function() {
         this.token = '';
       },
 
-      initializeDefaultUser: function () {
+      initializeDefaultUser: function() {
         this.user = {
           id: '',
           firstName: '',
           lastName: '',
-          email: ''
+          email: '',
         };
       },
 
