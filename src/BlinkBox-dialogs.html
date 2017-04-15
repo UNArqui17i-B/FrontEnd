@@ -1,17 +1,15 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/ibm-toolbar/ibm-toolbar.html">
-<link rel="import" href="../bower_components/ibm-tabs/ibm-tabs.html">
-<link rel="import" href="../bower_components/ibm-tabs/ibm-tab.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/iron-signals/iron-signals.html">
 
-<dom-module id="auth-header">
+<dom-module id="BlinkBox-dialogs">
   <template>
     <style>
       .container {
@@ -29,11 +27,8 @@
       }
     </style>
 
-    <ibm-tabs spacer role="navigation">
-      <ibm-tab on-tap="registerDialog">Registrarse</ibm-tab>
-      <ibm-tab on-tap="loginDialog">Iniciar sesión</ibm-tab>
-    </ibm-tabs>
-
+    <!-- Register Dialog -->
+    <iron-signals on-iron-signal-register-dialog="registerDialog"></iron-signals>
     <paper-dialog id="registerDialog">
       <h2>Crear cuenta</h2>
       <form is="iron-form" method="get" action="/" id="registerUser">
@@ -72,9 +67,10 @@
           <paper-button raised>Crear cuenta</paper-button>
         </div>
       </form>
-
     </paper-dialog>
 
+    <!-- Login Dialog -->
+    <iron-signals on-iron-signal-login-dialog="loginDialog"></iron-signals>
     <paper-dialog id="loginDialog">
       <h2>Ingresar</h2>
       <form is="iron-form" method="get" action="/" id="loginUser">
@@ -97,13 +93,12 @@
           <paper-button raised>Ingresar</paper-button>
         </div>
       </form>
-
     </paper-dialog>
   </template>
 
   <script>
     Polymer({
-      is: 'auth-header',
+      is: 'BlinkBox-dialogs',
 
       registerDialog: function() {
         this.$.registerDialog.open();
