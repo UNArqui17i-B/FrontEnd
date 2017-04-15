@@ -29,7 +29,7 @@
 
     <!-- Register Dialog -->
     <iron-signals on-iron-signal-register-dialog="registerDialog"></iron-signals>
-    <paper-dialog id="registerDialog">
+    <paper-dialog id="registerDialog" modal>
       <h2>Crear cuenta</h2>
       <form is="iron-form" method="get" action="/" id="registerUser">
         <div class="container">
@@ -63,15 +63,16 @@
 
         <br>
 
-        <div align="center">
+        <div class="container">
           <paper-button raised>Crear cuenta</paper-button>
+          <paper-button raised on-tap="registerDialogCancel">Cancelar</paper-button>
         </div>
       </form>
     </paper-dialog>
 
     <!-- Login Dialog -->
     <iron-signals on-iron-signal-login-dialog="loginDialog"></iron-signals>
-    <paper-dialog id="loginDialog">
+    <paper-dialog id="loginDialog" modal>
       <h2>Ingresar</h2>
       <form is="iron-form" method="get" action="/" id="loginUser">
         <div class="container">
@@ -89,8 +90,9 @@
 
         <br>
 
-        <div align="center">
+        <div class="container">
           <paper-button raised>Ingresar</paper-button>
+          <paper-button raised on-tap="loginDialogCancel">Cancelar</paper-button>
         </div>
       </form>
     </paper-dialog>
@@ -104,8 +106,16 @@
         this.$.registerDialog.open();
       },
 
+      registerDialogCancel: function() {
+        this.$.registerDialog.close();
+      },
+
       loginDialog: function() {
         this.$.loginDialog.open();
+      },
+
+      loginDialogCancel: function() {
+        this.$.loginDialog.close();
       },
     });
   </script>
