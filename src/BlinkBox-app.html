@@ -56,15 +56,6 @@
         tail="{{subroute}}"></app-route>
 
     <app-drawer-layout fullbleed>
-      <!-- Drawer content -->
-      <app-drawer id="drawer">
-        <app-toolbar>Menu</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="/view1">View One</a>
-          <a name="view2" href="/view2">View Two</a>
-        </iron-selector>
-      </app-drawer>
-
       <!-- Main content -->
       <app-header-layout has-scrolling-region>
 
@@ -82,6 +73,7 @@
             role="main">
           <my-view1 name="view1"></my-view1>
           <my-view2 name="view2"></my-view2>
+          <my-account name="account"></my-account>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
       </app-header-layout>
