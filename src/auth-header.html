@@ -19,6 +19,10 @@
         @apply(--layout-justified);
       }
 
+      paper-input {
+        margin: 0 2.5%;
+      }
+
       div paper-button {
         background-color: var(--app-primary-color);
         color: white;
@@ -101,11 +105,11 @@
     Polymer({
       is: 'auth-header',
 
-      registerDialog: function(event) {
+      registerDialog: function() {
         this.$.registerDialog.open();
       },
 
-      loginDialog: function(event) {
+      loginDialog: function() {
         this.$.loginDialog.open();
       },
     });
