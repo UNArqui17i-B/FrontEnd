@@ -1,5 +1,5 @@
 {
-  "name": "BlinkBox",
+  "name": "blink-box",
   "license": "MIT",
   "dependencies": {
     "app-layout": "PolymerElements/app-layout#^0.10.0",
