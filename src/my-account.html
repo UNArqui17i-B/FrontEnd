@@ -97,29 +97,63 @@
                 color: #ccc;
             }
 
+            @media screen and (max-width: 1024px) {
+                .account-form{
+                    width: 100%;
+                }
+
+                .delete-account{
+                    width: 100%;
+                }
+            }
+
+            @media screen and (max-width: 768px) {
+                #update-user{
+                    padding: 0px 5%;
+                }
+            }
+
+            @media screen and (max-width: 414px) {
+                #update-user{
+                    padding: 0px 2%;
+                }
+
+                .full-name paper-input{
+                    width: 100%;
+                }
+            }
+
         </style>
 
         <div id="my-account">
             <paper-card class="account-form">
                 <div class="card-header">MI CUENTA</div>
+
                 <div class="card-content">
                     <form is="iron-form" method="get" action="/" id="update-user">
+
                         <div class="full-name">
                             <paper-input name="name" label="Nombre">
                                 <iron-icon class="update-user-form" icon="social:person" prefix></iron-icon>
                             </paper-input>
+
                             <paper-input name="lastname" label="Apellido">
                                 <iron-icon class="update-user-form" icon="social:people" prefix></iron-icon>
                             </paper-input>
                         </div>
 
-                        <paper-input name="old-password" label="Contraseña actual" type="password" required>
+                        <paper-input name="old-password" label="Contraseña actual"
+                                     type="password" required error-message="Verifica tu contraseña.">
                             <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
                         </paper-input>
-                        <paper-input name="new-password" label="Nueva contraseña" type="password">
+
+                        <paper-input name="new-password" label="Nueva contraseña"
+                                     type="password" minlength="10" error-message="Mínimo 8 caracteres.">
                             <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
                         </paper-input>
-                        <paper-input name="confirm-new-password" label="Confirmar nueva constraseña" type="password">
+
+                        <paper-input name="confirm-new-password" label="Confirmar nueva contraseña"
+                                     type="password" minlength="10" error-message="Las contraseñas deben coincidir.">
                             <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
                         </paper-input>
 
@@ -130,7 +164,6 @@
                             <div class="output"></div>
                         </div>
                     </form>
-
                 </div>
             </paper-card>
 
@@ -153,6 +186,7 @@
                             Desactivar cuenta
                         </paper-button>
                     </div>
+
                 </div>
             </paper-card>
         </div>
@@ -162,5 +196,7 @@
         Polymer({
             is: 'my-account',
         });
+
+
     </script>
 </dom-module>
