@@ -177,8 +177,6 @@
     </template>
 
     <script>
-
-
         Polymer({
             is: 'my-view2',
             properties: {
@@ -188,8 +186,8 @@
                 },
                 previousItem: Object,
             },
-            handleResponse: function () {
-                for (var item of this.ajaxResponse) {
+            handleResponse: function() {
+                for (var item in this.ajaxResponse) {
                     if (this.extensionsArray.indexOf(item.extension) == -1)
                         this.extensionsArray.push(item.extension);
                     item.size = (item.size / 1000 / 1000).toFixed(2);
@@ -197,12 +195,12 @@
                     item.expiring_date = auxDate.toLocaleDateString('es-Es');
                 }
             },
-            handleToggle: function () {
+            handleToggle: function() {
                 this.$.toggleDialog.toggle();
             },
-            _activeItemChanged: function () {
-                this._clickedItem = this.$.grid.activeItem ? this.$.grid.activeItem : this._clickedItem;
-                if (this.$.grid.activeItem == null && this._clickedItem != null) {
+            _activeItemChanged: function() {
+                this._clickedItem = this.$.grid.activeItem || this._clickedItem;
+                if (this.$.grid.activeItem === null && this._clickedItem !== null) {
                     this.$.grid.activeItem = this._clickedItem;
                 }
             },
