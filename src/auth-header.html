@@ -1,0 +1,33 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/ibm-toolbar/ibm-toolbar.html">
+<link rel="import" href="../bower_components/ibm-tabs/ibm-tabs.html">
+<link rel="import" href="../bower_components/ibm-tabs/ibm-tab.html">
+
+<dom-module id="auth-header">
+  <template>
+    <ibm-tabs spacer role="navigation">
+      <ibm-tab on-tap="register">Registrarse</ibm-tab>
+      <ibm-tab on-tap="login">Iniciar sesión</ibm-tab>
+    </ibm-tabs>
+    <paper-dialog id="registerDialog">
+      <h2>Crea una cuenta</h2>
+      <p>Contenido</p>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'auth-header',
+
+      register: function (event) {
+        this.$.registerDialog.open();
+      },
+
+      login: function (event) {
+        console.log('login');
+      }
+    });
+  </script>
+</dom-module>

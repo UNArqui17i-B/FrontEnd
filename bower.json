@@ -18,7 +18,8 @@
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
     "paper-button": "PolymerElements/paper-button#^1.0.14",
     "iron-icons": "PolymerElements/iron-icons#^1.2.0",
-    "paper-item": "PolymerElements/paper-item#^1.2.1"
+    "paper-item": "PolymerElements/paper-item#^1.2.1",
+    "paper-dialog": "PolymerElements/paper-dialog#^1.1.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

@@ -12,6 +12,7 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="auth-header.html">
 
 <dom-module id="custom-header">
   <template>
@@ -62,14 +63,7 @@
 
         <!-- not logged -->
         <template is="dom-if" if="{{!username}}">
-          <ibm-tabs spacer role="navigation">
-            <a href="/view1" tabindex="-1">
-              <ibm-tab>Registrarse</ibm-tab>
-            </a>
-            <a href="/view2" tabindex="-1">
-              <ibm-tab>Iniciar sesión</ibm-tab>
-            </a>
-          </ibm-tabs>
+          <auth-header></auth-header>
         </template>
 
         <!-- logged -->
