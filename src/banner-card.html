@@ -1,0 +1,61 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="banner-card">
+    <template>
+        <style>
+            paper-card.banner {
+                @apply(--layout-horizontal);
+                margin: 15px 20px;
+            }
+
+            .banner-image {
+                width: 60%;
+                height: 300px;
+                background: url('http://www.quansershare.com/Images/submit-ad.png');
+                background-size: cover;
+            }
+
+            .banner-content {
+                @apply(--layout-flex);
+                float: left;
+            }
+
+            .banner-header { @apply(--paper-font-headline); }
+
+            .banner-question { color: var(--paper-grey-600); margin: 10px 0; }
+        </style>
+
+        <paper-card class="banner">
+            <div class="banner-image"></div>
+            <div class="banner-content">
+                <div class="card-content">
+                    <div class="banner-header">BlinkBox</div>
+                    <div class="banner-question">¿Qué es?</div>
+                    <div>Compartir archivos en la nube.</div>
+                    <br>
+                    <div class="banner-question">¿Cómo?</div>
+                    <div>Compartir archivos en la nube.</div>
+                </div>
+            </div>
+        </paper-card>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'banner-card',
+
+            properties: {
+                backendUrl: {
+                    type: String,
+                },
+            },
+        });
+    </script>
+</dom-module>

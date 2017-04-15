@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="feature-card">
+    <template>
+        <style>
+            paper-card.feature{
+                margin: 15px;
+                max-width: 300px;
+            }
+
+            .feature-header {
+                @apply(--paper-font-title);
+                text-align: center;
+                padding-bottom: 10px;
+            }
+        </style>
+
+        <paper-card class="feature" image=[[image]]>
+            <div class="card-content">
+                <div class="feature-header">[[title]]</div>
+                Emmentaler or Emmental is a yellow, medium-hard cheese that originated in the area around Emmental, Switzerland. It is one of the cheeses of Switzerland, and is sometimes known as Swiss cheese.
+                <p>[[content]]</p>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'feature-card',
+
+            properties: {
+                backendUrl: {
+                    type: String,
+                },
+
+                title: String,
+                content: String,
+                image: String,
+            },
+        });
+    </script>
+</dom-module>
