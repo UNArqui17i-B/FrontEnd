@@ -1,0 +1,117 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/ibm-toolbar/ibm-toolbar.html">
+<link rel="import" href="../bower_components/ibm-tabs/ibm-tabs.html">
+<link rel="import" href="../bower_components/ibm-tabs/ibm-tab.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+
+<dom-module id="auth-header">
+  <template>
+    <style>
+      .container {
+        @apply(--layout-horizontal);
+        @apply(--layout-justified);
+      }
+
+      paper-input {
+        margin: 0 2.5%;
+      }
+
+      div paper-button {
+        background-color: var(--app-primary-color);
+        color: white;
+      }
+    </style>
+
+    <ibm-tabs spacer role="navigation">
+      <ibm-tab on-tap="registerDialog">Registrarse</ibm-tab>
+      <ibm-tab on-tap="loginDialog">Iniciar sesión</ibm-tab>
+    </ibm-tabs>
+
+    <paper-dialog id="registerDialog">
+      <h2>Crear cuenta</h2>
+      <form is="iron-form" method="get" action="/" id="registerUser">
+        <div class="container">
+          <paper-input
+            name="first-name" label="Nombre"
+            required auto-validate error-message="Este campo es obligatorio">
+            <iron-icon icon="social:person-outline" prefix></iron-icon>
+          </paper-input>
+          <paper-input
+            name="last-name" label="Apellido"
+            required auto-validate error-message="Este campo es obligatorio">
+            <iron-icon icon="social:people-outline" prefix></iron-icon>
+          </paper-input>
+        </div>
+
+        <paper-input
+          name="email" label="Correo" type="email"
+          required auto-validate error-message="Este campo es obligatorio">
+          <iron-icon icon="communication:mail-outline" prefix></iron-icon>
+        </paper-input>
+        <paper-input
+          name="password" label="Contraseña" type="password"
+          required auto-validate error-message="Este campo es obligatorio">
+          <iron-icon icon="icons:lock-outline" prefix></iron-icon>
+        </paper-input>
+        <paper-input
+          name="confirm-password" label="Confirmar constraseña" type="password"
+          required auto-validate error-message="Este campo es obligatorio">
+          <iron-icon icon="icons:lock-outline" prefix></iron-icon>
+        </paper-input>
+
+        <br>
+
+        <div align="center">
+          <paper-button raised>Crear cuenta</paper-button>
+        </div>
+      </form>
+
+    </paper-dialog>
+
+    <paper-dialog id="loginDialog">
+      <h2>Ingresar</h2>
+      <form is="iron-form" method="get" action="/" id="loginUser">
+        <div class="container">
+          <paper-input
+            name="email" label="Correo" type="email"
+            required auto-validate error-message="Este campo es obligatorio">
+            <iron-icon icon="communication:mail-outline" prefix></iron-icon>
+          </paper-input>
+          <paper-input
+            name="password" label="Contraseña" type="password"
+            required auto-validate error-message="Este campo es obligatorio">
+            <iron-icon icon="icons:lock-outline" prefix></iron-icon>
+          </paper-input>
+        </div>
+
+        <br>
+
+        <div align="center">
+          <paper-button raised>Ingresar</paper-button>
+        </div>
+      </form>
+
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'auth-header',
+
+      registerDialog: function() {
+        this.$.registerDialog.open();
+      },
+
+      loginDialog: function() {
+        this.$.loginDialog.open();
+      },
+    });
+  </script>
+</dom-module>

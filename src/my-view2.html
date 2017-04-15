@@ -252,7 +252,7 @@
                 ajaxResponse: Object,
                 ajaxError: Object,
             },
-            handleResponse: function (data) {
+            handleResponse: function(data) {
                 this.ajaxResponse = data.detail.response.shared_documents;
                 var auxArray = []
                 this.ajaxResponse.map(function (item) {
@@ -266,12 +266,12 @@
                 this.extensionsArray = auxArray;
                 this.$.grid.clearCache();
             },
-            handleToggle: function () {
+            handleToggle: function() {
                 this.$.toggleDialog.toggle();
             },
-            _activeItemChanged: function () {
-                this._clickedItem = this.$.grid.activeItem ? this.$.grid.activeItem : this._clickedItem;
-                if (this.$.grid.activeItem == null && this._clickedItem != null) {
+            _activeItemChanged: function() {
+                this._clickedItem = this.$.grid.activeItem || this._clickedItem;
+                if (this.$.grid.activeItem === null && this._clickedItem !== null) {
                     this.$.grid.activeItem = this._clickedItem;
                 }
             },

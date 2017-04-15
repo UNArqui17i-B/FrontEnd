@@ -1,0 +1,202 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-account">
+    <template>
+        <style include="shared-styles iron-flex">
+            :host {
+                display: block;
+                padding: 10px;
+
+                /* Label and underline color when the input is not focused */
+                /* --paper-input-container-color: var(--app-secondary-color); */
+
+                /* Label and underline color when the input is focused */
+                --paper-input-container-focus-color: var(--app-primary-color);
+
+                /* Label and underline color when the input is invalid */
+                --paper-input-container-invalid-color: red;
+            }
+
+            #my-account, .full-name {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+                @apply(--layout-center-justified);
+            }
+
+            .full-name paper-input{
+                width: 45%;
+            }
+
+            #my-account paper-input{
+                margin: 0px 2.5%;
+            }
+
+            .account-form{
+                margin: 15px;
+                min-width: 60%;
+            }
+
+            .delete-account{
+                margin: 15px;
+                width: 30%;
+                @apply(--layout-vertical);
+            }
+
+            paper-button.full-color {
+                background-color: var(--app-primary-color);
+                color: white;
+                margin: 20px 0;
+            }
+
+            paper-button.without-color {
+                background-color: white;
+                color: var(--app-primary-color);
+                margin: 20px 0;
+            }
+
+            .card-header{
+                background-color: var(--app-primary-color);
+                color: white;
+                font-size: large;
+                text-align: center;
+                font-weight: bold;
+                padding: 15px 0px;
+            }
+
+            .card-header-light{
+                color: var(--app-primary-color);
+                font-size: large;
+                text-align: center;
+                font-weight: bold;
+            }
+
+            #my-account paper-button{
+                font-size: 15px;
+            }
+
+            .center{
+                text-align: center;
+            }
+
+            #update-user{
+                padding: 0px 20%;
+            }
+
+            iron-icon.update-user-form{
+                margin: 8px;
+                color: #ccc;
+            }
+
+            @media screen and (max-width: 1024px) {
+                .account-form{
+                    width: 100%;
+                }
+
+                .delete-account{
+                    width: 100%;
+                }
+            }
+
+            @media screen and (max-width: 768px) {
+                #update-user{
+                    padding: 0px 5%;
+                }
+            }
+
+            @media screen and (max-width: 414px) {
+                #update-user{
+                    padding: 0px 2%;
+                }
+
+                .full-name paper-input{
+                    width: 100%;
+                }
+            }
+
+        </style>
+
+        <div id="my-account">
+            <paper-card class="account-form">
+                <div class="card-header">MI CUENTA</div>
+
+                <div class="card-content">
+                    <form is="iron-form" method="get" action="/" id="update-user">
+
+                        <div class="full-name">
+                            <paper-input name="name" label="Nombre">
+                                <iron-icon class="update-user-form" icon="social:person" prefix></iron-icon>
+                            </paper-input>
+
+                            <paper-input name="lastname" label="Apellido">
+                                <iron-icon class="update-user-form" icon="social:people" prefix></iron-icon>
+                            </paper-input>
+                        </div>
+
+                        <paper-input name="old-password" label="Contraseña actual"
+                                     type="password" required error-message="Verifica tu contraseña.">
+                            <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
+                        </paper-input>
+
+                        <paper-input name="new-password" label="Nueva contraseña"
+                                     type="password" minlength="10" error-message="Mínimo 8 caracteres.">
+                            <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
+                        </paper-input>
+
+                        <paper-input name="confirm-new-password" label="Confirmar nueva contraseña"
+                                     type="password" minlength="10" error-message="Las contraseñas deben coincidir.">
+                            <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
+                        </paper-input>
+
+                        <br>
+
+                        <div align="center">
+                            <paper-button class="full-color" onclick="">Guardar cambios</paper-button>
+                            <div class="output"></div>
+                        </div>
+                    </form>
+                </div>
+            </paper-card>
+
+            <paper-card class="delete-account">
+                <div class="card-header">
+                    DESACTIVAR MI CUENTA
+                </div>
+                <div class="card-content center">
+                    <p>
+                        Recuerda que no podrás recuperar tu cuenta después de ser desactivada.
+                    </p>
+
+                    <p>
+                        Si deseas desactivar tu cuenta, haz click en el siguiente botón:
+                    </p>
+
+                    <div align="center">
+                        <paper-button class="full-color">
+                            <!-- <iron-icon icon="clear"></iron-icon> -->
+                            Desactivar cuenta
+                        </paper-button>
+                    </div>
+
+                </div>
+            </paper-card>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-account',
+        });
+
+
+    </script>
+</dom-module>
