@@ -13,6 +13,7 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="custom-header">
@@ -53,6 +54,10 @@
         background-color: #ccc;
       }
 
+      #extra-space {
+        width: 50px;
+        color: white;
+      }
     </style>
 
     <app-header condenses reveals effects="waterfall">
@@ -81,25 +86,32 @@
             </a>
           </ibm-tabs>
 
-          <paper-menu-button>
-              <paper-button class="dropdown-trigger">
-              <span>[[ username ]]</span>
-              <paper-icon-button noink icon="more-vert"></paper-icon-button>
-              </paper-button>
-
-            <div class="dropdown-content"></div>
-            <paper-menu class="dropdown-content">
-              <a href="/account" class="link-menu">
-                <paper-item>Mi cuenta</paper-item>
-              </a>
-              <a href="/view2" class="link-menu">
-              <paper-item>Cerrar sesión</paper-item>
-              </a>
-            </paper-menu>
-          </paper-menu-button>
+          <paper-button noink on-tap="toggleMenu">
+            <span>[[ username ]]</span>
+            <paper-icon-button noink icon="expand-more"></paper-icon-button>
+          </paper-button>
         </template>
 
       </ibm-toolbar>
+
+      <template is="dom-if" if="{{shownMenu}}">
+        <ibm-toolbar>
+          <div main-title></div>
+            <ibm-tabs spacer role="navigation">
+              <a href="/account" tabindex="-1">
+                <ibm-tab>Mi cuenta</ibm-tab>
+              </a>
+              <a href="/index" tabindex="-1">
+                <ibm-tab>Cerrar sesión</ibm-tab>
+              </a>
+              <div id="extra-space">
+                ----
+              </div>
+            </ibm-tabs>
+
+        </ibm-toolbar>
+      </template>
+
 
     </app-header>
   </template>
@@ -112,6 +124,10 @@
         backendUrl: {
           type: String,
         },
+        showMenu: {
+          type: Boolean,
+          value: false,
+        },
       },
 
       registerDialog: function() {
@@ -121,6 +137,11 @@
       loginDialog: function() {
         this.fire('iron-signal', {name: 'login-dialog', data: null});
       },
+
+      toggleMenu: function() {
+        this.shownMenu = !this.shownMenu;
+      },
+
     });
   </script>
 </dom-module>

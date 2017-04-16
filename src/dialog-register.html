@@ -8,10 +8,11 @@
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="shared-styles.html">
 
 <dom-module id="dialog-register">
   <template>
-    <style>
+    <style include="shared-styles">
       .container {
         @apply(--layout-horizontal);
         @apply(--layout-justified);
@@ -35,29 +36,29 @@
           <paper-input
             name="first-name" label="Nombre"
             required auto-validate error-message="Este campo es obligatorio">
-            <iron-icon icon="social:person-outline" prefix></iron-icon>
+            <iron-icon class="user-form" icon="social:person" prefix></iron-icon>
           </paper-input>
           <paper-input
             name="last-name" label="Apellido"
             required auto-validate error-message="Este campo es obligatorio">
-            <iron-icon icon="social:people-outline" prefix></iron-icon>
+            <iron-icon class="user-form" icon="social:people" prefix></iron-icon>
           </paper-input>
         </div>
 
         <paper-input
           name="email" label="Correo" type="email"
           required auto-validate error-message="Este campo es obligatorio">
-          <iron-icon icon="communication:mail-outline" prefix></iron-icon>
+          <iron-icon class="user-form" icon="communication:mail-outline" prefix></iron-icon>
         </paper-input>
         <paper-input
           name="password" label="Contraseña" type="password"
           required auto-validate error-message="Este campo es obligatorio">
-          <iron-icon icon="icons:lock-outline" prefix></iron-icon>
+          <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
         </paper-input>
         <paper-input
           name="confirm-password" label="Confirmar contraseña" type="password"
           required auto-validate error-message="Este campo es obligatorio">
-          <iron-icon icon="icons:lock-outline" prefix></iron-icon>
+          <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
         </paper-input>
 
         <br>
