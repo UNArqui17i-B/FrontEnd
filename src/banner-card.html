@@ -37,6 +37,20 @@
 
             .banner-question { color: var(--paper-grey-600); margin: 10px 0; }
 
+            @media screen and (max-width: 1000px) {
+                paper-card.banner {
+                    @apply(--layout-horizontal);
+                    width: 630px;
+                    margin: 15px 0px;
+                    text-align: center;
+                }
+
+                .banner-image {
+                    width: 50%;
+                    height: 280px;
+                }
+            }
+
             @media screen and (max-width: 700px) {
                 paper-card.banner {
                     @apply(--layout-vertical);
