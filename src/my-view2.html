@@ -251,15 +251,15 @@
           ajaxResponse: Object,
           ajaxError: Object,
         },
-        handleResponse: function (data) {
+        handleResponse: function(data) {
           var response = data.detail.response.shared_documents;
-          this.ajaxResponse = response.map(function (item) {
+          this.ajaxResponse = response.map(function(item) {
             item.size = (item.size / 1000 ).toFixed(3);
             var auxDate = new Date(item.expiring_date * 1000);
             item.expiring_date = auxDate.toISOString().split('T')[0];
             return item;
           });
-          var extensions = this.ajaxResponse.reduce(function (current, item) {
+          var extensions = this.ajaxResponse.reduce(function(current, item) {
             if (item.extension !== '') {
               current[item.extension] = true;
             }
@@ -268,10 +268,10 @@
           this.extensionsArray = Object.keys(extensions);
           this.$.grid.clearCache();
         },
-        handleToggle: function () {
+        handleToggle: function() {
           this.$.toggleDialog.toggle();
         },
-        _activeItemChanged: function () {
+        _activeItemChanged: function() {
           this._clickedItem = this.$.grid.activeItem || this._clickedItem;
           if (this.$.grid.activeItem === null && this._clickedItem !== null) {
             this.$.grid.activeItem = this._clickedItem;
