@@ -29,7 +29,8 @@
     "paper-styles": "PolymerElements/paper-styles#^1.2.1",
     "iron-signals": "PolymerElements/iron-signals#^1.0.3",
     "iron-image": "PolymerElements/iron-image#^1.2.5",
-    "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^1.10.4"
+    "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^1.10.4",
+    "paper-date-picker": "bendavis78/paper-date-picker#^1.2.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
