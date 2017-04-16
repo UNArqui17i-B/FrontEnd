@@ -1,0 +1,84 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+
+<dom-module id="my-upload">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      .container{
+        width: 80%;
+        margin: 0 auto;
+      }
+
+      .block{
+        width: 45%;
+        display: inline-block;
+      }
+    </style>
+
+    <!--<div style="border: dotted">
+      <vaadin-upload max-files="1">
+        <paper-button id="addButton" class="style-scope vaadin-upload x-scope paper-button-0" role="button" tabindex="0" animated="" aria-disabled="false" elevation="0">
+          Upload File
+        </paper-button>
+      </vaadin-upload>
+    </div>-->
+
+    <div class="container">
+      <paper-card>
+        <div class="block">
+          <h1>Holo</h1>
+        </div>
+        <div class="block">
+          <paper-input label="Nombre" disabled value="File name"></paper-input>
+          <vaadin-date-picker label="Disponible hasta" min="2017-04-15" max="2017-04-20" initial-position="2017-04-15">
+          </vaadin-date-picker>
+
+          <p style="color: #737373">Compartir con</p>
+          <vaadin-grid items="[[emails]]" id="sharedEmails">
+            <vaadin-grid-column>
+              <template class="header">Email</template>
+              <template>[[item]]</template>
+              <template class="footer">
+                <paper-input label="Añadir correo" auto-validate type="email" style="padding-bottom: 12px"
+                             error-message="Por favor ingrese un email válido" on-keypress="addEmail"></paper-input>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </div>
+      </paper-card>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-upload',
+      properties: {
+        emails: {
+          type: Array,
+          value: [],
+        },
+      },
+      addEmail: function(e) {
+        if(e.target.validate()) {
+          if(e.charCode === 13) {
+            var newEmail = e.target.value;
+            this.emails.push(newEmail);
+            this.notifyPath('emails');
+            e.target.value = '';
+            this.$.sharedEmails.clearCache();
+          }
+        }
+      },
+    });
+  </script>
+</dom-module>
