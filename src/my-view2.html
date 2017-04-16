@@ -110,7 +110,7 @@
       <div class="circle">2</div>
       <h1>Compartidos</h1>
       <iron-ajax auto
-             url="[[backendURL]]/fileAccess/sharedWith/[[username]]"
+             url="[[backendUrl]]/fileAccess/sharedWith/[[username]]"
              handle-as="json"
              on-response="handleResponse"
              debounce-duration="300"></iron-ajax>
@@ -177,7 +177,7 @@
         <vaadin-grid-column>
           <template class="header">Descarga</template>
           <template>
-            <a href="[[backendURL]]/fileAccess/download/[[item._id]]/[[username]]"
+            <a href="[[backendUrl]]/fileAccess/download/[[item._id]]/[[username]]"
                target="_blank">
               <iron-icon icon="file-download"></iron-icon>
             </a>
@@ -215,7 +215,7 @@
             <div class="flexchild2">
               <div class="flex-center">
                 <a download="[[activeItem.name]]"
-                   href="[[backendURL]]/fileAccess/download/[[activeItem._id]]/[[username]]">
+                   href="[[backendUrl]]/fileAccess/download/[[activeItem._id]]/[[username]]">
                   <iron-icon icon="file-download" class="big-icon"></iron-icon>
                 </a>
               </div>
@@ -237,9 +237,8 @@
     Polymer({
       is: 'my-view2',
       properties: {
-        backendURL: {
+        backendUrl: {
           type: String,
-          value: 'http://127.0.0.1:4025',
         },
         username: {
           type: String,
