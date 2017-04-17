@@ -130,14 +130,20 @@
         <div class="card-header">MI CUENTA</div>
 
         <div class="card-content">
-          <form is="iron-form" method="get" action="/" id="update-user">
+          <iron-ajax id="putAjax"
+                     method="PUT"
+                     content-type="application/json"
+                     url="[[backendUrl]]/users/[[user._id]]/[[user._rev]]">
+          </iron-ajax>
+
+          <form is="iron-form" method="get" action="/" id="update">
 
             <div class="full-name">
-              <paper-input name="name" label="Nombre" value="[[ user.name ]]">
+              <paper-input name="name" label="Nombre" value="{{ user.name }}">
                 <iron-icon class="update-user-form" icon="social:person" prefix></iron-icon>
               </paper-input>
 
-              <paper-input name="lastname" label="Apellido" value="[[ user.lastname ]]">
+              <paper-input name="lastname" label="Apellido" value="{{ user.lastname }}">
                 <iron-icon class="update-user-form" icon="social:people" prefix></iron-icon>
               </paper-input>
             </div>
@@ -160,7 +166,7 @@
             <br>
 
             <div align="center">
-              <paper-button class="full-color" onclick="">Guardar cambios</paper-button>
+              <paper-button class="full-color"  on-tap="_submit">Guardar cambios</paper-button>
               <div class="output"></div>
             </div>
           </form>
@@ -221,9 +227,23 @@
         // debugger;
       },
 
+      checkValidity: function(){
+        return true;
+      },
+
+      _submit: function() {
+        if (this.$.update.checkValidity()) {
+          this.$.putAjax.body = JSON.stringify(this.user);
+          this.$.putAjax.generateRequest();
+        } else {
+          this._handleError('At least one field is invalid.');
+        }
+      },
+
       _delete: function() {
         this.$.deleteAjax.url = this.backendUrl + '/users/' + this.user._id + '/' + this.user._rev;
         this.$.deleteAjax.generateRequest();
+        // this.page = 'index';
       },
     });
 
