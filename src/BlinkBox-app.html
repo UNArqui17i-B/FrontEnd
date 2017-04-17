@@ -9,6 +9,7 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="custom-header.html">
+<link rel="import" href="BlinkBox-dialogs.html">
 
 <dom-module id="BlinkBox-app">
   <template>
@@ -35,6 +36,9 @@
         --paper-icon-button-ink-color: white;
       }
     </style>
+
+    <!-- All possible dialogs -->
+    <BlinkBox-dialogs></BlinkBox-dialogs>
 
     <!-- JWT -->
     <iron-localstorage
@@ -70,6 +74,7 @@
           <my-index name="index"></my-index>
           <my-account name="account"></my-account>
           <my-shared name="shared" backend-url="[[ backendURL ]]"></my-shared>
+          <my-view3 name="view3"></my-view3>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
       </app-header-layout>
