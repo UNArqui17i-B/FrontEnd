@@ -31,7 +31,13 @@
     <iron-signals on-iron-signal-login-dialog="loginDialog"></iron-signals>
     <paper-dialog id="loginDialog" modal>
       <h2>Ingresar</h2>
-      <form is="iron-form" method="get" action="/" id="loginUser">
+      <form is="iron-form"
+            method="post"
+            action="[[ backendUrl ]]"
+            on-iron-form-presubmit="loginPresubmit"
+            on-iron-form-response="loginResponse"
+            on-iron-form-error="loginError"
+            id="loginForm">
         <div class="container">
           <paper-input
             name="email" label="Correo" type="email"
@@ -48,7 +54,7 @@
         <br>
 
         <div class="container">
-          <paper-button raised>Ingresar</paper-button>
+          <paper-button raised on-tap="loginSubmit">Ingresar</paper-button>
           <paper-button raised on-tap="loginDialog">Cancelar</paper-button>
         </div>
       </form>
@@ -61,6 +67,28 @@
 
       loginDialog: function() {
         this.$.loginDialog.toggle();
+      },
+
+      loginSubmit: function() {
+        if (this.$.loginForm.validate()) {
+          this.$.loginForm.submit();
+          this.$.loginDialog.toggle();
+        }
+      },
+
+      loginPresubmit: function(event) {
+        // this.$.loginForm.request.body
+        // event.preventDefault();
+      },
+
+      loginResponse: function(event) {
+        // this.$.loginForm.request.body
+        console.log('res', event.detail);
+      },
+
+      loginError: function(event) {
+        // this.$.loginForm.request.body
+        console.log('err', event.detail);
       },
     });
   </script>
