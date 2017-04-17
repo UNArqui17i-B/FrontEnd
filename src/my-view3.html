@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column-group.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-request.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
@@ -72,13 +73,18 @@
                  url="[[backendURLPUT]]/update/"
                  method="PUT"
                  handle-as="json"
+                 content-type="application/json"
                  on-response="handleResponsePut"
+                 on-error="handleError"></iron-ajax>
+      <iron-ajax id="ajaxPutDate"
+                 url="[[backendURLPUT]]/update/"
+                 method="PUT"
+                 handle-as="json"
                  on-error="handleError"></iron-ajax>
       <iron-ajax id="ajaxDelete"
                  method="DELETE"
                  url="[[backendURLDELETE]]/delete/file/"
                  handle-as="json"
-                 content-type="application/json"
                  on-response="handleResponseDelete"
                  on-error="handleError"></iron-ajax>
       <template is="dom-if" if="[[ajaxError]]">
@@ -198,7 +204,7 @@
                 <div><b>Fecha vencimiento</b></div>
                 <vaadin-date-picker id="datePicker"
                                     label="Disponible hasta"
-                                    value="[[activeItem.expiring_date]]"
+                                    value="{{activeItem.expiring_date}}"
                                     min="[[activeItem.uploaded_date]]"
                                     max="[[maxDate(activeItem.uploaded_date)]]"
                                     style="width: 95%"></vaadin-date-picker>
@@ -260,6 +266,10 @@
           <paper-button dialog-confirm on-tap="handleReloadGrid">Ok</paper-button>
         </div>
       </paper-dialog>
+      <paper-dialog id="errorDialog">
+        <h2>Error</h2>
+        <div>[[errorMessage]]</div>
+      </paper-dialog>
     </div>
   </template>
 
@@ -276,7 +286,7 @@
         },
         backendURLDELETE: {
           type: String,
-          value: 'http://192.168.1.15:4030',
+          value: 'http://127.0.0.1:4030',
         },
         user: Object,
         extensionsArray: {
@@ -295,7 +305,6 @@
         return auxDate.toISOString().split('T')[0];
       },
       handleResponse: function(data) {
-        debugger;
         var response = data.detail.response.shared_documents;
         this.ajaxResponse = response.map(function(item) {
           item.size = (item.size / 1000 ).toFixed(3);
@@ -314,24 +323,26 @@
         this.extensionsArray = Object.keys(extensions);
         this.$.grid.clearCache();
       },
+      handleResponseDelete: function(data) {
+        if (data.detail.xhr.status === 200)
+          this.action = 'eliminado';
+        this.$.dialogDetail.close();
+        this.$.successDialog.toggle();
+      },
       handleResponsePut: function(data) {
-        debugger;
         if (data.detail.xhr.status === 200)
           this.action = 'modificado';
         this.$.dialogDetail.close();
         this.$.successDialog.toggle();
       },
       handleReloadGrid: function() {
-        debugger;
         this.$.ajaxGet.generateRequest();
       },
       handleEdit: function(e) {
-        debugger;
         this.activeItem = e.model.item;
         this.$.dialogDetail.toggle();
       },
       handleDialogDelete: function(e) {
-        debugger;
         this.activeItem = e.model.item;
         this.$.confirmDelete.toggle();
       },
@@ -341,7 +352,6 @@
         this.$.ajaxDelete.generateRequest();
       },
       handleDeleteEmail: function(e) {
-        debugger;
         var index = this.activeItem.shared.indexOf(e.model.item);
         this.activeItem.shared.splice(index, 1);
         this.$.gridEmails.clearCache();
@@ -349,15 +359,16 @@
       handleOKEdit: function() {
         debugger;
         var urlRequest = this.$.ajaxPut.url;
-        var auxEpoch = new Date(this.activeItem['expiring_date']);
-        this.$.ajaxPut.url = urlRequest + 'date/' +
-          this.activeItem['_id'] + '/' + (auxEpoch.getTime() / 1000);
+        /* var auxEpoch = new Date(this.activeItem['expiring_date']);
+         this.$.ajaxPutDate.url = urlRequest + 'date/' +
+         this.activeItem['_id'] + '/' + (auxEpoch.getTime() / 1000);
+         this.$.ajaxPutDate.generateRequest(); */
+        this.$.ajaxPut.url = urlRequest + 'share/' +
+          this.activeItem['_id'];
+        this.$.ajaxPut.body = JSON.stringify({'shared': this.activeItem.shared});
+        // '{"shared":["' +this.activeItem.shared.join('","') + '"]}';
         this.$.ajaxPut.generateRequest();
-        /* this.$.ajaxRequest.url = urlRequest + 'share/' +
-         this.activeItem['_id'];
-         this.$.ajaxRequest.body = {'shared': this.activeItem.shared};
-         JSON.stringify({'shared': this.activeItem.shared});
-         this.$.ajaxRequest.generateRequest();*/
+        this.$.ajaxPut.url = urlRequest;
       },
       handleKeyEvent: function(e) {
         if (e.target.validate()) {
@@ -373,7 +384,10 @@
         }
       },
       handleError: function(e) {
-        debugger;
+        var ironRequest = event.detail.request;
+        var relatedXhr = ironRequest.xhr;
+        this.errorMessage = relatedXhr.status + ' : ' + relatedXhr.statusText;
+        this.$.errorDialog.toggle();
       },
     });
   </script>
