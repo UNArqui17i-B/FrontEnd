@@ -3,6 +3,8 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column-group.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -10,322 +12,369 @@
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-date-picker/paper-date-picker.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-view3">
-    <template is="dom-bind">
-        <style include="shared-styles" is="custom-style">
-            :host {
-                display: block;
-                padding: 10px;
-            }
+  <template is="dom-bind">
+    <style include="shared-styles" is="custom-style">
+      :host {
+        display: block;
+        padding: 10px;
+      }
 
-            .big-icon {
-                --iron-icon-width: 100px;
-                --iron-icon-height: 100px;
-            }
+      .flex-horizontal-with-ratios {
+        @apply(--layout-horizontal);
+      }
 
-            .flex-horizontal-with-ratios {
-                @apply(--layout-horizontal);
-            }
+      .flexchild {
+        @apply(--layout-flex-3);
+      }
 
-            .flexchild {
-                @apply(--layout-flex-3);
-            }
+      .flex-vertical {
+        @apply(--layout-vertical);
+        height: 220px;
+      }
 
-            .flexchild2 {
-                @apply(--layout-flex-2);
-            }
+      .flexchild-vertical {
+        @apply(--layout-flex);
+        max-height: 350px;
+      }
 
-            .flex-center {
-                @apply(--layout-horizontal);
-                @apply(--layout-center-justified);
-            }
+      #dialogDetail {
+        width: 550px;
+      }
 
-            #dialogDetail {
-                width: 550px;
-            }
+      a:link, a:visited {
+        color: inherit;
+      }
 
-            a:link, a:visited {
-                color: inherit;
-            }
+      iron-icon:hover {
+        color: red;
+        cursor: pointer;
+      }
 
-            iron-icon:hover {
-                color: red;
-                cursor: pointer;
-            }
+      vaadin-grid-filter, paper-input {
+        width: 100%;
+      }
 
-            vaadin-grid-filter, paper-input {
-                width: 100%;
-            }
 
-            vaadin-grid {
-                font: 500 13px "Open Sans", sans-serif;
-                --divider-color: rgb(223, 232, 239);
-
-                --vaadin-grid-cell: {
-                    padding: 0 13px;
-                };
-
-                --vaadin-grid-body-cell: {
-                    height: 65px;
-                };
-
-                --vaadin-grid-header-cell: {
-                    background: rgba(235, 238, 246, 0.9);
-                    border-bottom: 1px solid rgba(208, 217, 225, 0.9);
-                    border-top: 1px solid rgba(248, 250, 252, 0.9);
-                    min-height: 35px;
-
-                    background-image: linear-gradient(rgba(108, 160, 218, 0), rgba(108, 160, 218, 0.15));
-                    background-size: 1px 100%;
-                    background-position: 100% 0%;
-                    background-repeat: no-repeat;
-                };
-
-                --vaadin-grid-body-row-selected-cell: {
-                    background-color: rgb(131, 183, 236);
-                    border-bottom-color: rgb(108, 160, 218);
-                };
-
-                --vaadin-grid-body-row-odd-cell: {
-                    background-color: rgb(251, 252, 254);
-                };
-
-                --vaadin-grid-body-row-hover-cell: {
-                    background-color: rgb(235, 238, 246);
-                };
-
-                --vaadin-grid-body-row-details-cell: {
-                    text-align: center;
-                };
-
-                --vaadin-grid-column-resize-handle: {
-                    opacity: 0;
-                };
-            }
-        </style>
-        <div class="card">
-            <div class="circle">3</div>
-            <h1>Mis archivos</h1>
-            <iron-ajax auto
-                       url="[[backendURL]]/fileAccess/ownedBy/[[username]]"
-                       handle-as="json"
-                       on-response="handleResponse"
-                       debounce-duration="300"></iron-ajax>
-            <template is="dom-if" if="[[ajaxError]]">
-                <span>Error in url</span>
-            </template>
-            <vaadin-grid id="grid" items="[[ajaxResponse]]" active-item="{{activeItem}}" multi-sort
-                         on-active-item-changed="_activeItemChanged">
-                <vaadin-grid-column width="300px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="name">
-                            <vaadin-grid-filter path="name" value="[[filterName]]">
-                                <paper-input placeholder="Nombre" value="{{filterName}}" focus-target></paper-input>
-                            </vaadin-grid-filter>
-                        </vaadin-grid-sorter>
-                    </template>
-                    <template>[[item.name]]</template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="150px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="extension">
-                            <vaadin-grid-filter path="extension" value="[[filterExtension]]">
-                                <vaadin-combo-box label="Extensión"
-                                                  value="{{filterExtension}}"
-                                                  items="[[extensionsArray]]"
-                                                  allow-custom-value></vaadin-combo-box>
-                            </vaadin-grid-filter>
-                        </vaadin-grid-sorter>
-                    </template>
-                    <template>[[item.extension]]</template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="150px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="size">
-                            <vaadin-grid-filter path="size" value="[[filterSize]]">
-                                <paper-input placeholder="Tamaño(Kb)" value="{{filterSize}}"
-                                             focus-target></paper-input>
-                            </vaadin-grid-filter>
-                        </vaadin-grid-sorter>
-                    </template>
-                    <template>[[item.size]]</template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="150px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="name">
-                            <vaadin-grid-filter path="owner_id" value="[[filterOwner]]">
-                                <paper-input placeholder="Dueño" value="{{filterOwner}}" focus-target></paper-input>
-                            </vaadin-grid-filter>
-                        </vaadin-grid-sorter>
-                    </template>
-                    <template>[[item.owner_id]]</template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="150px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="uploaded_date">
-                            <vaadin-grid-filter path="uploaded_date" value="[[filterUploadedDate]]">
-                                <paper-input placeholder="Subida" value="{{filterUploadedDate}}"
-                                             focus-target></paper-input>
-                            </vaadin-grid-filter>
-                        </vaadin-grid-sorter>
-                    </template>
-                    <template>[[item.uploaded_date]]</template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="150px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="expiring_date">
-                            <vaadin-grid-filter path="expiring_date" value="[[filterExpiringDate]]">
-                                <paper-input placeholder="Vencimiento" value="{{filterExpiringDate}}"
-                                             focus-target></paper-input>
-                            </vaadin-grid-filter>
-                        </vaadin-grid-sorter>
-                    </template>
-                    <template>[[item.expiring_date]]</template>
-                </vaadin-grid-column>
-                <vaadin-grid-column>
-                    <template class="header">Editar</template>
-                    <template>
-                        <iron-icon icon="create" on-click="handleEdit"></iron-icon>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column>
-                    <template class="header">Descarga</template>
-                    <template>
-                        <a href="[[backendURL]]/fileAccess/download/[[item._id]]/[[username]]" download="[[item.name]]"
-                           target="_blank">
-                            <iron-icon icon="file-download" on-tap="handleDownload"></iron-icon>
-                        </a>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column>
-                    <template class="header">Eliminar</template>
-                    <template>
-                        <iron-icon icon="delete" on-click="handleDelete"></iron-icon>
-                    </template>
-                </vaadin-grid-column>
-            </vaadin-grid>
-            <paper-dialog id="dialogDetail">
-                <h2>Editar archivo</h2>
-                <paper-dialog-scrollable>
-                    <div class="container flex-horizontal-with-ratios">
-                        <div class="flexchild">
-                            <div>
-                                <div><b>Nombre</b></div>
-                                <p>[[activeItem.name]]</p>
-                            </div>
-                            <div>
-                                <div><b>Extension</b></div>
-                                <p>[[activeItem.extension]]</p>
-                            </div>
-                            <div>
-                                <div><b>Tamaño (Kb)</b></div>
-                                <p>[[activeItem.size]]</p>
-                            </div>
-                            <div>
-                                <div><b>Fecha subida</b></div>
-                                <p>[[activeItem.uploaded_date]]</p>
-                            </div>
-                            <div>
-                                <div><b>Fecha vencimiento</b></div>
-                                <paper-input label="Fecha vencimiento"
-                                             value="[[activeItem.expiring_date]]"
-                                             on-tap="handleEditDate"
-                                             readonly></paper-input>
-                            </div>
-                        </div>
-                        <div class="flexchild2">
-                            <div class="flex-center">
-                                <a download="[[activeItem.name]]"
-                                   href="[[backendURL]]/fileAccess/download/[[activeItem._id]]/[[username]]">
-                                    <iron-icon icon="file-download" class="big-icon"></iron-icon>
-                                </a>
-                            </div>
-                            <div>
-                                <div><b>Checksum</b></div>
-                                <p>[[activeItem.md5]]</p>
-                            </div>
-                        </div>
-                    </div>
-                </paper-dialog-scrollable>
-                <div class="buttons">
-                    <paper-button dialog-confirm>Cerrar</paper-button>
+    </style>
+    <div class="card">
+      <div class="circle">3</div>
+      <h1>Mis archivos</h1>
+      <iron-ajax auto
+                 id="ajaxGet"
+                 url="[[backendURL]]/fileAccess/ownedBy/[[user.email]]"
+                 handle-as="json"
+                 on-response="handleResponse"
+                 debounce-duration="300"></iron-ajax>
+      <iron-ajax id="ajaxPut"
+                 url="[[backendURLPUT]]/update/"
+                 method="PUT"
+                 handle-as="json"
+                 on-response="handleResponsePut"
+                 on-error="handleError"></iron-ajax>
+      <iron-ajax id="ajaxDelete"
+                 method="DELETE"
+                 url="[[backendURLDELETE]]/delete/file/"
+                 handle-as="json"
+                 content-type="application/json"
+                 on-response="handleResponseDelete"
+                 on-error="handleError"></iron-ajax>
+      <template is="dom-if" if="[[ajaxError]]">
+        <span>Error in url</span>
+      </template>
+      <vaadin-grid id="grid" items="[[ajaxResponse]]" multi-sort>
+        <vaadin-grid-column width="300px">
+          <template class="header">
+            <vaadin-grid-sorter path="name">
+              <vaadin-grid-filter path="name" value="[[filterName]]">
+                <paper-input placeholder="Nombre" value="{{filterName}}" focus-target></paper-input>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.name]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="150px">
+          <template class="header">
+            <vaadin-grid-sorter path="extension">
+              <vaadin-grid-filter path="extension" value="[[filterExtension]]">
+                <vaadin-combo-box label="Extensión"
+                                  value="{{filterExtension}}"
+                                  items="[[extensionsArray]]"
+                                  allow-custom-value></vaadin-combo-box>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.extension]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="150px">
+          <template class="header">
+            <vaadin-grid-sorter path="size">
+              <vaadin-grid-filter path="size" value="[[filterSize]]">
+                <paper-input placeholder="Tamaño(Kb)" value="{{filterSize}}"
+                             focus-target></paper-input>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.size]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="150px">
+          <template class="header">
+            <vaadin-grid-sorter path="name">
+              <vaadin-grid-filter path="owner_id" value="[[filterOwner]]">
+                <paper-input placeholder="Dueño" value="{{filterOwner}}" focus-target></paper-input>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.owner_id]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="150px">
+          <template class="header">
+            <vaadin-grid-sorter path="uploaded_date">
+              <vaadin-grid-filter path="uploaded_date" value="[[filterUploadedDate]]">
+                <paper-input placeholder="Creado" value="{{filterUploadedDate}}"
+                             focus-target></paper-input>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.uploaded_date]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="150px">
+          <template class="header">
+            <vaadin-grid-sorter path="expiring_date">
+              <vaadin-grid-filter path="expiring_date" value="[[filterExpiringDate]]">
+                <paper-input placeholder="Vencimiento" value="{{filterExpiringDate}}"
+                             focus-target></paper-input>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.expiring_date]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+          <template class="header">Editar</template>
+          <template>
+            <iron-icon icon="create" on-tap="handleEdit"></iron-icon>
+          </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+          <template class="header">Descarga</template>
+          <template>
+            <a href="[[backendURL]]/fileAccess/download/[[item._id]]/[[user.email]]"
+               target="_blank">
+              <iron-icon icon="file-download" on-tap="handleDownload"></iron-icon>
+            </a>
+          </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+          <template class="header">Eliminar</template>
+          <template>
+            <iron-icon icon="delete" on-tap="handleDialogDelete"></iron-icon>
+          </template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+      <paper-dialog id="dialogDetail">
+        <h2>Editar archivo</h2>
+        <paper-dialog-scrollable>
+          <div class="container flex-horizontal-with-ratios">
+            <div class="flexchild" style="width: 95%">
+              <div>
+                <div><b>Nombre</b></div>
+                <p>[[activeItem.name]]</p>
+              </div>
+              <div>
+                <div><b>Extension</b></div>
+                <p>[[activeItem.extension]]</p>
+              </div>
+              <div>
+                <div><b>Tamaño (Kb)</b></div>
+                <p>[[activeItem.size]]</p>
+              </div>
+              <div>
+                <div><b>Fecha subida</b></div>
+                <p>[[activeItem.uploaded_date]]</p>
+              </div>
+              <div>
+                <div><b>Fecha vencimiento</b></div>
+                <vaadin-date-picker id="datePicker"
+                                    label="Disponible hasta"
+                                    value="[[activeItem.expiring_date]]"
+                                    min="[[activeItem.uploaded_date]]"
+                                    max="[[maxDate(activeItem.uploaded_date)]]"
+                                    style="width: 95%"></vaadin-date-picker>
+              </div>
+              <div>
+                <div><b>Checksum</b></div>
+                <p>[[activeItem.md5]]</p>
+              </div>
+            </div>
+            <div class="flexchild">
+              <div class="container flex-vertical">
+                <div class="flexchild-vertical">
+                  <vaadin-grid items="[[activeItem.shared]]" id="gridEmails">
+                    <vaadin-grid-column-group>
+                      <template class="header">Compartidos</template>
+                      <vaadin-grid-column width="80%">
+                        <template class="content">[[item]]</template>
+                        <template class="footer">
+                          <paper-input label="Añadir correo"
+                                       on-keypress="handleKeyEvent"
+                                       type="email"
+                                       error-message="Formato incorrecto"
+                                       auto-validate
+                                       style="padding-bottom: 10px;"></paper-input>
+                        </template>
+                      </vaadin-grid-column>
+                      <vaadin-grid-column width="20%">
+                        <template class="content">
+                          <iron-icon icon="delete" on-tap="handleDeleteEmail"></iron-icon>
+                        </template>
+                      </vaadin-grid-column>
+                    </vaadin-grid-column-group>
+                  </vaadin-grid>
                 </div>
-            </paper-dialog>
-            <paper-dialog id="dialogDate">
-                <paper-date-picker id="datePicker" responsive-width></paper-date-picker>
-                <div class="buttons">
-                    <paper-button dialog-dismiss>Cancel</paper-button>
-                    <paper-button dialog-confirm on-tap="handleOk">OK</paper-button>
+                <br>
+                <div>
+                  <paper-button raised on-tap="handleDialogDelete">Eliminar archivo</paper-button>
                 </div>
-            </paper-dialog>
+              </div>
+            </div>
+          </div>
+        </paper-dialog-scrollable>
+        <div class="buttons">
+          <paper-button dialog-dismiss>Cerrar</paper-button>
+          <paper-button dialog-confirm on-tap="handleOKEdit">OK</paper-button>
         </div>
-    </template>
+      </paper-dialog>
+      <paper-dialog id="confirmDelete">
+        <h2>Eliminar archivo</h2>
+        <span>¿Está seguro de eliminar el archivo?</span>
+        <div class="buttons">
+          <paper-button dialog-dismiss>Cancelar</paper-button>
+          <paper-button dialog-confirm on-tap="handleDelete">Confirmar</paper-button>
+        </div>
+      </paper-dialog>
+      <paper-dialog id="successDialog" no-cancel-on-esc-key>
+        <h2>Archivo correctamente [[action]]</h2>
+        <div class="buttons">
+          <paper-button dialog-confirm on-tap="handleReloadGrid">Ok</paper-button>
+        </div>
+      </paper-dialog>
+    </div>
+  </template>
 
-    <script>
-        Polymer({
-            is: 'my-view3',
-            properties: {
-                backendURL: {
-                    type: String,
-                    value: 'http://127.0.0.1:4025',
-                },
-                username: {
-                    type: String,
-                    value: 'afmesag@unal.edu.co',
-                },
-                extensionsArray: {
-                    type: Array,
-                    value: [],
-                },
-                ajaxResponse: Object,
-                ajaxError: Object,
-            },
-            handleResponse: function (data) {
-                this.ajaxResponse = data.detail.response.shared_documents;
-                var auxArray = []
-                this.ajaxResponse.map(function (item) {
-                    if (item.extension != '' && auxArray.indexOf(item.extension) == -1)
-                        auxArray.push(item.extension);
-                    item.size = (item.size / 1000 ).toFixed(3);
-                    var auxDate = new Date(item.uploaded_date * 1000);
-                    item.uploaded_date = auxDate.toISOString().split('T')[0];
-                    auxDate = new Date(item.expiring_date * 1000);
-                    item.expiring_date = auxDate.toISOString().split('T')[0];
-                    return item;
-                });
-                this.extensionsArray = auxArray;
-                this.$.grid.clearCache();
-            },
-            handleEditDate: function () {
-                var auxDate = new Date(this.activeItem.expiring_date);
-                auxDate.setDate(auxDate.getDate() + 1);
-                this.$.datePicker.date = new Date(auxDate);
-                auxDate = new Date(this.activeItem.uploaded_date);
-                auxDate.setDate(auxDate.getDate() + 1);
-                this.$.datePicker.minDate = new Date(auxDate);
-                auxDate = new Date(this.activeItem.uploaded_date);
-                auxDate.setDate(auxDate.getDate() + 8);
-                this.$.datePicker.maxDate = auxDate;
-                this.$.dialogDate.toggle();
-            },
-            handleEdit: function () {
-                this.$.dialogDetail.toggle();
-            },
-            handleDelete: function () {
-            },
-            handleOk: function(){
-                var auxDate = this.$.datePicker.date;
-                this.activeItem.expiring_date =auxDate.toISOString().split('T')[0];
-            },
-            _activeItemChanged: function () {
-                this._clickedItem = this.$.grid.activeItem ? this.$.grid.activeItem : this._clickedItem;
-                if (this.$.grid.activeItem == null && this._clickedItem != null) {
-                    this.$.grid.activeItem = this._clickedItem;
-                }
-            },
+  <script>
+    Polymer({
+      is: 'my-view3',
+      properties: {
+        backendURL: {
+          type: String,
+        },
+        backendURLPUT: {
+          type: String,
+          value: 'http://192.168.1.13:4020',
+        },
+        backendURLDELETE: {
+          type: String,
+          value: 'http://192.168.1.15:4030',
+        },
+        user: Object,
+        extensionsArray: {
+          type: Array,
+          value: [],
+        },
+        ajaxResponse: Object,
+        ajaxError: Object,
+      },
+      ready: function() {
+        this.backendURL = this.backendurl;
+      },
+      maxDate: function() {
+        var auxDate = new Date(this.activeItem.uploaded_date);
+        auxDate.setDate(auxDate.getDate() + 7);
+        return auxDate.toISOString().split('T')[0];
+      },
+      handleResponse: function(data) {
+        debugger;
+        var response = data.detail.response.shared_documents;
+        this.ajaxResponse = response.map(function(item) {
+          item.size = (item.size / 1000 ).toFixed(3);
+          var auxDate = new Date(item.expiring_date * 1000);
+          item.expiring_date = auxDate.toISOString().split('T')[0];
+          auxDate = new Date(item.uploaded_date * 1000);
+          item.uploaded_date = auxDate.toISOString().split('T')[0];
+          return item;
         });
-    </script>
+        var extensions = this.ajaxResponse.reduce(function(current, item) {
+          if (item.extension !== '') {
+            current[item.extension] = true;
+          }
+          return current;
+        }, {});
+        this.extensionsArray = Object.keys(extensions);
+        this.$.grid.clearCache();
+      },
+      handleResponsePut: function(data) {
+        debugger;
+        if (data.detail.xhr.status === 200)
+          this.action = 'modificado';
+        this.$.dialogDetail.close();
+        this.$.successDialog.toggle();
+      },
+      handleReloadGrid: function() {
+        debugger;
+        this.$.ajaxGet.generateRequest();
+      },
+      handleEdit: function(e) {
+        debugger;
+        this.activeItem = e.model.item;
+        this.$.dialogDetail.toggle();
+      },
+      handleDialogDelete: function(e) {
+        debugger;
+        this.activeItem = e.model.item;
+        this.$.confirmDelete.toggle();
+      },
+      handleDelete: function() {
+        debugger;
+        this.$.ajaxDelete.url += this.activeItem['_id'];
+        this.$.ajaxDelete.generateRequest();
+      },
+      handleDeleteEmail: function(e) {
+        debugger;
+        var index = this.activeItem.shared.indexOf(e.model.item);
+        this.activeItem.shared.splice(index, 1);
+        this.$.gridEmails.clearCache();
+      },
+      handleOKEdit: function() {
+        debugger;
+        var urlRequest = this.$.ajaxPut.url;
+        var auxEpoch = new Date(this.activeItem['expiring_date']);
+        this.$.ajaxPut.url = urlRequest + 'date/' +
+          this.activeItem['_id'] + '/' + (auxEpoch.getTime() / 1000);
+        this.$.ajaxPut.generateRequest();
+        /* this.$.ajaxRequest.url = urlRequest + 'share/' +
+         this.activeItem['_id'];
+         this.$.ajaxRequest.body = {'shared': this.activeItem.shared};
+         JSON.stringify({'shared': this.activeItem.shared});
+         this.$.ajaxRequest.generateRequest();*/
+      },
+      handleKeyEvent: function(e) {
+        if (e.target.validate()) {
+          if (e.charCode === 13) {
+            var newEmail = e.target.value;
+            if (this.activeItem.shared.indexOf(newEmail) === -1) {
+              this.activeItem.shared.push(newEmail);
+              this.notifyPath('activeItem.shared');
+              e.target.value = '';
+              this.$.gridEmails.clearCache();
+            }
+          }
+        }
+      },
+      handleError: function(e) {
+        debugger;
+      },
+    });
+  </script>
 </dom-module>
