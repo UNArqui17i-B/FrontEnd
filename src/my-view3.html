@@ -343,7 +343,8 @@
         this.$.dialogDetail.toggle();
       },
       handleDialogDelete: function(e) {
-        this.activeItem = e.model.item;
+        if(this.activeItem===undefined)
+          this.activeItem = e.model.item;
         this.$.confirmDelete.toggle();
       },
       handleDelete: function() {
