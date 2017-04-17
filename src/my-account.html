@@ -17,9 +17,6 @@
         display: block;
         padding: 10px;
 
-        /* Label and underline color when the input is not focused */
-        /* --paper-input-container-color: var(--app-secondary-color); */
-
         /* Label and underline color when the input is focused */
         --paper-input-container-focus-color: var(--app-primary-color);
 
@@ -125,6 +122,9 @@
 
     </style>
 
+    <iron-ajax auto url="[[backendUrl]]/users/[[userId]]"
+               handle-as="json" on-response="handleResponse"></iron-ajax>
+
     <div id="my-account">
       <paper-card class="account-form">
         <div class="card-header">MI CUENTA</div>
@@ -133,11 +133,11 @@
           <form is="iron-form" method="get" action="/" id="update-user">
 
             <div class="full-name">
-              <paper-input name="name" label="Nombre">
+              <paper-input name="name" label="Nombre" value="[[ user.name ]]">
                 <iron-icon class="update-user-form" icon="social:person" prefix></iron-icon>
               </paper-input>
 
-              <paper-input name="lastname" label="Apellido">
+              <paper-input name="lastname" label="Apellido" value="[[ user.lastname ]]">
                 <iron-icon class="update-user-form" icon="social:people" prefix></iron-icon>
               </paper-input>
             </div>
@@ -181,7 +181,10 @@
           </p>
 
           <div align="center">
-            <paper-button class="full-color">
+            <iron-ajax id="deleteAjax"
+                       method="DELETE">
+            </iron-ajax>
+            <paper-button class="full-color" on-tap="_delete">
               <!-- <iron-icon icon="clear"></iron-icon> -->
               Desactivar cuenta
             </paper-button>
@@ -195,6 +198,33 @@
   <script>
     Polymer({
       is: 'my-account',
+
+      properties: {
+        backendUrl: {
+          type: String,
+          value: 'http://localhost:4000',
+        },
+        userId: {
+          type: String,
+        },
+        user: {
+          type: Object,
+        },
+        ajaxResponse: Object,
+      },
+
+      handleResponse: function(data) {
+        this.user = data.detail.response;
+      },
+
+      ready: function() {
+        // debugger;
+      },
+
+      _delete: function() {
+        this.$.deleteAjax.url = this.backendUrl + '/users/' + this.user._id + '/' + this.user._rev;
+        this.$.deleteAjax.generateRequest();
+      },
     });
 
 
