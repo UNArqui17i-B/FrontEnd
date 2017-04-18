@@ -348,7 +348,6 @@
         this.$.confirmDelete.toggle();
       },
       handleDelete: function() {
-        debugger;
         this.$.ajaxDelete.url += this.activeItem['_id'];
         this.$.ajaxDelete.generateRequest();
       },
@@ -358,7 +357,6 @@
         this.$.gridEmails.clearCache();
       },
       handleOKEdit: function() {
-        debugger;
         var urlRequest = this.$.ajaxPut.url;
         /* var auxEpoch = new Date(this.activeItem['expiring_date']);
          this.$.ajaxPutDate.url = urlRequest + 'date/' +
