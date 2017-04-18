@@ -39,7 +39,9 @@
     </style>
 
     <!-- All possible dialogs -->
-    <BlinkBox-dialogs></BlinkBox-dialogs>
+    <BlinkBox-dialogs
+      backend-url="[[ backendURL ]]">
+    </BlinkBox-dialogs>
 
     <!-- JWT -->
     <iron-localstorage
@@ -92,7 +94,7 @@
       properties: {
         backendURL: {
           type: String,
-          value: 'http://localhost:5000', // backend url
+          value: 'http://localhost:5000/api', // backend url
         },
         token: {
           type: String,
