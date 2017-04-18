@@ -1,0 +1,184 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="view-not-logged">
+  <template>
+    <style include="shared-styles iron-flex">
+      :host {
+        display: block;
+        padding: 10px;
+
+        /* Label and underline color when the input is not focused */
+        /* --paper-input-container-color: var(--app-secondary-color); */
+
+        /* Label and underline color when the input is focused */
+        --paper-input-container-focus-color: var(--app-primary-color);
+
+        /* Label and underline color when the input is invalid */
+        --paper-input-container-invalid-color: red;
+      }
+
+      #not-logged-content, .full-name {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-center-justified);
+      }
+
+      .full-name paper-input{
+        width: 45%;
+      }
+
+      #not-logged-content paper-input{
+        margin: 0px 2.5%;
+      }
+
+      .not-logged-form{
+        margin: 15px;
+        min-width: 60%;
+      }
+
+      .joke-logged{
+        margin: 15px;
+        width: 30%;
+        @apply(--layout-vertical);
+      }
+
+      paper-button.full-color {
+        background-color: var(--app-primary-color);
+        color: white;
+        margin: 20px 0;
+      }
+
+      paper-button.without-color {
+        background-color: white;
+        color: var(--app-primary-color);
+        margin: 20px 0;
+      }
+
+      .card-header{
+        background-color: var(--app-primary-color);
+        color: white;
+        font-size: large;
+        text-align: center;
+        font-weight: bold;
+        padding: 15px 0px;
+      }
+
+      .card-header-light{
+        color: var(--app-primary-color);
+        font-size: large;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      #not-logged-content paper-button{
+        font-size: 15px;
+      }
+
+      .center{
+        text-align: center;
+      }
+
+      #update-user{
+        padding: 0px 20%;
+      }
+
+      @media screen and (max-width: 1024px) {
+        .not-logged-form{
+          width: 100%;
+        }
+
+        .joke-logged{
+          width: 100%;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        #update-user{
+          padding: 0px 5%;
+        }
+      }
+
+      @media screen and (max-width: 414px) {
+        #update-user{
+          padding: 0px 2%;
+        }
+
+        .full-name paper-input{
+          width: 100%;
+        }
+      }
+
+      .register-link{
+        cursor: pointer;
+        text-decoration: underline;;
+        color: blue;
+      }
+    </style>
+
+    <div id="not-logged-content">
+      <paper-card class="joke-logged">
+        <div class="card-header">
+          NO, NO, NO
+        </div>
+        <div class="card-content center">
+          <img
+            src="https://media.giphy.com/media/5ftsmLIqktHQA/giphy.gif"
+            alt="HTML5 Icon" style="width:128px;height:128px;">
+          <p>
+            Lo sentimos, necesitas ingresar primero
+          </p>
+
+        </div>
+      </paper-card>
+
+      <paper-card class="not-logged-form">
+        <div class="card-header">INICIA SESION</div>
+        <div class="card-content">
+          <form is="iron-form" method="get" action="/" id="sign-in">
+            <paper-input name="email" label="Correo electronico"
+                         required error-message="Ingresa Tu Correo Electronico">
+              <iron-icon class="user-form" icon="communication:mail-outline" prefix></iron-icon>
+            </paper-input>
+
+            <paper-input name="password" label="Contraseña"
+                         type="password" minlength="10" error-message="Mínimo 8 caracteres.">
+              <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
+            </paper-input>
+
+            <br>
+
+            <div align="center">
+              <paper-button class="full-color" onclick="">INICIAR</paper-button>
+              <div class="output"></div>
+            </div>
+
+            <div align="center" on-tap="registerDialog">
+              <div class="register-link" >¿No tienes cuenta?</div>
+            </div>
+          </form>
+        </div>
+      </paper-card>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'view-not-logged',
+
+      registerDialog: function() {
+        this.fire('iron-signal', {name: 'register-dialog', data: null});
+      },
+    });
+  </script>
+</dom-module>

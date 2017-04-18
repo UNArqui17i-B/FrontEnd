@@ -1,0 +1,235 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="view-shared">
+  <template is="dom-bind">
+    <style include="shared-styles" is="custom-style">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+
+      .big-icon {
+        --iron-icon-width: 100px;
+        --iron-icon-height: 100px;
+      }
+
+      .flex-horizontal-with-ratios {
+        @apply(--layout-horizontal);
+      }
+
+      .flexchild {
+        @apply(--layout-flex-3);
+      }
+
+      .flexchild2 {
+        @apply(--layout-flex-2);
+      }
+
+      .flex-center {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+      }
+
+      #toggleDialog {
+        width: 550px;
+      }
+
+      a:link, a:visited {
+        color: inherit;
+      }
+
+      iron-icon:hover {
+        color: red;
+        cursor: pointer;
+      }
+
+    </style>
+    <div class="card">
+      <div class="circle">2</div>
+      <h1>Compartidos</h1>
+      <iron-ajax auto
+                 url="[[backendURL]]/fileAccess/sharedWith/[[user.email]]"
+                 handle-as="json"
+                 on-response="handleResponse"
+                 debounce-duration="300"></iron-ajax>
+      <template is="dom-if" if="[[ajaxError]]">
+        <span>Error in url</span>
+      </template>
+      <vaadin-grid id="grid" items="[[ajaxResponse]]" multi-sort>
+        <vaadin-grid-column width="300px">
+          <template class="header">
+            <vaadin-grid-sorter path="name">
+              <vaadin-grid-filter path="name" value="[[filterName]]">
+                <paper-input placeholder="Nombre" value="{{filterName}}" focus-target></paper-input>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.name]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="150px">
+          <template class="header">
+            <vaadin-grid-sorter path="extension">
+              <vaadin-grid-filter path="extension" value="[[filterExtension]]">
+                <vaadin-combo-box label="Extensión"
+                                  value="{{filterExtension}}"
+                                  items="[[extensionsArray]]"
+                                  allow-custom-value></vaadin-combo-box>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.extension]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="150px">
+          <template class="header">
+            <vaadin-grid-sorter path="size">
+              <vaadin-grid-filter path="size" value="[[filterSize]]">
+                <paper-input placeholder="Tamaño(Kb)" value="{{filterSize}}"
+                             focus-target></paper-input>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.size]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="150px">
+          <template class="header">
+            <vaadin-grid-sorter path="name">
+              <vaadin-grid-filter path="owner_id" value="[[filterOwner]]">
+                <paper-input placeholder="Dueño" value="{{filterOwner}}" focus-target></paper-input>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.owner_id]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="150px">
+          <template class="header">
+            <vaadin-grid-sorter path="expiring_date">
+              <vaadin-grid-filter path="expiring_date" value="[[filterExpiringDate]]">
+                <paper-input placeholder="Vencimiento" value="{{filterExpiringDate}}"
+                             focus-target></paper-input>
+              </vaadin-grid-filter>
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.expiring_date]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+          <template class="header">Descarga</template>
+          <template>
+            <a href="[[backendURL]]/fileAccess/download/[[item._id]]/[[user.email]]"
+               target="_blank">
+              <iron-icon icon="file-download"></iron-icon>
+            </a>
+          </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+          <template class="header">Detalles</template>
+          <template>
+            <iron-icon icon="info" on-click="handleToggle"></iron-icon>
+          </template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+      <paper-dialog id="toggleDialog">
+        <h2>Detalles del archivo</h2>
+        <paper-dialog-scrollable>
+          <div class="container flex-horizontal-with-ratios">
+            <div class="flexchild">
+              <div>
+                <div><b>Nombre</b></div>
+                <p>[[activeItem.name]]</p>
+              </div>
+              <div>
+                <div><b>Extension</b></div>
+                <p>[[activeItem.extension]]</p>
+              </div>
+              <div>
+                <div><b>Tamaño (Kb)</b></div>
+                <p>[[activeItem.size]]</p>
+              </div>
+              <div>
+                <div><b>Fecha vencimiento</b></div>
+                <p>[[activeItem.expiring_date]]</p>
+              </div>
+            </div>
+            <div class="flexchild2">
+              <div class="flex-center">
+                <a target="_blank"
+                   href="[[backendURL]]/fileAccess/download/[[activeItem._id]]/[[user.email]]">
+                  <iron-icon icon="file-download" class="big-icon"></iron-icon>
+                </a>
+              </div>
+              <div>
+                <div><b>Checksum</b></div>
+                <p>[[activeItem.md5]]</p>
+              </div>
+            </div>
+          </div>
+        </paper-dialog-scrollable>
+        <div class="buttons">
+          <paper-button dialog-confirm>Cerrar</paper-button>
+        </div>
+      </paper-dialog>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'view-shared',
+      properties: {
+        backendUrl: {
+          type: String,
+        },
+        user: Object,
+        extensionsArray: {
+          type: Array,
+          value: [],
+        },
+        ajaxResponse: Object,
+        ajaxError: Object,
+        searchID: String,
+      },
+      ready: function() {
+        this.backendURL = this.backendUrl;
+        this.searchID = this.queryParams.id;
+      },
+      handleResponse: function(data) {
+        var response = data.detail.response.shared_documents;
+        this.ajaxResponse = response.map(function(item) {
+          item.size = (item.size / 1000 ).toFixed(3);
+          var auxDate = new Date(item.expiring_date * 1000);
+          item.expiring_date = auxDate.toISOString().split('T')[0];
+          return item;
+        });
+        var extensions = this.ajaxResponse.reduce(function(current, item) {
+          if (item.extension !== '') {
+            current[item.extension] = true;
+          }
+          return current;
+        }, {});
+        this.extensionsArray = Object.keys(extensions);
+        if (this.searchID) {
+          var that = this;
+          this.activeItem = this.ajaxResponse.find(function(item) {
+            return item['_id'] === that.searchID;
+          });
+          this.handleToggle();
+        }
+      },
+      handleToggle: function(e) {
+        if (e)
+          this.activeItem = e.model.item;
+        this.$.toggleDialog.toggle();
+      },
+    });
+  </script>
+</dom-module>
