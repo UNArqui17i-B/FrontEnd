@@ -27,23 +27,30 @@
         --paper-input-container-invalid-color: red;
       }
 
-      #view-not-logged{
+      #not-logged-content, .full-name {
         @apply(--layout-horizontal);
         @apply(--layout-wrap);
         @apply(--layout-center-justified);
       }
 
-      #view-not-logged paper-input{
+      .full-name paper-input{
+        width: 45%;
+      }
+
+      #not-logged-content paper-input{
         margin: 0px 2.5%;
       }
 
-      .signin-form{
-        margin: 10px;
+      .not-logged-form{
+        margin: 15px;
         min-width: 60%;
-        text-align: center;
       }
 
-      
+      .joke-logged{
+        margin: 15px;
+        width: 30%;
+        @apply(--layout-vertical);
+      }
 
       paper-button.full-color {
         background-color: var(--app-primary-color);
@@ -73,93 +80,90 @@
         font-weight: bold;
       }
 
-      #view-not-logged paper-button{
+      #not-logged-content paper-button{
         font-size: 15px;
-      }
-
-      #sign-in{
-        padding: 0px 20%;
       }
 
       .center{
         text-align: center;
       }
 
+      #update-user{
+        padding: 0px 20%;
+      }
+
+      @media screen and (max-width: 1024px) {
+        .not-logged-form{
+          width: 100%;
+        }
+
+        .joke-logged{
+          width: 100%;
+        }
+      }
+
       @media screen and (max-width: 768px) {
-        #sign-in{
+        #update-user{
           padding: 0px 5%;
         }
       }
 
-
-       
-
       @media screen and (max-width: 414px) {
-        #sign-in{
+        #update-user{
           padding: 0px 2%;
         }
 
         .full-name paper-input{
           width: 100%;
         }
-
-        
-      }
-
-      .my-center{
-          text-align: center; 
-          font-family: 'Trocchi', serif; 
-          font-size: 45px; 
-          font-weight: normal; 
-          line-height: 48px; margin: 0;
-        }
-
-      .nocuenta-link{
-
-        cursor: pointer;
-        text-decoration: underline;;
-        color: blue;
       }
 
     </style>
 
-    <div class="my-center">Ah, Ah, Ah
-      <br>
-      <br>
-      <img src="https://media.giphy.com/media/5ftsmLIqktHQA/giphy.gif" alt="HTML5 Icon" style="width:128px;height:128px;">
-      <br>
-      <br>
-      No has ingresado al lugar magico
-    </div>
-    <div class="center">
-      <paper-card class="signin-form">
+    <div id="not-logged-content">
+      <paper-card class="joke-logged">
+        <div class="card-header">
+          NO, NO, NO
+        </div>
+        <div class="card-content center">
+          <img
+            src="https://media.giphy.com/media/5ftsmLIqktHQA/giphy.gif"
+            alt="HTML5 Icon" style="width:128px;height:128px;">
+          <p>
+            Lo sentimos, necesitas ingresar primero
+          </p>
+
+        </div>
+      </paper-card>
+
+      <paper-card class="not-logged-form">
         <div class="card-header">INICIA SESION</div>
-          <div class="card-content">
-            <form is="iron-form" method="get" action="/" id="sign-in">
-              <paper-input name="Email" label="Correo electronico"
-                      required error-message="Ingresa Tu Correo Electronico">
-                <iron-icon class="user-form" icon="social:people" prefix></iron-icon>
-              </paper-input>
+        <div class="card-content">
+          <form is="iron-form" method="get" action="/" id="sign-in">
+            <paper-input name="Email" label="Correo electronico"
+                         required error-message="Ingresa Tu Correo Electronico">
+              <iron-icon class="user-form" icon="social:people" prefix></iron-icon>
+            </paper-input>
 
-              <paper-input name="password" label="Contraseña"
-                     type="password" minlength="10" error-message="Mínimo 8 caracteres.">
-                <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
-              </paper-input>
+            <paper-input name="password" label="Contraseña"
+                         type="password" minlength="10" error-message="Mínimo 8 caracteres.">
+              <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
+            </paper-input>
 
-              <br>
+            <br>
 
-              <div align="center">
-                <paper-button class="full-color" onclick="">INICIAR</paper-button>
-                <div class="output"></div>
-              </div>
+            <div align="center">
+              <paper-button class="full-color" onclick="">INICIAR</paper-button>
+              <div class="output"></div>
+            </div>
 
-              <div align="center" on-tap="registerDialog">
-                <div class="nocuenta-link" >¿No tienes cuenta?</div>
-              </div>
-            </form>
-          </div>
-        </paper-card>
-     </div>
+            <div align="center" on-tap="registerDialog">
+              <div class="nocuenta-link" >¿No tienes cuenta?</div>
+            </div>
+          </form>
+        </div>
+      </paper-card>
+    </div>
   </template>
 
   <script>
