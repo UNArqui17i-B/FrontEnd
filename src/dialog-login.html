@@ -84,7 +84,18 @@
 
       loginResponse: function(event) {
         // event.detail
-        console.log(event.detail);
+        
+        var token = JSON.parse(event.detail);
+        if(token.hasOwnProperty('token')){
+
+          localStorage.setItem('bbtoken', JSON.stringify(token));
+
+          var da_token = localStorage.getItem('bbtoken');
+
+          console.log('Token: ', JSON.parse(da_token));
+
+        }
+
       },
 
       loginError: function(event) {
