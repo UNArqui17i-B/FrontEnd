@@ -71,11 +71,11 @@
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <my-index name="index"></my-index>
-          <my-account name="account"></my-account>
-          <my-shared name="shared" backend-url="[[ backendURL ]]"></my-shared>
-          <my-owned name="owned"></my-owned>
-          <my-view404 name="view404"></my-view404>
+          <view-index name="index"></view-index>
+          <view-account name="account"></view-account>
+          <view-shared name="shared" backend-url="[[ backendURL ]]"></view-shared>
+          <view-owned name="owned"></view-owned>
+          <view-404 name="404"></view-404>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -126,12 +126,12 @@
 
       _pageChanged: function(page) {
         // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
 
       _showPage404: function() {
-        this.page = 'view404';
+        this.page = '404';
       },
     });
   </script>
