@@ -30,6 +30,9 @@
     "vaadin-upload": "vaadin/vaadin-upload#^1.1.4",
     "vaadin-date-picker": "vaadin/vaadin-date-picker#^1.2.2",
     "gold-email-input": "PolymerElements/gold-email-input#^1.0.9"
+    "iron-signals": "PolymerElements/iron-signals#^1.0.3",
+    "iron-image": "PolymerElements/iron-image#^1.2.5",
+    "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^1.10.4",
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
