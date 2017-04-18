@@ -28,6 +28,18 @@
       }
     </style>
 
+    <iron-localstorage
+      name="blinkbox-token"
+      value="{{ token }}"
+      useRaw="true"
+      on-iron-localstorage-load-empty="initializeDefaultToken">
+    </iron-localstorage>
+    <iron-localstorage
+      name="blinkbox-user"
+      value="{{ user }}"
+      on-iron-localstorage-load-empty="initializeDefaultUser">
+    </iron-localstorage>
+
     <iron-signals on-iron-signal-login-dialog="loginDialog"></iron-signals>
     <paper-dialog id="loginDialog" modal>
       <h2>Ingresar</h2>
@@ -41,7 +53,7 @@
         <div class="container">
           <paper-input
             name="email" label="Correo" type="email"
-            required auto-validate error-message="Este campo es obligatorio">
+            required auto-validate error-message="Este campo es obligatorio" id="email">
             <iron-icon class="user-form" icon="communication:mail-outline" prefix></iron-icon>
           </paper-input>
           <paper-input
@@ -65,6 +77,13 @@
     Polymer({
       is: 'dialog-login',
 
+      token: {
+          type: String,
+        },
+      user: {
+          type: Object,
+        },
+
       loginDialog: function() {
         this.$.loginDialog.toggle();
       },
@@ -84,15 +103,13 @@
 
       loginResponse: function(event) {
         // event.detail
-        
+
         var token = JSON.parse(event.detail);
         if(token.hasOwnProperty('token')){
 
-          localStorage.setItem('bbtoken', JSON.stringify(token));
-
-          var da_token = localStorage.getItem('bbtoken');
-
-          console.log('Token: ', JSON.parse(da_token));
+          this.set("token",token["token"]);
+          this.set("user.exp_date",token["token"]);
+          this.set("user.email",this.$.email.value);
 
         }
 
@@ -101,6 +118,19 @@
       loginError: function(event) {
         // event.detail
         console.log(event.detail);
+      },
+
+      initializeDefaultToken: function() {
+        this.token = '';
+      },
+      initializeDefaultUser: function() {
+        this.user = {
+          id: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          exp_date: '',
+        };
       },
     });
   </script>
