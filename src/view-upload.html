@@ -1,0 +1,145 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="custom-vaadin-upload/vaadin-upload.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+
+<dom-module id="view-upload">
+  <template>
+    <style include="shared-styles iron-flex">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      .container{
+        width: 75%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        border: dashed 1px lightgray;
+        border-radius: 4px;
+      }
+
+      .button-block{
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+        padding-bottom: 10px;
+      }
+
+      .block{
+        width: 90%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 5px;
+      }
+    </style>
+
+    <paper-card>
+      <div class="container">
+        <div class="block">
+          <vaadin-upload no-auto id="uploadFile"
+                         target="[[backendURL]]/upload/[[user.email]]"
+                         max-files="1"
+                         on-upload-request="handleRequest"
+                         on-upload-success="success">
+          </vaadin-upload>
+        </div>
+
+        <div class="block">
+          <vaadin-date-picker label="Disponible hasta"
+                              id="datePicker"
+                              value="[[now()]]"
+                              min="[[now()]]"
+                              max="[[maxDate()]]"
+                              required>
+          </vaadin-date-picker>
+        </div>
+
+        <div class="block">
+          <p style="color: #737373">Compartir con</p>
+          <vaadin-grid items="[[emails]]" id="sharedEmails">
+            <vaadin-grid-column>
+              <template class="header">Email</template>
+              <template>[[item]]</template>
+              <template class="footer">
+                <paper-input label="Añadir correo" auto-validate type="email" style="padding-bottom: 12px"
+                             error-message="Por favor ingrese un email válido" on-keypress="addEmail"></paper-input>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </div>
+
+        <div class="button-block" style="padding-top: 20px;">
+          <paper-button on-tap="handleTap" raised>Enviar</paper-button>
+        </div>
+      </div>
+    </paper-card>
+
+    <paper-dialog id="successDialog">
+
+      <h3>El archivo ha sido subido exitosamente</h3>
+      <div class="buttons">
+        <a href="/owned" tabindex="-1">
+          <paper-button dialog-dismiss>Cerrar</paper-button>
+        </a>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'view-upload',
+      properties: {
+        emails: {
+          type: Array,
+          value: [],
+        },
+        backendURL: String,
+        user: Object,
+      },
+      ready: function () {
+        this.backendURL = this.backendUrl;
+      },
+      addEmail: function(e) {
+        if(e.target.validate()) {
+          if(e.charCode === 13) {
+            var newEmail = e.target.value;
+            this.emails.push(newEmail);
+            this.notifyPath('emails');
+            e.target.value = '';
+            this.$.sharedEmails.clearCache();
+          }
+        }
+      },
+      handleRequest: function(event) {
+        var date = new Date(this.$.datePicker.value);
+        event.detail.formData.append('expiring_date', date.getTime()/1000);
+        if (this.$.sharedEmails.items.length > 0)
+          event.detail.formData.append('shared', this.$.sharedEmails.items.join(","));
+        debugger
+      },
+      now: function() {
+        var auxDate = new Date();
+        return auxDate.toISOString().split('T')[0];
+      },
+      maxDate: function() {
+        var auxDate = new Date();
+        auxDate.setDate(auxDate.getDate() + 7);
+        return auxDate.toISOString().split('T')[0];
+      },
+      handleTap: function(event) {
+        this.$.uploadFile.uploadFiles();
+      },
+      success: function (event) {
+        this.$.successDialog.toggle();
+      }
+    });
+  </script>
+</dom-module>

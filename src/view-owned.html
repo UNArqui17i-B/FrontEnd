@@ -23,6 +23,11 @@
         padding: 10px;
       }
 
+      .big-icon {
+        --iron-icon-width: 75px;
+        --iron-icon-height: 75px;
+      }
+
       .flex-horizontal-with-ratios {
         @apply(--layout-horizontal);
       }
@@ -54,36 +59,39 @@
         cursor: pointer;
       }
 
-      vaadin-grid-filter, paper-input {
+      paper-input {
         width: 100%;
       }
 
-
     </style>
     <div class="card">
-      <div class="circle">3</div>
-      <h1>Mis archivos</h1>
+      <div class="container flex-horizontal-with-ratios">
+        <div class="flexchild">
+          <h1>Mis archivos</h1>
+        </div>
+        <div class="flexchild">
+          Cargar archivo
+          <a href="/upload">
+            <iron-icon class="big-icon" icon="file-upload"></iron-icon>
+          </a>
+        </div>
+      </div>
       <iron-ajax auto
                  id="ajaxGet"
-                 url="[[backendURL]]/fileAccess/ownedBy/[[user.email]]"
+                 url="[[backendURL]]/api/files/ownedBy/[[user.email]]"
                  handle-as="json"
                  on-response="handleResponse"
                  debounce-duration="300"></iron-ajax>
       <iron-ajax id="ajaxPut"
-                 url="[[backendURLPUT]]/update/"
+                 url="[[backendURL]]/api/files/update/[[activeItem._id]]"
                  method="PUT"
                  handle-as="json"
                  content-type="application/json"
                  on-response="handleResponsePut"
                  on-error="handleError"></iron-ajax>
-      <iron-ajax id="ajaxPutDate"
-                 url="[[backendURLPUT]]/update/"
-                 method="PUT"
-                 handle-as="json"
-                 on-error="handleError"></iron-ajax>
       <iron-ajax id="ajaxDelete"
                  method="DELETE"
-                 url="[[backendURLDELETE]]/delete/file/"
+                 url="[[backendURL]]/api/files/delete/[[activeItem._id]]"
                  handle-as="json"
                  on-response="handleResponseDelete"
                  on-error="handleError"></iron-ajax>
@@ -166,7 +174,7 @@
         <vaadin-grid-column>
           <template class="header">Descarga</template>
           <template>
-            <a href="[[backendURL]]/fileAccess/download/[[item._id]]/[[user.email]]"
+            <a href="[[backendURL]]/api/files/download/[[item._id]]/"
                target="_blank">
               <iron-icon icon="file-download" on-tap="handleDownload"></iron-icon>
             </a>
@@ -280,14 +288,6 @@
         backendURL: {
           type: String,
         },
-        backendURLPUT: {
-          type: String,
-          value: 'http://192.168.1.13:4020',
-        },
-        backendURLDELETE: {
-          type: String,
-          value: 'http://127.0.0.1:4030',
-        },
         user: Object,
         extensionsArray: {
           type: Array,
@@ -297,7 +297,7 @@
         ajaxError: Object,
       },
       ready: function() {
-        this.backendURL = this.backendurl;
+        this.backendURL = this.backendUrl;
       },
       maxDate: function() {
         var auxDate = new Date(this.activeItem.uploaded_date);
@@ -321,19 +321,20 @@
           return current;
         }, {});
         this.extensionsArray = Object.keys(extensions);
-        this.$.grid.clearCache();
       },
       handleResponseDelete: function(data) {
-        if (data.detail.xhr.status === 200)
+        if (data.detail.xhr.status === 200) {
           this.action = 'eliminado';
-        this.$.dialogDetail.close();
-        this.$.successDialog.toggle();
+          this.$.dialogDetail.close();
+          this.$.successDialog.toggle();
+        }
       },
       handleResponsePut: function(data) {
-        if (data.detail.xhr.status === 200)
+        if (data.detail.xhr.status === 200) {
           this.action = 'modificado';
-        this.$.dialogDetail.close();
-        this.$.successDialog.toggle();
+          this.$.dialogDetail.close();
+          this.$.successDialog.toggle();
+        }
       },
       handleReloadGrid: function() {
         this.$.ajaxGet.generateRequest();
@@ -343,13 +344,15 @@
         this.$.dialogDetail.toggle();
       },
       handleDialogDelete: function(e) {
-        if(this.activeItem===undefined)
+        if (this.activeItem === undefined)
           this.activeItem = e.model.item;
         this.$.confirmDelete.toggle();
       },
       handleDelete: function() {
-        this.$.ajaxDelete.url += this.activeItem['_id'];
+        var urlRequest = this.$.ajaxPut.url;
+        this.$.ajaxDelete.url = urlRequest + this.activeItem['_id'];
         this.$.ajaxDelete.generateRequest();
+        this.$.ajaxPut.url = urlRequest;
       },
       handleDeleteEmail: function(e) {
         var index = this.activeItem.shared.indexOf(e.model.item);
@@ -358,14 +361,12 @@
       },
       handleOKEdit: function() {
         var urlRequest = this.$.ajaxPut.url;
-        /* var auxEpoch = new Date(this.activeItem['expiring_date']);
-         this.$.ajaxPutDate.url = urlRequest + 'date/' +
-         this.activeItem['_id'] + '/' + (auxEpoch.getTime() / 1000);
-         this.$.ajaxPutDate.generateRequest(); */
-        this.$.ajaxPut.url = urlRequest + 'share/' +
-          this.activeItem['_id'];
-        this.$.ajaxPut.body = JSON.stringify({'shared': this.activeItem.shared});
-        // '{"shared":["' +this.activeItem.shared.join('","') + '"]}';
+        var auxEpoch = new Date(this.activeItem['expiring_date']);
+        this.$.ajaxPut.url = urlRequest + this.activeItem['_id'];
+        this.$.ajaxPut.body = JSON.stringify({
+          'date': auxEpoch.getTime() / 1000,
+          'shared': this.activeItem.shared,
+        });
         this.$.ajaxPut.generateRequest();
         this.$.ajaxPut.url = urlRequest;
       },
