@@ -33,7 +33,7 @@
       <h2>Ingresar</h2>
       <form is="iron-form"
             method="post"
-            action="[[ backendUrl ]]"
+            action="[[ backendUrl ]]/users/login"
             on-iron-form-presubmit="loginPresubmit"
             on-iron-form-response="loginResponse"
             on-iron-form-error="loginError"
@@ -78,15 +78,18 @@
 
       loginPresubmit: function(event) {
         // this.$.loginForm.request.body
+        console.log(this.$.loginForm.request.body);
         // event.preventDefault();
       },
 
       loginResponse: function(event) {
         // event.detail
+        console.log(event.detail);
       },
 
       loginError: function(event) {
         // event.detail
+        console.log(event.detail);
       },
     });
   </script>
