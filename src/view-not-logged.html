@@ -6,11 +6,12 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="view-account">
+<dom-module id="view-not-logged">
   <template>
     <style include="shared-styles iron-flex">
       :host {
@@ -27,7 +28,7 @@
         --paper-input-container-invalid-color: red;
       }
 
-      #my-account, .full-name {
+      #not-logged-content, .full-name {
         @apply(--layout-horizontal);
         @apply(--layout-wrap);
         @apply(--layout-center-justified);
@@ -37,16 +38,16 @@
         width: 45%;
       }
 
-      #my-account paper-input{
+      #not-logged-content paper-input{
         margin: 0px 2.5%;
       }
 
-      .account-form{
+      .not-logged-form{
         margin: 15px;
         min-width: 60%;
       }
 
-      .delete-account{
+      .joke-logged{
         margin: 15px;
         width: 30%;
         @apply(--layout-vertical);
@@ -80,7 +81,7 @@
         font-weight: bold;
       }
 
-      #my-account paper-button{
+      #not-logged-content paper-button{
         font-size: 15px;
       }
 
@@ -93,11 +94,11 @@
       }
 
       @media screen and (max-width: 1024px) {
-        .account-form{
+        .not-logged-form{
           width: 100%;
         }
 
-        .delete-account{
+        .joke-logged{
           width: 100%;
         }
       }
@@ -118,70 +119,54 @@
         }
       }
 
+      .register-link{
+        cursor: pointer;
+        text-decoration: underline;;
+        color: blue;
+      }
     </style>
 
-    <div id="my-account">
-      <paper-card class="account-form">
-        <div class="card-header">MI CUENTA</div>
+    <div id="not-logged-content">
+      <paper-card class="joke-logged">
+        <div class="card-header">
+          NO, NO, NO
+        </div>
+        <div class="card-content center">
+          <img
+            src="https://media.giphy.com/media/5ftsmLIqktHQA/giphy.gif"
+            alt="HTML5 Icon" style="width:128px;height:128px;">
+          <p>
+            Lo sentimos, necesitas ingresar primero
+          </p>
 
+        </div>
+      </paper-card>
+
+      <paper-card class="not-logged-form">
+        <div class="card-header">INICIA SESION</div>
         <div class="card-content">
-          <form is="iron-form" method="get" action="/" id="update-user">
-
-            <div class="full-name">
-              <paper-input name="name" label="Nombre">
-                <iron-icon class="user-form" icon="social:person" prefix></iron-icon>
-              </paper-input>
-
-              <paper-input name="lastname" label="Apellido">
-                <iron-icon class="user-form" icon="social:people" prefix></iron-icon>
-              </paper-input>
-            </div>
-
-            <paper-input name="old-password" label="Contraseña actual"
-                   type="password" required error-message="Verifica tu contraseña.">
-              <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
+          <form is="iron-form" method="get" action="/" id="sign-in">
+            <paper-input name="email" label="Correo electronico"
+                         required error-message="Ingresa Tu Correo Electronico">
+              <iron-icon class="user-form" icon="communication:mail-outline" prefix></iron-icon>
             </paper-input>
 
-            <paper-input name="new-password" label="Nueva contraseña"
-                   type="password" minlength="10" error-message="Mínimo 8 caracteres.">
-              <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
-            </paper-input>
-
-            <paper-input name="confirm-new-password" label="Confirmar nueva contraseña"
-                   type="password" minlength="10" error-message="Las contraseñas deben coincidir.">
+            <paper-input name="password" label="Contraseña"
+                         type="password" minlength="10" error-message="Mínimo 8 caracteres.">
               <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
             </paper-input>
 
             <br>
 
             <div align="center">
-              <paper-button class="full-color" onclick="">Guardar cambios</paper-button>
+              <paper-button class="full-color" onclick="">INICIAR</paper-button>
               <div class="output"></div>
             </div>
+
+            <div align="center" on-tap="registerDialog">
+              <div class="register-link" >¿No tienes cuenta?</div>
+            </div>
           </form>
-        </div>
-      </paper-card>
-
-      <paper-card class="delete-account">
-        <div class="card-header">
-          DESACTIVAR MI CUENTA
-        </div>
-        <div class="card-content center">
-          <p>
-            Recuerda que no podrás recuperar tu cuenta después de ser desactivada.
-          </p>
-
-          <p>
-            Si deseas desactivar tu cuenta, haz click en el siguiente botón:
-          </p>
-
-          <div align="center">
-            <paper-button class="full-color">
-              <!-- <iron-icon icon="clear"></iron-icon> -->
-              Desactivar cuenta
-            </paper-button>
-          </div>
-
         </div>
       </paper-card>
     </div>
@@ -189,7 +174,11 @@
 
   <script>
     Polymer({
-      is: 'view-account',
+      is: 'view-not-logged',
+
+      registerDialog: function() {
+        this.fire('iron-signal', {name: 'register-dialog', data: null});
+      },
     });
   </script>
 </dom-module>
