@@ -54,10 +54,9 @@
         cursor: pointer;
       }
 
-      vaadin-grid-filter, paper-input {
+      paper-input {
         width: 100%;
       }
-
 
     </style>
     <div class="card">
@@ -75,11 +74,6 @@
                  handle-as="json"
                  content-type="application/json"
                  on-response="handleResponsePut"
-                 on-error="handleError"></iron-ajax>
-      <iron-ajax id="ajaxPutDate"
-                 url="[[backendURLPUT]]/update/"
-                 method="PUT"
-                 handle-as="json"
                  on-error="handleError"></iron-ajax>
       <iron-ajax id="ajaxDelete"
                  method="DELETE"
@@ -297,7 +291,7 @@
         ajaxError: Object,
       },
       ready: function() {
-        this.backendURL = this.backendurl;
+        this.backendURL = this.backendUrl;
       },
       maxDate: function() {
         var auxDate = new Date(this.activeItem.uploaded_date);
@@ -348,7 +342,6 @@
         this.$.confirmDelete.toggle();
       },
       handleDelete: function() {
-        debugger;
         this.$.ajaxDelete.url += this.activeItem['_id'];
         this.$.ajaxDelete.generateRequest();
       },
@@ -361,9 +354,9 @@
         debugger;
         var urlRequest = this.$.ajaxPut.url;
         /* var auxEpoch = new Date(this.activeItem['expiring_date']);
-         this.$.ajaxPutDate.url = urlRequest + 'date/' +
+         this.$.ajaxPut.url = urlRequest + 'date/' +
          this.activeItem['_id'] + '/' + (auxEpoch.getTime() / 1000);
-         this.$.ajaxPutDate.generateRequest(); */
+         this.$.ajaxPut.generateRequest(); */
         this.$.ajaxPut.url = urlRequest + 'share/' +
           this.activeItem['_id'];
         this.$.ajaxPut.body = JSON.stringify({'shared': this.activeItem.shared});
