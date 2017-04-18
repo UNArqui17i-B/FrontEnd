@@ -75,6 +75,7 @@
           <view-account name="account"></view-account>
           <view-shared name="shared" backend-url="[[ backendURL ]]"></view-shared>
           <view-owned name="owned"></view-owned>
+          <view-upload name="upload" backend-url="[[backendURL]]" user="[[user]]"></view-upload>
           <view-404 name="404"></view-404>
         </iron-pages>
       </app-header-layout>
@@ -88,7 +89,7 @@
       properties: {
         backendURL: {
           type: String,
-          value: 'http://localhost:5000', // backend url
+          value: 'http://0.0.0.0:4015', // backend url
         },
         token: {
           type: String,
