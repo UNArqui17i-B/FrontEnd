@@ -133,22 +133,22 @@
           <iron-ajax id="putAjax"
                      method="PUT"
                      content-type="application/json"
-                     url="[[backendUrl]]/users/[[user._id]]/[[user._rev]]">
+                     url="[[backendUrl]]/users/[[user._id]]">
           </iron-ajax>
 
           <form is="iron-form" method="get" action="/" id="update">
 
             <div class="full-name">
-              <paper-input name="name" label="Nombre" value="{{ user.name }}">
+              <paper-input name="name" label="Nombre" value="{{ user.firstName }}">
                 <iron-icon class="update-user-form" icon="social:person" prefix></iron-icon>
               </paper-input>
 
-              <paper-input name="lastname" label="Apellido" value="{{ user.lastname }}">
+              <paper-input name="lastname" label="Apellido" value="{{ user.lastName }}">
                 <iron-icon class="update-user-form" icon="social:people" prefix></iron-icon>
               </paper-input>
             </div>
 
-            <paper-input name="old-password" label="Contraseña actual"
+            <paper-input name="old-password" label="Contraseña actual" value="{{ user.password }}"
                          type="password" required error-message="Verifica tu contraseña.">
               <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
             </paper-input>
@@ -208,7 +208,6 @@
       properties: {
         backendUrl: {
           type: String,
-          value: 'http://localhost:4000',
         },
         userId: {
           type: String,
@@ -235,14 +234,17 @@
         if (this.$.update.checkValidity()) {
           this.$.putAjax.body = JSON.stringify(this.user);
           this.$.putAjax.generateRequest();
+          open('/account', '_self');
+
         } else {
           this._handleError('At least one field is invalid.');
         }
       },
 
       _delete: function() {
-        this.$.deleteAjax.url = this.backendUrl + '/users/' + this.user._id + '/' + this.user._rev;
+        this.$.deleteAjax.url = this.backendUrl + '/users/' + this.user._id;
         this.$.deleteAjax.generateRequest();
+        open('/', '_self');
         // this.page = 'index';
       },
     });
