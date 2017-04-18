@@ -72,11 +72,13 @@
           attr-for-selected="name"
           fallback-selection="view404"
           role="main">
+
           <view-index name="index"></view-index>
           <view-account name="account"></view-account>
           <view-shared name="shared" backend-url="[[ backendURL ]]" user="[[user]]" query-params="[[queryParams]]"></view-shared>
           <view-owned name="owned" backend-url="[[ backendURL ]]" user="[[user]]"></view-owned>
           <view-404 name="404"></view-404>
+          <view-not-logged name="not-logged"></view-not-logged>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
