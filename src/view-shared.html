@@ -13,12 +13,12 @@
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="view-shared">
-    <template is="dom-bind">
-        <style include="shared-styles" is="custom-style">
-            :host {
-                display: block;
-                padding: 10px;
-            }
+  <template is="dom-bind">
+    <style include="shared-styles" is="custom-style">
+      :host {
+        display: block;
+        padding: 10px;
+      }
 
       .big-icon {
         --iron-icon-width: 100px;
@@ -55,62 +55,12 @@
         cursor: pointer;
       }
 
-      vaadin-grid {
-        font: 500 13px "Open Sans", sans-serif;
-        --divider-color: rgb(223, 232, 239);
-
-        --vaadin-grid-cell: {
-          padding: 0 13px;
-        };
-
-        --vaadin-grid-body-cell: {
-          height: 65px;
-        };
-
-        --vaadin-grid-header-cell: {
-          background: rgba(235, 238, 246, 0.9);
-          border-bottom: 1px solid rgba(208, 217, 225, 0.9);
-          border-top: 1px solid rgba(248, 250, 252, 0.9);
-          min-height: 35px;
-
-          background-image: linear-gradient(rgba(108, 160, 218, 0), rgba(108, 160, 218, 0.15));
-          background-size: 1px 100%;
-          background-position: 100% 0%;
-          background-repeat: no-repeat;
-        };
-
-        --vaadin-grid-body-row-selected-cell: {
-          background-color: rgb(131, 183, 236);
-          border-bottom-color: rgb(108, 160, 218);
-        };
-
-        --vaadin-grid-body-row-odd-cell: {
-          background-color: rgb(251, 252, 254);
-        };
-
-        --vaadin-grid-body-row-hover-cell: {
-          background-color: rgb(235, 238, 246);
-        };
-
-        --vaadin-grid-body-row-details-cell: {
-          text-align: center;
-        };
-
-        --vaadin-grid-column-resize-handle: {
-          opacity: 0;
-        };
-      }
-
-      vaadin-grid-filter, paper-input {
-        width: 100%;
-      }
-
     </style>
     <div class="card">
       <div class="circle">2</div>
       <h1>Compartidos</h1>
       <iron-ajax auto
-                 url="[[backendURL]]/fileAccess/sharedWith/[[username]]"
+                 url="[[backendURL]]/fileAccess/sharedWith/[[user.email]]"
                  handle-as="json"
                  on-response="handleResponse"
                  debounce-duration="300"></iron-ajax>
@@ -176,7 +126,7 @@
         <vaadin-grid-column>
           <template class="header">Descarga</template>
           <template>
-            <a href="[[backendURL]]/fileAccess/download/[[item._id]]/[[username]]"
+            <a href="[[backendURL]]/fileAccess/download/[[item._id]]/[[user.email]]"
                target="_blank">
               <iron-icon icon="file-download"></iron-icon>
             </a>
@@ -214,7 +164,7 @@
             <div class="flexchild2">
               <div class="flex-center">
                 <a target="_blank"
-                   href="[[backendURL]]/fileAccess/download/[[activeItem._id]]/[[username]]">
+                   href="[[backendURL]]/fileAccess/download/[[activeItem._id]]/[[user.email]]">
                   <iron-icon icon="file-download" class="big-icon"></iron-icon>
                 </a>
               </div>
@@ -232,50 +182,54 @@
     </div>
   </template>
 
-    <script>
-      Polymer({
-        is: 'view-shared',
-        properties: {
-          backendUrl: {
-            type: String,
-          },
-          username: {
-            type: String,
-            value: 'lachaparrog@unal.edu.co',
-          },
-          extensionsArray: {
-            type: Array,
-            value: [],
-          },
-          ajaxResponse: Object,
-          ajaxError: Object,
+  <script>
+    Polymer({
+      is: 'view-shared',
+      properties: {
+        backendUrl: {
+          type: String,
         },
-        handleResponse: function(data) {
-          var response = data.detail.response.shared_documents;
-          this.ajaxResponse = response.map(function(item) {
-            item.size = (item.size / 1000 ).toFixed(3);
-            var auxDate = new Date(item.expiring_date * 1000);
-            item.expiring_date = auxDate.toISOString().split('T')[0];
-            return item;
-          });
-          var extensions = this.ajaxResponse.reduce(function(current, item) {
-            if (item.extension !== '') {
-              current[item.extension] = true;
-            }
-            return current;
-          }, {});
-          this.extensionsArray = Object.keys(extensions);
-          this.$.grid.clearCache();
+        user: Object,
+        extensionsArray: {
+          type: Array,
+          value: [],
         },
-        handleToggle: function() {
-          this.$.toggleDialog.toggle();
-        },
-        _activeItemChanged: function() {
-          this._clickedItem = this.$.grid.activeItem || this._clickedItem;
-          if (this.$.grid.activeItem === null && this._clickedItem !== null) {
-            this.$.grid.activeItem = this._clickedItem;
+        ajaxResponse: Object,
+        ajaxError: Object,
+        searchID: String,
+      },
+      ready: function() {
+        this.backendURL = this.backendUrl;
+        this.searchID = this.queryParams.id;
+      },
+      handleResponse: function(data) {
+        var response = data.detail.response.shared_documents;
+        this.ajaxResponse = response.map(function(item) {
+          item.size = (item.size / 1000 ).toFixed(3);
+          var auxDate = new Date(item.expiring_date * 1000);
+          item.expiring_date = auxDate.toISOString().split('T')[0];
+          return item;
+        });
+        var extensions = this.ajaxResponse.reduce(function(current, item) {
+          if (item.extension !== '') {
+            current[item.extension] = true;
           }
-        },
-      });
-    </script>
+          return current;
+        }, {});
+        this.extensionsArray = Object.keys(extensions);
+        if (this.searchID) {
+          var that = this;
+          this.activeItem = this.ajaxResponse.find(function(item) {
+            return item['_id'] === that.searchID;
+          });
+          this.handleToggle();
+        }
+      },
+      handleToggle: function(e) {
+        if (e)
+          this.activeItem = e.model.item;
+        this.$.toggleDialog.toggle();
+      },
+    });
+  </script>
 </dom-module>
