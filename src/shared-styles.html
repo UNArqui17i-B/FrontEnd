@@ -30,6 +30,58 @@
         color: #212121;
         font-size: 22px;
       }
+
+      vaadin-grid {
+        font: 500 13px "Open Sans", sans-serif;
+        height: 100%;
+        --divider-color: rgb(223, 232, 239);
+
+        --vaadin-grid-cell: {
+          padding: 0 13px;
+        };
+
+        --vaadin-grid-body-cell: {
+          height: 65px;
+        };
+
+        --vaadin-grid-header-cell: {
+          background: rgba(235, 238, 246, 0.9);
+          border-bottom: 1px solid rgba(208, 217, 225, 0.9);
+          border-top: 1px solid rgba(248, 250, 252, 0.9);
+          min-height: 35px;
+
+          background-image: linear-gradient(rgba(108, 160, 218, 0), rgba(108, 160, 218, 0.15));
+          background-size: 1px 100%;
+          background-position: 100% 0%;
+          background-repeat: no-repeat;
+        };
+
+        --vaadin-grid-body-row-selected-cell: {
+          background-color: rgb(131, 183, 236);
+          border-bottom-color: rgb(108, 160, 218);
+        };
+
+        --vaadin-grid-body-row-odd-cell: {
+          background-color: rgb(251, 252, 254);
+        };
+
+        --vaadin-grid-body-row-hover-cell: {
+          background-color: rgb(235, 238, 246);
+        };
+
+        --vaadin-grid-body-row-details-cell: {
+          text-align: center;
+        };
+
+        --vaadin-grid-column-resize-handle: {
+          opacity: 0;
+        };
+      }
+
+      iron-icon.user-form{
+        margin: 8px;
+        color: #ccc;
+      }
     </style>
   </template>
 </dom-module>

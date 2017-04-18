@@ -10,7 +10,7 @@
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="my-account">
+<dom-module id="view-account">
     <template>
         <style include="shared-styles iron-flex">
             :host {
@@ -92,11 +92,6 @@
                 padding: 0px 20%;
             }
 
-            iron-icon.update-user-form{
-                margin: 8px;
-                color: #ccc;
-            }
-
             @media screen and (max-width: 1024px) {
                 .account-form{
                     width: 100%;
@@ -134,27 +129,27 @@
 
                         <div class="full-name">
                             <paper-input name="name" label="Nombre">
-                                <iron-icon class="update-user-form" icon="social:person" prefix></iron-icon>
+                                <iron-icon class="user-form" icon="social:person" prefix></iron-icon>
                             </paper-input>
 
                             <paper-input name="lastname" label="Apellido">
-                                <iron-icon class="update-user-form" icon="social:people" prefix></iron-icon>
+                                <iron-icon class="user-form" icon="social:people" prefix></iron-icon>
                             </paper-input>
                         </div>
 
                         <paper-input name="old-password" label="Contraseña actual"
                                      type="password" required error-message="Verifica tu contraseña.">
-                            <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
+                            <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
                         </paper-input>
 
                         <paper-input name="new-password" label="Nueva contraseña"
                                      type="password" minlength="10" error-message="Mínimo 8 caracteres.">
-                            <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
+                            <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
                         </paper-input>
 
                         <paper-input name="confirm-new-password" label="Confirmar nueva contraseña"
                                      type="password" minlength="10" error-message="Las contraseñas deben coincidir.">
-                            <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
+                            <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
                         </paper-input>
 
                         <br>
@@ -194,7 +189,7 @@
 
     <script>
         Polymer({
-            is: 'my-account',
+            is: 'view-account',
         });
 
 

@@ -12,13 +12,13 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="my-view2">
-  <template is="dom-bind">
-    <style include="shared-styles" is="custom-style">
-      :host {
-        display: block;
-        padding: 10px;
-      }
+<dom-module id="view-shared">
+    <template is="dom-bind">
+        <style include="shared-styles" is="custom-style">
+            :host {
+                display: block;
+                padding: 10px;
+            }
 
       .big-icon {
         --iron-icon-width: 100px;
@@ -232,47 +232,50 @@
     </div>
   </template>
 
-  <script>
-    Polymer({
-      is: 'my-view2',
-      properties: {
-        backendURL: {
-          type: String,
+    <script>
+      Polymer({
+        is: 'view-shared',
+        properties: {
+          backendUrl: {
+            type: String,
+          },
+          username: {
+            type: String,
+            value: 'lachaparrog@unal.edu.co',
+          },
+          extensionsArray: {
+            type: Array,
+            value: [],
+          },
+          ajaxResponse: Object,
+          ajaxError: Object,
         },
-        username: {
-          type: String,
-          value: 'lachaparrog@unal.edu.co',
+        handleResponse: function(data) {
+          var response = data.detail.response.shared_documents;
+          this.ajaxResponse = response.map(function(item) {
+            item.size = (item.size / 1000 ).toFixed(3);
+            var auxDate = new Date(item.expiring_date * 1000);
+            item.expiring_date = auxDate.toISOString().split('T')[0];
+            return item;
+          });
+          var extensions = this.ajaxResponse.reduce(function(current, item) {
+            if (item.extension !== '') {
+              current[item.extension] = true;
+            }
+            return current;
+          }, {});
+          this.extensionsArray = Object.keys(extensions);
+          this.$.grid.clearCache();
         },
-        extensionsArray: {
-          type: Array,
-          value: [],
+        handleToggle: function() {
+          this.$.toggleDialog.toggle();
         },
-        ajaxResponse: Object,
-        ajaxError: Object,
-      },
-      ready: function() {
-        this.backendURL=this.backendUrl;
-      },
-      handleResponse: function(data) {
-        var response = data.detail.response.shared_documents;
-        this.ajaxResponse = response.map(function(item) {
-          item.size = (item.size / 1000 ).toFixed(3);
-          var auxDate = new Date(item.expiring_date * 1000);
-          item.expiring_date = auxDate.toISOString().split('T')[0];
-          return item;
-        });
-        var extensions = this.ajaxResponse.reduce(function(current, item) {
-          if (item.extension !== '') {
-            current[item.extension] = true;
+        _activeItemChanged: function() {
+          this._clickedItem = this.$.grid.activeItem || this._clickedItem;
+          if (this.$.grid.activeItem === null && this._clickedItem !== null) {
+            this.$.grid.activeItem = this._clickedItem;
           }
-          return current;
-        }, {});
-        this.extensionsArray = Object.keys(extensions);
-      },
-      handleToggle: function(e) {
-        this.activeItem = e.model.item;
-        this.$.toggleDialog.toggle();
-      },
-    });
-  </script>
+        },
+      });
+    </script>
 </dom-module>
