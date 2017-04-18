@@ -1,0 +1,51 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="feature-card.html">
+<link rel="import" href="banner-card.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="view-index">
+    <template>
+        <style include="shared-styles iron-flex">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            #features {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+                @apply(--layout-center-justified);
+            }
+
+        </style>
+
+        <div align="center">
+            <banner-card></banner-card>
+        </div>
+
+        <div id="features">
+            <feature-card title="First Feature"
+                          content="This is the first one."
+                          image="https://camo.githubusercontent.com/1cd115e2ca265d2286e377997bb9500d3def4ab0/687474703a2f2f692e696d6775722e636f6d2f6473464368496b2e706e67">
+            </feature-card>
+
+            <feature-card title="Second Feature"
+                          content="This is the second one."
+                          image="https://camo.githubusercontent.com/1cd115e2ca265d2286e377997bb9500d3def4ab0/687474703a2f2f692e696d6775722e636f6d2f6473464368496b2e706e67">
+            </feature-card>
+
+            <feature-card title="Third Feature"
+                          content="This is the third one."
+                          image="https://camo.githubusercontent.com/1cd115e2ca265d2286e377997bb9500d3def4ab0/687474703a2f2f692e696d6775722e636f6d2f6473464368496b2e706e67">
+            </feature-card>
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'view-index',
+        });
+    </script>
+</dom-module>

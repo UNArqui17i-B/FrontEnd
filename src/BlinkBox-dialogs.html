@@ -1,0 +1,16 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="dialog-register.html">
+<link rel="import" href="dialog-login.html">
+
+<dom-module id="BlinkBox-dialogs">
+  <template>
+    <dialog-register backend-url="[[ backendUrl ]]"></dialog-register>
+    <dialog-login backend-url="[[ backendUrl ]]"></dialog-login>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'BlinkBox-dialogs',
+    });
+  </script>
+</dom-module>

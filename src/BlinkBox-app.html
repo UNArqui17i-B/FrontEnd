@@ -1,0 +1,144 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="custom-header.html">
+<link rel="import" href="BlinkBox-dialogs.html">
+
+<dom-module id="BlinkBox-app">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: #4285f4;
+        --app-secondary-color: black;
+
+        --paper-button-raised-keyboard-focus: {
+          font-weight: normal;
+        };
+        --paper-button-flat-keyboard-focus: {
+          font-weight: normal;
+        };
+
+        display: block;
+      }
+
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+    </style>
+
+    <!-- All possible dialogs -->
+    <BlinkBox-dialogs
+      backend-url="[[ backendURL ]]">
+    </BlinkBox-dialogs>
+
+    <!-- JWT -->
+    <iron-localstorage
+      name="blinkbox-token"
+      value="{{ token }}"
+      useRaw="true"
+      on-iron-localstorage-load-empty="initializeDefaultToken">
+    </iron-localstorage>
+    <iron-localstorage
+      name="blinkbox-user"
+      value="{{ user }}"
+      on-iron-localstorage-load-empty="initializeDefaultUser">
+    </iron-localstorage>
+
+    <!-- router -->
+    <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
+    <app-route
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subroute}}"></app-route>
+
+    <app-drawer-layout fullbleed>
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region>
+        <custom-header username="[[ user.firstName ]]"></custom-header>
+
+        <iron-pages
+          selected="[[page]]"
+          attr-for-selected="name"
+          fallback-selection="view404"
+          role="main">
+
+          <view-index name="index"></view-index>
+          <view-account name="account"></view-account>
+          <view-shared name="shared" backend-url="[[ backendURL ]]" user="[[user]]" query-params="[[queryParams]]"></view-shared>
+          <view-owned name="owned" backend-url="[[ backendURL ]]" user="[[user]]"></view-owned>
+          <view-upload name="upload" backend-url="[[backendURL]]" user="[[user]]"></view-upload>
+          <view-404 name="404"></view-404>
+          <view-not-logged name="not-logged"></view-not-logged>
+        </iron-pages>
+      </app-header-layout>
+    </app-drawer-layout>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'BlinkBox-app',
+
+      properties: {
+        backendURL: {
+          type: String,
+          value: 'http://localhost:5000/api', // backend url
+        },
+        token: {
+          type: String,
+        },
+        user: {
+          type: Object,
+        },
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged',
+        },
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)',
+      ],
+
+      initializeDefaultToken: function() {
+        this.token = '';
+      },
+
+      initializeDefaultUser: function() {
+        this.user = {
+          id: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+        };
+      },
+
+      _routePageChanged: function(page) {
+        this.page = page || 'index';
+      },
+
+      _pageChanged: function(page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+
+      _showPage404: function() {
+        this.page = '404';
+      },
+    });
+  </script>
+</dom-module>
