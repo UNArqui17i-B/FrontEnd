@@ -105,14 +105,11 @@
         // event.detail
 
         var token = JSON.parse(event.detail);
-        if(token.hasOwnProperty('token')){
-
-          this.set("token",token["token"]);
-          this.set("user.exp_date",token["token"]);
-          this.set("user.email",this.$.email.value);
-
+        if (token.hasOwnProperty('token')) {
+          this.set('token', token['token']);
+          this.set('user.exp_date', token['token']);
+          this.set('user.email', this.$.email.value);
         }
-
       },
 
       loginError: function(event) {
