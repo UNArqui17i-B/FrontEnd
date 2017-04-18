@@ -10,7 +10,7 @@
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="my-not_logged">
+<dom-module id="view-not_logged">
     <template>
         <style include="shared-styles iron-flex">
             :host {
@@ -27,13 +27,13 @@
                 --paper-input-container-invalid-color: red;
             }
 
-            #my-not_logged{
+            #view-not_logged{
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
                 @apply(--layout-center-justified);
             }
 
-            #my-not_logged paper-input{
+            #view-not_logged paper-input{
                 margin: 0px 2.5%;
             }
 
@@ -73,7 +73,7 @@
                 font-weight: bold;
             }
 
-            #my-not_logged paper-button{
+            #view-not_logged paper-button{
                 font-size: 15px;
             }
 
@@ -114,6 +114,13 @@
                     line-height: 48px; margin: 0;
                 }
 
+            .nocuenta-link{
+
+                cursor: pointer;
+                text-decoration: underline;;
+                color: blue;
+            }
+
         </style>
 
        <div class="my-center">Ah, Ah, Ah 
@@ -126,12 +133,10 @@
        </div>
        <div class="center">
            <paper-card class="signin-form">
-                    <div class="card-header">INICIA SESSION</div>
+                    <div class="card-header">INICIA SESION</div>
 
                     <div class="card-content">
                         <form is="iron-form" method="get" action="/" id="sign-in">
-
-                            
 
                             <paper-input name="Email" label="Correo electronico"
                                           required error-message="Ingresa Tu Correo Electronico">
@@ -150,8 +155,8 @@
                                 <div class="output"></div>
                             </div>
 
-                            <div align="center">
-                                <a href="www.google.com">¿No tienes cuenta?</a>
+                            <div align="center" on-tap="registerDialog">
+                                <div class="nocuenta-link" >¿No tienes cuenta?</div>
                             </div>
                         </form>
                     </div>
@@ -161,9 +166,15 @@
 
     <script>
         Polymer({
-            is: 'my-not_logged',
+            is: 'view-not_logged',
+
+        registerDialog: function() {
+        this.fire('iron-signal', {name: 'register-dialog', data: null});
+        }
+
         });
 
+        
 
     </script>
 </dom-module>
