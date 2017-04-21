@@ -9,6 +9,7 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-request.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
@@ -54,7 +55,7 @@
         color: inherit;
       }
 
-      iron-icon:hover {
+      a:hover, iron-icon:hover {
         color: red;
         cursor: pointer;
       }
@@ -76,14 +77,26 @@
           </a>
         </div>
       </div>
+      <iron-localstorage
+        name="blinkbox-token"
+        value="{{token}}"
+        useRaw="true"
+        on-iron-localstorage-load="loadStorage"></iron-localstorage>
       <iron-ajax auto
                  id="ajaxGet"
-                 url="[[backendURL]]/api/files/ownedBy/[[user.email]]"
+                 url="[[backendURL]]/files/ownedBy/[[user.email]]"
+                 last-respone="{{response}}"
                  handle-as="json"
                  on-response="handleResponse"
-                 debounce-duration="300"></iron-ajax>
+                 on-error="handleError"></iron-ajax>
+      <iron-ajax id="ajaxDownload"
+                 url="[[backendURL]]/files/download/[[activeItem._id]]/[[user.email]]"
+                 method="GET"
+                 handle-as="blob"
+                 on-response="handleResponseDownload"
+                 on-error="handleError"></iron-ajax>
       <iron-ajax id="ajaxPut"
-                 url="[[backendURL]]/api/files/update/[[activeItem._id]]"
+                 url="[[backendURL]]/files/update/[[activeItem._id]]"
                  method="PUT"
                  handle-as="json"
                  content-type="application/json"
@@ -91,7 +104,7 @@
                  on-error="handleError"></iron-ajax>
       <iron-ajax id="ajaxDelete"
                  method="DELETE"
-                 url="[[backendURL]]/api/files/delete/[[activeItem._id]]"
+                 url="[[backendURL]]/files/delete/[[activeItem._id]]"
                  handle-as="json"
                  on-response="handleResponseDelete"
                  on-error="handleError"></iron-ajax>
@@ -174,10 +187,7 @@
         <vaadin-grid-column>
           <template class="header">Descarga</template>
           <template>
-            <a href="[[backendURL]]/api/files/download/[[item._id]]/"
-               target="_blank">
-              <iron-icon icon="file-download" on-tap="handleDownload"></iron-icon>
-            </a>
+              <iron-icon icon="file-download" on-tap="handleTapDownload"></iron-icon>
           </template>
         </vaadin-grid-column>
         <vaadin-grid-column>
@@ -278,6 +288,12 @@
         <h2>Error</h2>
         <div>[[errorMessage]]</div>
       </paper-dialog>
+      <paper-dialog id="noFilesDialog">
+        <h2>No se encontraron archivos</h2>
+        <div class="buttons">
+          <paper-button dialog-confirm>Ok</paper-button>
+        </div>
+      </paper-dialog>
     </div>
   </template>
 
@@ -299,12 +315,22 @@
       ready: function() {
         this.backendURL = this.backendUrl;
       },
+      loadStorage: function() {
+        this.$.ajaxGet.headers['Authorization'] = 'Bearer ' + this.token;
+        this.$.ajaxDelete.headers['Authorization'] = 'Bearer ' + this.token;
+        this.$.ajaxPut.headers['Authorization'] = 'Bearer ' + this.token;
+        this.$.ajaxDownload.headers['Authorization'] = 'Bearer ' + this.token;
+      },
       maxDate: function() {
         var auxDate = new Date(this.activeItem.uploaded_date);
         auxDate.setDate(auxDate.getDate() + 7);
         return auxDate.toISOString().split('T')[0];
       },
       handleResponse: function(data) {
+        if(!data.detail.response.shared_documents) {
+          this.$.noFilesDialog.toggle();
+          return;
+        }
         var response = data.detail.response.shared_documents;
         this.ajaxResponse = response.map(function(item) {
           item.size = (item.size / 1000 ).toFixed(3);
@@ -349,10 +375,7 @@
         this.$.confirmDelete.toggle();
       },
       handleDelete: function() {
-        var urlRequest = this.$.ajaxPut.url;
-        this.$.ajaxDelete.url = urlRequest + this.activeItem['_id'];
         this.$.ajaxDelete.generateRequest();
-        this.$.ajaxPut.url = urlRequest;
       },
       handleDeleteEmail: function(e) {
         var index = this.activeItem.shared.indexOf(e.model.item);
@@ -360,15 +383,12 @@
         this.$.gridEmails.clearCache();
       },
       handleOKEdit: function() {
-        var urlRequest = this.$.ajaxPut.url;
         var auxEpoch = new Date(this.activeItem['expiring_date']);
-        this.$.ajaxPut.url = urlRequest + this.activeItem['_id'];
         this.$.ajaxPut.body = JSON.stringify({
           'date': auxEpoch.getTime() / 1000,
           'shared': this.activeItem.shared,
         });
-        this.$.ajaxPut.generateRequest();
-        this.$.ajaxPut.url = urlRequest;
+        this.$.ajaxDelete.generateRequest();
       },
       handleKeyEvent: function(e) {
         if (e.target.validate()) {
@@ -384,10 +404,18 @@
         }
       },
       handleError: function(e) {
-        var ironRequest = event.detail.request;
+        var ironRequest = e.detail.request;
         var relatedXhr = ironRequest.xhr;
         this.errorMessage = relatedXhr.status + ' : ' + relatedXhr.statusText;
         this.$.errorDialog.toggle();
+      },
+      handleTapDownload: function(e) {
+        debugger;
+        this.activeItem = e.model.item;
+        this.$.ajaxDownload.generateRequest();
+      },
+      handleResponseDownload: function(data) {
+        debugger;
       },
     });
   </script>
