@@ -109,7 +109,9 @@
         if (token.hasOwnProperty('token')) {
           this.set('token', token['token']);
           this.set('user.exp_date', token['token']);
-          this.set('user.email', this.$.email.value);
+          this.set('user.email', token['email']);
+          this.set('user.firstName', token['firstName']);
+          this.set('user.lastName', token['lastName']);
           location.pathname = '/shared'
         }
       },
