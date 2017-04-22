@@ -85,7 +85,6 @@
       <iron-ajax auto
                  id="ajaxGet"
                  url="[[backendURL]]/files/ownedBy/[[user.email]]"
-                 last-respone="{{response}}"
                  handle-as="json"
                  on-response="handleResponse"
                  on-error="handleError"></iron-ajax>
