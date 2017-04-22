@@ -31,15 +31,21 @@
     <iron-signals on-iron-signal-register-dialog="registerDialog"></iron-signals>
     <paper-dialog id="registerDialog" modal>
       <h2>Crear cuenta</h2>
-      <form is="iron-form" method="get" action="/" id="registerUser">
+      <form is="iron-form"
+            method="post"
+            action="[[ backendUrl ]]/users"
+            on-iron-form-presubmit="registerPresubmit"
+            on-iron-form-response="registerResponse"
+            on-iron-form-error="registerError"
+            id="registerForm">
         <div class="container">
           <paper-input
-            name="first-name" label="Nombre"
+            name="firstName" label="Nombre"
             required auto-validate error-message="Este campo es obligatorio">
             <iron-icon class="user-form" icon="social:person" prefix></iron-icon>
           </paper-input>
           <paper-input
-            name="last-name" label="Apellido"
+            name="lastName" label="Apellido"
             required auto-validate error-message="Este campo es obligatorio">
             <iron-icon class="user-form" icon="social:people" prefix></iron-icon>
           </paper-input>
@@ -56,7 +62,7 @@
           <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
         </paper-input>
         <paper-input
-          name="confirm-password" label="Confirmar contraseña" type="password"
+          name="confirmPassword" label="Confirmar contraseña" type="password"
           required auto-validate error-message="Este campo es obligatorio">
           <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
         </paper-input>
@@ -64,7 +70,7 @@
         <br>
 
         <div class="container">
-          <paper-button raised>Crear cuenta</paper-button>
+          <paper-button raised on-tap="registerSubmit">Crear cuenta</paper-button>
           <paper-button raised on-tap="registerDialog">Cancelar</paper-button>
         </div>
       </form>
@@ -75,8 +81,49 @@
     Polymer({
       is: 'dialog-register',
 
+      properties: {
+        backendUrl: {
+          type: String,
+        },
+      },
+
       registerDialog: function() {
         this.$.registerDialog.toggle();
+      },
+
+      registerSubmit: function() {
+        if (this.$.registerForm.validate()) {
+          this.$.registerForm.submit();
+          this.$.registerDialog.toggle();
+        }
+      },
+
+      registerPresubmit: function(event) {
+        var response = this.$.registerForm.request.body;
+        if (response.password === response.confirmPassword) {
+          delete response.confirmPassword;
+        } else {
+          event.preventDefault();
+          this.registerError({errorReason: 'La contraseña no coincide'});
+        }
+      },
+
+      registerResponse: function() {
+        this.fire('iron-signal', {
+          name: 'message-dialog',
+          data: {
+            message: '¡La cuenta fue creada exitosamente!, ' +
+            'favor <b>revise su correo</b>',
+          },
+        });
+      },
+
+      registerError: function(event) {
+        var errorReason = event.errorReason || 'La cuenta no pudo ser creada';
+        this.fire('iron-signal', {
+          name: 'message-dialog',
+          data: {error: errorReason},
+        });
       },
     });
   </script>
