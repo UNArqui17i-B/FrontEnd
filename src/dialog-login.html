@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="dialog-login">
@@ -97,13 +98,14 @@
 
       loginPresubmit: function(event) {
         // this.$.loginForm.request.body
-        console.log(this.$.loginForm.request.body);
         // event.preventDefault();
       },
 
       loginResponse: function(event) {
         // event.detail
+
         var token = event.detail.response;
+
         if (token.hasOwnProperty('token')) {
           this.set('token', token['token']);
           this.set('user.exp_date', token['token']);
@@ -114,7 +116,6 @@
 
       loginError: function(event) {
         // event.detail
-        console.log(event.detail);
       },
 
       initializeDefaultToken: function() {
