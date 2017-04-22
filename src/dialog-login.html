@@ -103,12 +103,12 @@
 
       loginResponse: function(event) {
         // event.detail
-
-        var token = JSON.parse(event.detail);
+        var token = event.detail.response;
         if (token.hasOwnProperty('token')) {
           this.set('token', token['token']);
           this.set('user.exp_date', token['token']);
           this.set('user.email', this.$.email.value);
+          location.pathname = '/shared'
         }
       },
 
