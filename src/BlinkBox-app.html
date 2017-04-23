@@ -39,7 +39,9 @@
     </style>
 
     <!-- All possible dialogs -->
-    <BlinkBox-dialogs></BlinkBox-dialogs>
+    <BlinkBox-dialogs
+      backend-url="[[ backendURL ]]">
+    </BlinkBox-dialogs>
 
     <!-- JWT -->
     <iron-localstorage
@@ -79,7 +81,7 @@
           <view-owned name="owned" backend-url="[[ backendURL ]]" user="[[user]]"></view-owned>
           <view-upload name="upload" backend-url="[[backendURL]]" user="[[user]]"></view-upload>
           <view-404 name="404"></view-404>
-          <view-not-logged name="not-logged"></view-not-logged>
+          <view-not-logged backend-url="[[ backendURL ]]" name="not-logged"></view-not-logged>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -92,7 +94,7 @@
       properties: {
         backendURL: {
           type: String,
-          value: 'http://localhost:4000', // backend url
+          value: 'http://192.168.99.101:5000/api', // backend url
         },
         token: {
           type: String,

@@ -1,113 +1,18 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/iron-form/iron-form.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/iron-icons/social-icons.html">
-<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
-<link rel="import" href="../bower_components/iron-signals/iron-signals.html">
-<link rel="import" href="shared-styles.html">
+<link rel="import" href="dialog-register.html">
+<link rel="import" href="dialog-login.html">
+<link rel="import" href="dialog-message.html">
 
 <dom-module id="BlinkBox-dialogs">
   <template>
-    <style include="shared-styles">
-      .container {
-        @apply(--layout-horizontal);
-        @apply(--layout-justified);
-      }
-
-      paper-input {
-        margin: 0 2.5%;
-      }
-
-      div paper-button {
-        background-color: var(--app-primary-color);
-        color: white;
-      }
-    </style>
-
-    <!-- Register Dialog -->
-    <iron-signals on-iron-signal-register-dialog="registerDialog"></iron-signals>
-    <paper-dialog id="registerDialog">
-      <h2>Crear cuenta</h2>
-      <form is="iron-form" method="get" action="/" id="registerUser">
-        <div class="container">
-          <paper-input
-            name="first-name" label="Nombre"
-            required auto-validate error-message="Este campo es obligatorio">
-            <iron-icon class="user-form" icon="social:person" prefix></iron-icon>
-          </paper-input>
-          <paper-input
-            name="last-name" label="Apellido"
-            required auto-validate error-message="Este campo es obligatorio">
-            <iron-icon class="user-form" icon="social:people" prefix></iron-icon>
-          </paper-input>
-        </div>
-
-        <paper-input
-          name="email" label="Correo" type="email"
-          required auto-validate error-message="Este campo es obligatorio">
-          <iron-icon class="user-form" icon="communication:mail-outline" prefix></iron-icon>
-        </paper-input>
-        <paper-input
-          name="password" label="Contraseña" type="password"
-          required auto-validate error-message="Este campo es obligatorio">
-          <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
-        </paper-input>
-        <paper-input
-          name="confirm-password" label="Confirmar contraseña" type="password"
-          required auto-validate error-message="Este campo es obligatorio">
-          <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
-        </paper-input>
-
-        <br>
-
-        <div align="center">
-          <paper-button raised>Crear cuenta</paper-button>
-        </div>
-      </form>
-    </paper-dialog>
-
-    <!-- Login Dialog -->
-    <iron-signals on-iron-signal-login-dialog="loginDialog"></iron-signals>
-    <paper-dialog id="loginDialog">
-      <h2>Ingresar</h2>
-      <form is="iron-form" method="get" action="/" id="loginUser">
-        <div class="container">
-          <paper-input
-            name="email" label="Correo" type="email"
-            required auto-validate error-message="Este campo es obligatorio">
-            <iron-icon class="user-form" icon="communication:mail-outline" prefix></iron-icon>
-          </paper-input>
-          <paper-input
-            name="password" label="Contraseña" type="password"
-            required auto-validate error-message="Este campo es obligatorio">
-            <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
-          </paper-input>
-        </div>
-
-        <br>
-
-        <div align="center">
-          <paper-button raised>Ingresar</paper-button>
-        </div>
-      </form>
-    </paper-dialog>
+    <dialog-register backend-url="[[ backendUrl ]]"></dialog-register>
+    <dialog-login backend-url="[[ backendUrl ]]"></dialog-login>
+    <dialog-message backend-url="[[ backendUrl ]]"></dialog-message>
   </template>
 
   <script>
     Polymer({
       is: 'BlinkBox-dialogs',
-
-      registerDialog: function() {
-        this.$.registerDialog.open();
-      },
-
-      loginDialog: function() {
-        this.$.loginDialog.open();
-      },
     });
   </script>
 </dom-module>
