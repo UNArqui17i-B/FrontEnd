@@ -44,41 +44,36 @@
     Polymer({
       is: 'view-confirm',
     
-      ready: function () {
+      ready: function() {
         this.backendURL = this.backendUrl;
         this.confirmID = this.queryParams.id;
         this.$.confirm.generateRequest();
       },
 
-      confirmResponse : function(event){
+      confirmResponse: function(event) {
           var response = event.detail.response;
-          if(response.hasOwnProperty("ok")){
+          if (response.hasOwnProperty('ok')) {
             this.loginDialog();
-          }else{
-            if(response.hasOwnProperty("status")){
+          } else {
+            if (response.hasOwnProperty('status')) {
               var reason = {
-                  errorReason : response["status"]
-              }
+                  errorReason: response['status'],
+              };
               this.confirmError(reason);
-            }else{
-              
+            } else {
               this.confirmError();
-              
             }
-            
           }
-
       },
 
-      confirmError : function(event){
-        this.confirmError();
-      },
       loginDialog: function() {
         this.fire('iron-signal', {name: 'login-dialog', data: null});
+        this.set('route.path', '/index');
       },
 
       confirmError: function(event) {
-        var errorReason = event.errorReason || "Email could not be confirmed";
+        var errorReason = event.errorReason || 'El correo no puede ser confirmado';
+        this.set('route.path', '/index');
         this.fire('iron-signal', {
           name: 'message-dialog',
           data: {error: errorReason},
