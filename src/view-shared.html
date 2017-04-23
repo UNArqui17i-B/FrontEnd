@@ -220,6 +220,7 @@
       },
       loadStorage: function() {
         this.$.ajaxGet.headers['Authorization'] = 'Bearer ' + this.token;
+        this.$.ajaxDownload.headers['Authorization'] = 'Bearer ' + this.token;
       },
       handleResponse: function(data) {
         if(!data.detail.response.shared_documents) {
@@ -261,7 +262,8 @@
       },
       handleTapDownload: function(e) {
         debugger;
-        this.activeItem = e.model.item;
+        if(e)
+          this.activeItem = e.model.item;
         this.$.ajaxDownload.generateRequest();
       },
       handleResponseDownload: function(data) {

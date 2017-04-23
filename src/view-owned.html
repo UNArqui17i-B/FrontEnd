@@ -387,7 +387,7 @@
           'date': auxEpoch.getTime() / 1000,
           'shared': this.activeItem.shared,
         });
-        this.$.ajaxDelete.generateRequest();
+        this.$.ajaxPut.generateRequest();
       },
       handleKeyEvent: function(e) {
         if (e.target.validate()) {
@@ -410,7 +410,8 @@
       },
       handleTapDownload: function(e) {
         debugger;
-        this.activeItem = e.model.item;
+        if(e)
+          this.activeItem = e.model.item;
         this.$.ajaxDownload.generateRequest();
       },
       handleResponseDownload: function(data) {
