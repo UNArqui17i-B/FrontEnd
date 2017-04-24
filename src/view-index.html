@@ -1,51 +1,62 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="feature-card.html">
 <link rel="import" href="banner-card.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="view-index">
-    <template>
-        <style include="shared-styles iron-flex">
-            :host {
-                display: block;
-                padding: 10px;
-            }
+  <template>
+    <style include="shared-styles iron-flex">
+      :host {
+        display: block;
+        padding: 10px;
+      }
 
-            #features {
-                @apply(--layout-horizontal);
-                @apply(--layout-wrap);
-                @apply(--layout-center-justified);
-            }
+      #features {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-center-justified);
+      }
+    </style>
 
-        </style>
+    <div align="center">
+      <banner-card></banner-card>
+    </div>
 
-        <div align="center">
-            <banner-card></banner-card>
-        </div>
+    <div id="features">
+      <feature-card
+        title="Comparte"
+        content="Comparte facilmente tus archivos con quien quieras, sin importar el tamaño de estos">
+        <iron-icon
+          icon="social:share">
+        </iron-icon>
+      </feature-card>
 
-        <div id="features">
-            <feature-card title="First Feature"
-                          content="This is the first one."
-                          image="https://camo.githubusercontent.com/1cd115e2ca265d2286e377997bb9500d3def4ab0/687474703a2f2f692e696d6775722e636f6d2f6473464368496b2e706e67">
-            </feature-card>
+      <feature-card
+        title="Vencimiento"
+        content="Tus archivos se vencen en un máximo de 7 días, así podrás controlar la vigencia del archivo">
+        <iron-icon
+          icon="av:av-timer">
+        </iron-icon>
+      </feature-card>
 
-            <feature-card title="Second Feature"
-                          content="This is the second one."
-                          image="https://camo.githubusercontent.com/1cd115e2ca265d2286e377997bb9500d3def4ab0/687474703a2f2f692e696d6775722e636f6d2f6473464368496b2e706e67">
-            </feature-card>
+      <feature-card
+        title="Seguridad"
+        content="Se verifica con los mejores estándares la integridad de tu archivo y la veracidad de la cuenta">
+        <iron-icon
+          icon="icons:verified-user">
+        </iron-icon>
+      </feature-card>
+    </div>
+  </template>
 
-            <feature-card title="Third Feature"
-                          content="This is the third one."
-                          image="https://camo.githubusercontent.com/1cd115e2ca265d2286e377997bb9500d3def4ab0/687474703a2f2f692e696d6775722e636f6d2f6473464368496b2e706e67">
-            </feature-card>
-        </div>
-
-    </template>
-
-    <script>
-        Polymer({
-            is: 'view-index',
-        });
-    </script>
+  <script>
+    Polymer({
+      is: 'view-index',
+    });
+  </script>
 </dom-module>
