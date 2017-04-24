@@ -258,12 +258,12 @@ Custom property | Description | Default
       /**
        * File metadata, upload status and progress information.
        */
-      file: Object
+      file: Object,
     },
 
     observers: [
       '_fileChanged(file.*)',
-      '_fileAborted(file.abort)'
+      '_fileAborted(file.abort)',
     ],
 
     _fileChanged: function() {
@@ -288,7 +288,7 @@ Custom property | Description | Default
       e.preventDefault();
       var button = Polymer.dom(e).localTarget;
       return this.fire(button.getAttribute('file-event'), {file: this.file});
-    }
+    },
 
    /**
     * Fired when the retry button is pressed. It is listened by `vaadin-upload`
@@ -301,8 +301,8 @@ Custom property | Description | Default
 
     /**
      * Fired when abort button is pressed. It is listened by `vaadin-upload` which
-     * will abort the upload in progress, but will not remove the file from the list
-     * to allow the animation to hide the element to be run.
+     * will abort the upload in progress, but will not remove the file
+     * from the list to allow the animation to hide the element to be run.
      *
      * @event file-abort
      * @param {Object} detail
