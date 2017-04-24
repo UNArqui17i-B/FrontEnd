@@ -104,9 +104,11 @@
         backendURL: String,
         user: Object,
       },
-      ready: function () {
+
+      ready: function() {
         this.backendURL = this.backendUrl;
       },
+
       addEmail: function(e) {
         if(e.target.validate()) {
           if(e.charCode === 13) {
@@ -118,28 +120,34 @@
           }
         }
       },
+
       handleRequest: function(event) {
         var date = new Date(this.$.datePicker.value);
-        event.detail.formData.append('expiring_date', date.getTime()/1000);
-        if (this.$.sharedEmails.items.length > 0)
-          event.detail.formData.append('shared', this.$.sharedEmails.items.join(","));
-        debugger
+        event.detail.formData.append('expiring_date', date.getTime() / 1000);
+        if (this.$.sharedEmails.items.length > 0) {
+          var shared = this.$.sharedEmails.items.join(',');
+          event.detail.formData.append('shared', shared);
+        }
       },
+
       now: function() {
         var auxDate = new Date();
         return auxDate.toISOString().split('T')[0];
       },
+
       maxDate: function() {
         var auxDate = new Date();
         auxDate.setDate(auxDate.getDate() + 7);
         return auxDate.toISOString().split('T')[0];
       },
-      handleTap: function(event) {
+
+      handleTap: function() {
         this.$.uploadFile.uploadFiles();
       },
-      success: function (event) {
+
+      success: function() {
         this.$.successDialog.toggle();
-      }
+      },
     });
   </script>
 </dom-module>
