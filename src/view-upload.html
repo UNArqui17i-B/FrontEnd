@@ -1,5 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
@@ -7,6 +6,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="shared-styles.html">
 
 <dom-module id="view-upload">
   <template>
@@ -22,8 +22,7 @@
         display: block;
         margin-left: auto;
         margin-right: auto;
-        border: dashed 1px lightgray;
-        border-radius: 4px;
+        background-color: #fff;
       }
 
       .button-block{
@@ -38,6 +37,15 @@
         margin-left: auto;
         margin-right: auto;
         padding: 5px;
+      }
+
+      paper-button {
+        background-color: var(--app-primary-color);
+        color: white;
+      }
+
+      vaadin-upload {
+        border: dashed 1px lightgray;
       }
     </style>
 
@@ -83,7 +91,6 @@
     </paper-card>
 
     <paper-dialog id="successDialog">
-
       <h3>El archivo ha sido subido exitosamente</h3>
       <div class="buttons">
         <a href="/owned" tabindex="-1">
