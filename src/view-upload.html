@@ -5,6 +5,7 @@
 <link rel="import" href="custom-vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="shared-styles.html">
 
@@ -17,7 +18,7 @@
         padding: 10px;
       }
 
-      .container{
+      .container {
         width: 75%;
         display: block;
         margin-left: auto;
@@ -25,13 +26,13 @@
         background-color: #fff;
       }
 
-      .button-block{
+      .button-block {
         @apply(--layout-horizontal);
         @apply(--layout-center-justified);
         padding-bottom: 10px;
       }
 
-      .block{
+      .block {
         width: 90%;
         display: block;
         margin-left: auto;
@@ -50,10 +51,15 @@
     </style>
 
     <paper-card>
+      <iron-localstorage
+        name="blinkbox-token"
+        value="{{token}}"
+        useRaw="true"
+        on-iron-localstorage-load="loadStorage"></iron-localstorage>
       <div class="container">
         <div class="block">
           <vaadin-upload no-auto id="uploadFile"
-                         target="[[backendURL]]/upload/[[user.email]]"
+                         target="[[backendURL]]/files/upload/[[user.email]]"
                          max-files="1"
                          on-upload-request="handleRequest"
                          on-upload-success="success">
@@ -111,12 +117,14 @@
         backendURL: String,
         user: Object,
       },
-      ready: function () {
+
+      ready: function() {
         this.backendURL = this.backendUrl;
       },
+
       addEmail: function(e) {
-        if(e.target.validate()) {
-          if(e.charCode === 13) {
+        if (e.target.validate()) {
+          if (e.charCode === 13) {
             var newEmail = e.target.value;
             this.emails.push(newEmail);
             this.notifyPath('emails');
@@ -125,28 +133,37 @@
           }
         }
       },
+
       handleRequest: function(event) {
         var date = new Date(this.$.datePicker.value);
-        event.detail.formData.append('expiring_date', date.getTime()/1000);
-        if (this.$.sharedEmails.items.length > 0)
-          event.detail.formData.append('shared', this.$.sharedEmails.items.join(","));
-        debugger
+        event.detail.formData.append('expiring_date', date.getTime() / 1000);
+        if (this.$.sharedEmails.items.length > 0) {
+          var shared = this.$.sharedEmails.items.join(',');
+          event.detail.formData.append('shared', shared);
+        }
       },
+
       now: function() {
         var auxDate = new Date();
         return auxDate.toISOString().split('T')[0];
       },
+
       maxDate: function() {
         var auxDate = new Date();
         auxDate.setDate(auxDate.getDate() + 7);
         return auxDate.toISOString().split('T')[0];
       },
-      handleTap: function(event) {
+
+      handleTap: function() {
         this.$.uploadFile.uploadFiles();
       },
-      success: function (event) {
+
+      success: function() {
         this.$.successDialog.toggle();
-      }
+      },
+      loadStorage: function() {
+        this.$.uploadFile.headers['Authorization'] = 'Bearer ' + this.token;
+      },
     });
   </script>
 </dom-module>

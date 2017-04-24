@@ -210,7 +210,7 @@
       is: 'view-not-logged',
       properties: {
         email: String,
-        password: String
+        password: String,
       },
 
       token: {
@@ -220,11 +220,11 @@
           type: Object,
         },
       dis: {
-        type : String,
+        type: String,
       },
-      ready: function () {
+      ready: function() {
         this.backendURL = this.backendUrl;
-        this.dis = "true";
+        this.dis = 'true';
       },
 
       registerDialog: function() {
@@ -235,20 +235,17 @@
         if (this.$.signIn.validate()) {
           this.dis = false;
           this.$.signIn.submit();
-
         }
       },
 
       loginPresubmit: function(event) {
         // this.$.loginForm.request.body
-        console.log(this.$.signIn.request.body);
+        // this.$.signIn.request.body
         // event.preventDefault();
       },
 
       loginResponse: function(event) {
-        // event.detail
-
-        var token = event.detail.response
+        var token = event.detail.response;
 
         if (token.hasOwnProperty('token')) {
           this.set('token', token['token']);
@@ -262,7 +259,6 @@
 
       loginError: function(event) {
         // event.detail
-        console.log(event.detail);
       },
 
       initializeDefaultToken: function() {
