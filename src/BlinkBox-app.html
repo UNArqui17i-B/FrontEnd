@@ -40,7 +40,7 @@
 
     <!-- All possible dialogs -->
     <BlinkBox-dialogs
-      backend-url="[[ backendURL ]]">
+      backend-url="[[backendURL]]">
     </BlinkBox-dialogs>
 
     <!-- JWT -->
@@ -67,7 +67,7 @@
     <app-drawer-layout fullbleed>
       <!-- Main content -->
       <app-header-layout has-scrolling-region>
-        <custom-header username="[[ user.firstName ]]"></custom-header>
+        <custom-header username="[[user.firstName]]"></custom-header>
 
         <iron-pages
           selected="[[page]]"
@@ -77,11 +77,22 @@
 
           <view-index name="index"></view-index>
           <view-account name="account"></view-account>
-          <view-shared name="shared" backend-url="[[ backendURL ]]" user="[[user]]" query-params="[[queryParams]]"></view-shared>
-          <view-owned name="owned" backend-url="[[ backendURL ]]" user="[[user]]"></view-owned>
+          <view-shared
+            name="shared"
+            backend-url="[[backendURL]]"
+            user="[[user]]"
+            query-params="[[queryParams]]">
+          </view-shared>
+          <view-owned name="owned" backend-url="[[backendURL]]" user="[[user]]"></view-owned>
           <view-upload name="upload" backend-url="[[backendURL]]" user="[[user]]"></view-upload>
+          <view-not-logged backend-url="[[backendURL]]" name="not-logged"></view-not-logged>
+          <view-confirm
+            route="{{route}}"
+            name="confirm"
+            query-params="[[queryParams]]"
+            backend-url="[[backendURL]]">
+          </view-confirm>
           <view-404 name="404"></view-404>
-          <view-not-logged name="not-logged"></view-not-logged>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>

@@ -1,0 +1,85 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="view-confirm">
+  <template>
+    <style include="shared-styles iron-flex">
+      :host {
+        display: block;
+        padding: 10px;
+
+        /* Label and underline color when the input is not focused */
+        /* --paper-input-container-color: var(--app-secondary-color); */
+
+        /* Label and underline color when the input is focused */
+        --paper-input-container-focus-color: var(--app-primary-color);
+
+        /* Label and underline color when the input is invalid */
+        --paper-input-container-invalid-color: red;
+      }
+
+    </style>
+    <iron-ajax
+        id="confirm"
+        url="[[ backendUrl ]]/users/email/[[ confirmID ]]"
+        method="PUT"
+        content-type="application/x-www-form-urlencoded"
+        handle-as="json"
+        on-response="confirmResponse"
+        on-error="confirmError"
+        ></iron-ajax>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'view-confirm',
+    
+      ready: function() {
+        this.backendURL = this.backendUrl;
+        this.confirmID = this.queryParams.id;
+        this.$.confirm.generateRequest();
+      },
+
+      confirmResponse: function(event) {
+          var response = event.detail.response;
+          if (response.hasOwnProperty('ok')) {
+            this.loginDialog();
+          } else {
+            if (response.hasOwnProperty('status')) {
+              var reason = {
+                  errorReason: response['status'],
+              };
+              this.confirmError(reason);
+            } else {
+              this.confirmError();
+            }
+          }
+      },
+
+      loginDialog: function() {
+        this.fire('iron-signal', {name: 'login-dialog', data: null});
+        this.set('route.path', '/index');
+      },
+
+      confirmError: function(event) {
+        var errorReason = event.errorReason || 'El correo no puede ser confirmado';
+        this.set('route.path', '/index');
+        this.fire('iron-signal', {
+          name: 'message-dialog',
+          data: {error: errorReason},
+        });
+      },
+
+    });
+  </script>
+</dom-module>
