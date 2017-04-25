@@ -1,0 +1,87 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="view-loggout">
+  <template>
+    <style include="shared-styles iron-flex">
+      :host {
+        display: block;
+        padding: 10px;
+
+        /* Label and underline color when the input is not focused */
+        /* --paper-input-container-color: var(--app-secondary-color); */
+
+        /* Label and underline color when the input is focused */
+        --paper-input-container-focus-color: var(--app-primary-color);
+
+        /* Label and underline color when the input is invalid */
+        --paper-input-container-invalid-color: red;
+      }
+
+    </style>
+    <iron-localstorage
+      name="blinkboxToken"
+      id="blinkboxToken"
+      value="{{token}}"
+      useRaw="true"
+      on-iron-localstorage-load-empty="initializeDefaultToken">
+    </iron-localstorage>
+    <iron-localstorage
+      name="blinkboxUser"
+      id="blinkboxUser"
+      value="{{user}}"
+      on-iron-localstorage-load-empty="initializeDefaultUser">
+    </iron-localstorage>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'view-loggout',
+
+      token: {
+          type: String,
+        },
+      user: {
+          type: Object,
+        },
+    
+      ready: function() {
+          this.initializeDefaultToken();
+          this.initializeDefaultUser();
+          this.set('token', null);
+          this.set('user.id', '');
+          this.set('user.exp_date', '');
+          this.set('user.email', '');
+          this.set('user.firstName', '');
+          this.set('user.lastName', '');
+          this.$.blinkboxToken.save();
+          this.$.blinkboxUser.save();
+          location.pathname = "/index";
+
+      },
+      initializeDefaultToken: function() {
+        this.token = '';
+      },
+      initializeDefaultUser: function() {
+        this.user = {
+          id: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          expDate: '',
+        };
+      },
+
+    });
+  </script>
+</dom-module>
