@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="view-account">
@@ -121,20 +122,38 @@
       }
 
     </style>
+    
 
-    <iron-ajax auto url="[[backendUrl]]/users/[[userId]]"
-               handle-as="json" on-response="handleResponse"></iron-ajax>
+    <iron-localstorage
+      name="blinkbox-token"
+      value="{{ token }}"
+      useRaw="true"
+      on-iron-localstorage-load="initializeDefaultToken">
+
+
+    <iron-ajax auto
+           url="[[backendUrl]]/users/[[userId]]"
+           handle-as="json"
+           on-response="handleResponse"
+           id="getAjax"></iron-ajax>
+
+    <iron-ajax id="deleteAjax"
+          method="DELETE">
+    </iron-ajax>
+
+    <iron-ajax id="putAjax"
+          method="PUT"
+          content-type="application/json"
+          url="[[backendUrl]]/users/[[user._id]]">
+    </iron-ajax>
+
 
     <div id="my-account">
       <paper-card class="account-form">
         <div class="card-header">MI CUENTA</div>
 
         <div class="card-content">
-          <iron-ajax id="putAjax"
-                     method="PUT"
-                     content-type="application/json"
-                     url="[[backendUrl]]/users/[[user._id]]">
-          </iron-ajax>
+
 
           <form is="iron-form" method="get" action="/" id="update">
 
@@ -187,9 +206,6 @@
           </p>
 
           <div align="center">
-            <iron-ajax id="deleteAjax"
-                       method="DELETE">
-            </iron-ajax>
             <paper-button class="full-color" on-tap="_delete">
               <!-- <iron-icon icon="clear"></iron-icon> -->
               Desactivar cuenta
@@ -216,6 +232,7 @@
           type: Object,
         },
         ajaxResponse: Object,
+        token: String,
       },
 
       handleResponse: function(data) {
@@ -231,10 +248,11 @@
       },
 
       _submit: function() {
-        if (this.$.update.checkValidity()) {
+        if (this.$.update.validate()) {
           this.$.putAjax.body = JSON.stringify(this.user);
           this.$.putAjax.generateRequest();
           open('/account', '_self');
+          // this.$.getAjax.generateRequest();
 
         } else {
           this._handleError('At least one field is invalid.');
@@ -247,6 +265,11 @@
         open('/', '_self');
         // this.page = 'index';
       },
+
+      initializeDefaultToken: function(){
+        this.$.putAjax.headers['Authorization'] = 'Bearer ' + this.token;
+        this.$.deleteAjax.headers['Authorization'] = 'Bearer ' + this.token;
+      }
     });
   </script>
 </dom-module>
