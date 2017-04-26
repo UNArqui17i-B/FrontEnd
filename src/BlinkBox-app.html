@@ -45,13 +45,13 @@
 
     <!-- JWT -->
     <iron-localstorage
-      name="blinkbox-token"
+      name="blinkboxToken"
       value="{{ token }}"
       useRaw="true"
       on-iron-localstorage-load-empty="initializeDefaultToken">
     </iron-localstorage>
     <iron-localstorage
-      name="blinkbox-user"
+      name="blinkboxUser"
       value="{{ user }}"
       on-iron-localstorage-load-empty="initializeDefaultUser">
     </iron-localstorage>
@@ -92,6 +92,7 @@
             query-params="[[queryParams]]"
             backend-url="[[backendURL]]">
           </view-confirm>
+          <view-loggout name="loggout"></view-loggout>
           <view-404 name="404"></view-404>
         </iron-pages>
       </app-header-layout>
@@ -105,7 +106,7 @@
       properties: {
         backendURL: {
           type: String,
-          value: 'http://localhost:5000/api', // backend url
+          value: 'http://192.168.99.101:5000/api', // backend url
         },
         token: {
           type: String,
