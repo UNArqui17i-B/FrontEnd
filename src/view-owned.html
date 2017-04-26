@@ -82,6 +82,11 @@
         value="{{token}}"
         useRaw="true"
         on-iron-localstorage-load="loadStorage"></iron-localstorage>
+      <iron-localstorage
+        name="blinkboxUser"
+        value="{{user}}"
+        useRaw="true"
+        on-iron-localstorage-load="loadStorage"></iron-localstorage>
       <iron-ajax auto
                  id="ajaxGet"
                  url="[[backendURL]]/files/ownedBy/[[user.email]]"

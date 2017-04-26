@@ -77,14 +77,10 @@
 
           <view-index name="index"></view-index>
           <view-account name="account"></view-account>
-          <view-shared
-            name="shared"
-            backend-url="[[backendURL]]"
-            user="[[user]]"
-            query-params="[[queryParams]]">
+          <view-shared name="shared" backend-url="[[backendURL]]" query-params="[[queryParams]]">
           </view-shared>
-          <view-owned name="owned" backend-url="[[backendURL]]" user="[[user]]"></view-owned>
-          <view-upload name="upload" backend-url="[[backendURL]]" user="[[user]]"></view-upload>
+          <view-owned name="owned" backend-url="[[backendURL]]"></view-owned>
+          <view-upload name="upload" backend-url="[[backendURL]]"></view-upload>
           <view-not-logged backend-url="[[backendURL]]" name="not-logged"></view-not-logged>
           <view-confirm
             route="{{route}}"
@@ -106,7 +102,7 @@
       properties: {
         backendURL: {
           type: String,
-          value: 'http://192.168.99.101:5000/api', // backend url
+          value: 'http://localhost:5000/api', // backend url
         },
         token: {
           type: String,
