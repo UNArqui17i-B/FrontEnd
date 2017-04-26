@@ -14,12 +14,16 @@
     <style include="shared-styles iron-flex">
       :host {
         display: block;
-
         padding: 10px;
       }
 
+      @media screen and (min-width: 769px) {
+        .container{
+          width: 75%;
+        }
+      }
+
       .container {
-        width: 75%;
         display: block;
         margin-left: auto;
         margin-right: auto;
