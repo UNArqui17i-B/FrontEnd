@@ -76,14 +76,7 @@
           role="main">
 
           <view-index name="index"></view-index>
-          <view-account name="account"></view-account>
-          <view-shared
-            name="shared"
-            backend-url="[[backendURL]]"
-            user="[[user]]"
-            query-params="[[queryParams]]">
-          </view-shared>
-          <view-owned name="owned" backend-url="[[backendURL]]" user="[[user]]"></view-owned>
+          <view-account name="account" backend-url="[[ backendURL ]]" user-id="[[user.id]]"></view-account>
           <view-upload name="upload" backend-url="[[backendURL]]" user="[[user]]"></view-upload>
           <view-not-logged backend-url="[[backendURL]]" name="not-logged"></view-not-logged>
           <view-confirm
