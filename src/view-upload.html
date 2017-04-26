@@ -44,7 +44,7 @@
 
     <paper-card>
       <iron-localstorage
-        name="blinkbox-token"
+        name="blinkboxToken"
         value="{{token}}"
         useRaw="true"
         on-iron-localstorage-load="loadStorage"></iron-localstorage>
@@ -129,7 +129,7 @@
 
       handleRequest: function(event) {
         var date = new Date(this.$.datePicker.value);
-        event.detail.formData.append('expiring_date', date.getTime() / 1000);
+        event.detail.formData.append('expiring_date', (date.getTime() / 1000) % (86400));
         if (this.$.sharedEmails.items.length > 0) {
           var shared = this.$.sharedEmails.items.join(',');
           event.detail.formData.append('shared', shared);
