@@ -71,7 +71,12 @@
                  on-response="handleResponseDownload"
                  on-error="handleError"></iron-ajax>
       <iron-localstorage
-        name="blinkbox-token"
+        name="blinkboxUser"
+        value="{{user}}"
+        useRaw="true"
+        on-iron-localstorage-load="loadStorage"></iron-localstorage>
+      <iron-localstorage
+        name="blinkboxToken"
         value="{{token}}"
         useRaw="true"
         on-iron-localstorage-load="loadStorage"></iron-localstorage>
