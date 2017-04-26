@@ -16,8 +16,8 @@
 
       .feature-header {
         @apply(--paper-font-title);
-        text-align: center;
-        padding-bottom: 10px;
+        @apply(--layout-self-center);
+        padding-left: 20px;
       }
       .circle {
         display: inline-block;
@@ -30,14 +30,20 @@
         font-size: 30px;
         line-height: 64px;
       }
+
+      .container {
+        @apply(--layout-horizontal);
+      }
     </style>
 
     <paper-card class="feature">
       <div class="card-content">
-        <div class="circle">
-          <content></content>
+        <div class="container">
+          <div class="circle">
+            <content></content>
+          </div>
+          <div class="feature-header">[[title]]</div>
         </div>
-        <div class="feature-header">[[title]]</div>
         <p>[[content]]</p>
       </div>
     </paper-card>
