@@ -26,6 +26,11 @@
         background-color: var(--app-primary-color);
         color: white;
       }
+
+      #cancel{
+        background-color: white;
+        color: var(--app-primary-color);
+      }
     </style>
 
     <iron-signals on-iron-signal-register-dialog="registerDialog"></iron-signals>
@@ -70,8 +75,8 @@
         <br>
 
         <div class="container">
+          <paper-button raised on-tap="registerDialog" id="cancel">Cancelar</paper-button>
           <paper-button raised on-tap="registerSubmit">Crear cuenta</paper-button>
-          <paper-button raised on-tap="registerDialog">Cancelar</paper-button>
         </div>
       </form>
     </paper-dialog>

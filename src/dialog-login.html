@@ -27,6 +27,11 @@
         background-color: var(--app-primary-color);
         color: white;
       }
+
+      #cancel{
+        background-color: white;
+        color: var(--app-primary-color);
+      }
     </style>
 
     <iron-localstorage
@@ -67,8 +72,8 @@
         <br>
 
         <div class="container">
+          <paper-button raised on-tap="loginDialog" id="cancel">Cancelar</paper-button>
           <paper-button raised on-tap="loginSubmit">Ingresar</paper-button>
-          <paper-button raised on-tap="loginDialog">Cancelar</paper-button>
         </div>
       </form>
     </paper-dialog>
