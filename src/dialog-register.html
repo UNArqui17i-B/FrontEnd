@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="dialog-register">
@@ -34,6 +35,7 @@
     </style>
 
     <iron-signals on-iron-signal-register-dialog="registerDialog"></iron-signals>
+    <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="registerSubmit"></iron-a11y-keys>
     <paper-dialog id="registerDialog" modal>
       <h2>Crear cuenta</h2>
       <form is="iron-form"
@@ -90,6 +92,13 @@
         backendUrl: {
           type: String,
         },
+
+        target:{
+          type: Object,
+          value: function () {
+            return this.$.registerForm.setTarget;
+          }
+        }
       },
 
       registerDialog: function() {
