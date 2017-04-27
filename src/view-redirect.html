@@ -1,0 +1,122 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="view-redirect">
+  <template>
+    <style include="shared-styles iron-flex">
+      :host {
+        display: block;
+        padding: 10px;
+
+        /* Label and underline color when the input is not focused */
+        /* --paper-input-container-color: var(--app-secondary-color); */
+
+        /* Label and underline color when the input is focused */
+        --paper-input-container-focus-color: var(--app-primary-color);
+
+        /* Label and underline color when the input is invalid */
+        --paper-input-container-invalid-color: red;
+      }
+
+    </style>
+    <iron-localstorage
+      name="blinkboxToken"
+      value="{{ token }}"
+      useRaw="true"
+      on-iron-localstorage-load-empty="initializeDefaultToken">
+    </iron-localstorage>
+    <iron-localstorage
+      name="blinkboxUser"
+      value="{{ user }}"
+      on-iron-localstorage-load-empty="initializeDefaultUser"
+      on-iron-localstorage-load="localStorageLoad">
+    </iron-localstorage>
+
+    <iron-ajax
+        id="permissions"
+        url="[[ backendUrl ]]/files/sharedWith/[[ user.email ]]"
+        method="GET"
+        content-type="application/x-www-form-urlencoded"
+        headers = "[[headers]]"
+        handle-as="json"
+        on-response="permissionsResponse"
+        on-error="permissionsError"
+        ></iron-ajax>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'view-redirect',
+      properties:{
+        headers : {
+            type: Object,
+            computed: 'getHeaders(myHeader)'
+        },
+
+        myHeader :{
+            value : "bearer "+this.token
+        }
+      },
+    
+      ready: function() {
+        this.backendURL = this.backendUrl;
+        this.sharedID = this.queryParams.id;
+      },
+      getHeaders (myHeader){
+        return {'X-Custom-Header': myHeader}
+      },
+      localStorageLoad: function(){
+        if(this.user.email == ''){
+          location.pathname = "/not-logged";
+        }else{
+          this.$.permissions.generateRequest();
+        }
+      },
+
+      initializeDefaultToken: function() {
+        this.token = '';
+      },
+      initializeDefaultUser: function() {
+        this.user = {
+          id: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          exp_date: '',
+        };
+      },
+
+      permissionsError : function(error){
+        console.log(error)
+      },
+
+      permissionsResponse : function(e){
+        val = e.detail.response;
+        if(val.hasOwnProperty("shared_documents")){
+          lista = val["shared_documents"]
+          for (i = 0; i < lista.length; i++) { 
+              if(lista[i] == this.sharedID){
+                location.pathname = "/shared"
+              }
+          }        
+        }
+        errorReason = "No tienes accesso al archivo";
+        this.fire('iron-signal', {
+          name: 'message-dialog',
+          data: {error: errorReason},
+        });
+      }
+
+    });
+  </script>
+</dom-module>
