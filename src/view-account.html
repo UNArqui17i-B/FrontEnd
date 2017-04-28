@@ -171,27 +171,39 @@
           <form is="iron-form" method="get" action="/" id="update">
 
             <div class="full-name">
-              <paper-input name="name" label="Nombre" value="{{ user.firstName }}">
+              <paper-input name="name" label="Nombre"
+                           value="{{ user.firstName }}"
+                           pattern="^[a-zA-Z\s]{3,30}$"
+                           error-message="Debe contener sólo letras y ser de 3 a 30 caracteres."
+                           auto-validate >
                 <iron-icon class="update-user-form" icon="social:person" prefix></iron-icon>
               </paper-input>
 
-              <paper-input name="lastname" label="Apellido" value="{{ user.lastName }}">
+              <paper-input name="lastname" label="Apellido"
+                           value="{{ user.lastName }}"
+                           pattern="^[a-zA-Z\s]{3,30}$"
+                           error-message="Debe contener sólo letras y ser de 3 a 30 caracteres."
+                           auto-validate >
                 <iron-icon class="update-user-form" icon="social:people" prefix></iron-icon>
               </paper-input>
             </div>
 
-            <paper-input name="old-password" label="Contraseña actual" value="{{ user.password }}"
+            <paper-input name="old-password" label="Contraseña actual" value="{{ currentPassword }}"
                          type="password" required error-message="Verifica tu contraseña.">
               <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
             </paper-input>
 
-            <paper-input name="new-password" label="Nueva contraseña"
-                         type="password" minlength="10" error-message="Mínimo 8 caracteres.">
+            <paper-input id="password" name="new-password" label="Nueva contraseña"
+                         type="password" value="{{ user.password }}"
+                         error-message="Mínimo 3 caracteres, sólo se permiten letras y números."
+                         pattern="^[a-zA-Z0-9]{3,30}$" auto-validate>
               <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
             </paper-input>
 
-            <paper-input name="confirm-new-password" label="Confirmar nueva contraseña"
-                         type="password" minlength="10" error-message="Las contraseñas deben coincidir.">
+            <paper-input id="confirm"
+                         name="confirm-new-password" label="Confirmar nueva contraseña"
+                         type="password" error-message="Las contraseñas deben coincidir."
+                         value="{{confirmInput}}">
               <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
             </paper-input>
 
@@ -252,22 +264,30 @@
         ajaxResponse: Object,
         token: String,
         isCorrectPassword: Boolean,
+        currentPassword: String,
+        confirmInput: String,
       },
+
+      observers: [
+        'confirmPasswordChanged(confirmInput)',
+      ],
 
       handleResponse: function(data) {
         this.user = data.detail.response;
       },
 
       handleLoginResponse: function(data) {
-        if( data.detail.xhr.status === 200 ){
+        if (data.detail.xhr.status === 200) {
+          if( this.user.password === undefined ){
+            this.user.password = this.currentPassword;
+          }
           this.$.putAjax.body = JSON.stringify(this.user);
           this.$.putAjax.generateRequest();
           location.pathname = '/account';
-          // open('/account', '_self');
         }
       },
 
-      handleLoginErrorResponse: function(e){
+      handleLoginErrorResponse: function(e) {
         var ironRequest = e.detail.request;
         var relatedXhr = ironRequest.xhr;
         this.errorMessage = relatedXhr.status + ' : ' + relatedXhr.statusText;
@@ -279,17 +299,22 @@
         // debugger;
       },
 
-      checkValidity: function(){
-        return true;
+      confirmPasswordChanged: function(confirmInput) {
+        if (this.$.password.value != this.$.confirm.value ) {
+          this.$.confirm.invalid = true; //show message error
+        } else { //if matches is ok
+          this.$.confirm.invalid = false; //hide message error
+        }
       },
 
       _submit: function() {
         if (this.$.update.validate()) {
-          var data = { "email" : this.user.email, "password" : this.user.password };
+          var data = {
+            "email": this.user.email,
+            "password": this.currentPassword,
+          };
           this.$.postAjax.body = JSON.stringify(data);
           this.$.postAjax.generateRequest();
-        } else {
-          this._handleError('At least one field is invalid.');
         }
       },
 
@@ -300,11 +325,11 @@
         // this.page = 'index';
       },
 
-      initializeDefaultToken: function(){
+      initializeDefaultToken: function() {
         this.$.putAjax.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.deleteAjax.headers['Authorization'] = 'Bearer ' + this.token;
         // this.$.postAjax.headers['Authorization'] = 'Bearer ' + this.token;
-      }
+      },
     });
   </script>
 </dom-module>
