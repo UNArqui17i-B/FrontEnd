@@ -175,6 +175,9 @@
         this.$.successDialog.toggle();
       },
       loadStorage: function() {
+        if (this.token.length === 0){
+          location.href = '/';
+        }
         this.$.uploadFile.headers['Authorization'] = 'Bearer ' + this.token;
       },
     });

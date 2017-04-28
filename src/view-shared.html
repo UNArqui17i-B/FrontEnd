@@ -223,6 +223,9 @@
         this.searchID = this.queryParams.id;
       },
       loadStorage: function() {
+        if (this.token.length === 0) {
+          location.href = '/';
+        }
         this.$.ajaxGet.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.ajaxDownload.headers['Authorization'] = 'Bearer ' + this.token;
       },
