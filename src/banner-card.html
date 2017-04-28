@@ -13,7 +13,7 @@
       paper-card.banner {
         @apply(--layout-horizontal);
         width: 960px;
-        margin: 15px 0px;
+        margin: 15px 0;
         text-align: justify;
       }
 
@@ -33,15 +33,21 @@
         float: left;
       }
 
-      .banner-header { @apply(--paper-font-headline); }
+      .banner-header {
+        @apply(--paper-font-headline);
+        color: var(--app-primary-color);
+      }
 
-      .banner-question { color: var(--paper-grey-600); margin: 10px 0; }
+      .banner-question {
+        color: var(--paper-grey-600);
+        margin: 10px 0;
+      }
 
       @media screen and (max-width: 1000px) {
         paper-card.banner {
           @apply(--layout-horizontal);
           width: 630px;
-          margin: 15px 0px;
+          margin: 15px 0;
           text-align: center;
         }
 

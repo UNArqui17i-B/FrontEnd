@@ -1,10 +1,10 @@
 {
-  "name": "BlinkBox",
-  "short_name": "BlinkBox",
-  "start_url": "/",
-  "display": "standalone",
-  "theme_color": "#673AB7",
+  "name": "Blink Box",
+  "theme_color": "#673ab7",
   "background_color": "#673AB7",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
       "src": "images/manifest/icon-192x192.png",
