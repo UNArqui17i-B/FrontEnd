@@ -122,13 +122,18 @@
       }
 
     </style>
-    
+
 
     <iron-localstorage
       name="blinkbox-token"
       value="{{ token }}"
       useRaw="true"
       on-iron-localstorage-load="initializeDefaultToken">
+
+    <iron-localstorage
+      name="blinkbox-user"
+      value="{{ userStorage }}">
+    </iron-localstorage>
 
 
     <iron-ajax auto
@@ -147,6 +152,12 @@
           url="[[backendUrl]]/users/[[user._id]]">
     </iron-ajax>
 
+    <iron-ajax id="postAjax"
+          method="POST"
+          content-type="application/json"
+          on-response="handleLoginResponse"
+          url="[[backendUrl]]/users/login/">
+    </iron-ajax>
 
     <div id="my-account">
       <paper-card class="account-form">
@@ -233,10 +244,26 @@
         },
         ajaxResponse: Object,
         token: String,
+        isCorrectPassword: Boolean,
       },
 
       handleResponse: function(data) {
         this.user = data.detail.response;
+      },
+
+      handleLoginResponse: function(data) {
+        this.isCorrectPassword = ( data.detail.xhr.status === 200 );
+        console.log(this.isCorrectPassword);
+
+        if( this.isCorrectPassword ){
+          this.$.putAjax.body = JSON.stringify(this.user);
+          this.$.putAjax.generateRequest();
+          location.pathname = '/account';
+          // open('/account', '_self');
+        }
+        else{
+          this._handleError('Password is invalid.');
+        }
       },
 
       ready: function() {
@@ -249,11 +276,9 @@
 
       _submit: function() {
         if (this.$.update.validate()) {
-          this.$.putAjax.body = JSON.stringify(this.user);
-          this.$.putAjax.generateRequest();
-          open('/account', '_self');
-          // this.$.getAjax.generateRequest();
-
+          var data = { "email" : this.user.email, "password" : this.user.password };
+          this.$.postAjax.body = JSON.stringify(data);
+          this.$.postAjax.generateRequest();
         } else {
           this._handleError('At least one field is invalid.');
         }
@@ -269,6 +294,7 @@
       initializeDefaultToken: function(){
         this.$.putAjax.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.deleteAjax.headers['Authorization'] = 'Bearer ' + this.token;
+        // this.$.postAjax.headers['Authorization'] = 'Bearer ' + this.token;
       }
     });
   </script>
