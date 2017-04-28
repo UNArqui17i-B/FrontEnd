@@ -320,13 +320,13 @@
         this.backendURL = this.backendUrl;
       },
       loadStorage: function() {
+        if (this.token.length === 0) {
+          location.href = '/';
+        }
         this.$.ajaxGet.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.ajaxDelete.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.ajaxPut.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.ajaxDownload.headers['Authorization'] = 'Bearer ' + this.token;
-        if (this.token.length == 0) {
-          location.href = '/';
-        }
       },
       maxDate: function() {
         var auxDate = new Date(this.activeItem.uploaded_date);
