@@ -9,6 +9,7 @@
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="view-account">
@@ -156,6 +157,7 @@
           method="POST"
           content-type="application/json"
           on-response="handleLoginResponse"
+          on-error="handleLoginErrorResponse"
           url="[[backendUrl]]/users/login/">
     </iron-ajax>
 
@@ -225,6 +227,11 @@
 
         </div>
       </paper-card>
+
+      <paper-dialog id="errorDialog">
+        <h2>Error</h2>
+        <div>[[errorMessage]]</div>
+      </paper-dialog>
     </div>
   </template>
 
@@ -252,18 +259,20 @@
       },
 
       handleLoginResponse: function(data) {
-        this.isCorrectPassword = ( data.detail.xhr.status === 200 );
-        console.log(this.isCorrectPassword);
-
-        if( this.isCorrectPassword ){
+        if( data.detail.xhr.status === 200 ){
           this.$.putAjax.body = JSON.stringify(this.user);
           this.$.putAjax.generateRequest();
           location.pathname = '/account';
           // open('/account', '_self');
         }
-        else{
-          this._handleError('Password is invalid.');
-        }
+      },
+
+      handleLoginErrorResponse: function(e){
+        var ironRequest = e.detail.request;
+        var relatedXhr = ironRequest.xhr;
+        this.errorMessage = relatedXhr.status + ' : ' + relatedXhr.statusText;
+        this.errorMessage += ' Password is invalid.'
+        this.$.errorDialog.toggle();
       },
 
       ready: function() {
