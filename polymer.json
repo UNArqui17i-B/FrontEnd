@@ -2,18 +2,42 @@
   "entrypoint": "index.html",
   "shell": "src/BlinkBox-app.html",
   "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
     "src/custom-header.html",
-    "src/my-view404.html"
+    "src/dialog-message.html",
+    "src/shared-styles.html",
+    "src/view-confirm.html",
+    "src/view-not-logged.html",
+    "src/view-shared.html",
+    "src/BlinkBox-dialogs.html",
+    "src/custom-vaadin-upload/vaadin-upload-file.html",
+    "src/custom-vaadin-upload/vaadin-upload-icons.html",
+    "src/custom-vaadin-upload/vaadin-upload.html",
+    "src/dialog-register.html",
+    "src/view-404.html",
+    "src/view-index.html",
+    "src/view-owned.html",
+    "src/view-upload.html",
+    "src/banner-card.html",
+    "src/dialog-login.html",
+    "src/feature-card.html",
+    "src/view-account.html",
+    "src/view-loggout.html",
+    "src/view-redirect.html"
   ],
-  "sourceGlobs": [
+  "sources": [
     "src/**/*",
     "images/**/*",
+    "images/*",
     "bower.json"
   ],
-  "includeDependencies": [
+  "extraDependencies": [
     "manifest.json",
     "bower_components/webcomponentsjs/webcomponents-lite.min.js"
-  ]
+  ],
+  "builds": [{
+    "name": "unbundled",
+    "js": {"minify": true},
+    "css": {"minify": true},
+    "html": {"minify": true}
+  }]
 }
