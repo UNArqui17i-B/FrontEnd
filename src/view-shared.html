@@ -224,7 +224,7 @@
       },
       loadStorage: function() {
         if (this.token.length === 0) {
-          location.href = '/';
+          location.href = '/not-logged';
         }
         this.$.ajaxGet.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.ajaxDownload.headers['Authorization'] = 'Bearer ' + this.token;
