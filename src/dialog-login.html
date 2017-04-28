@@ -130,12 +130,7 @@
           this.set('user.email', token['email']);
           this.set('user.firstName', token['firstName']);
           this.set('user.lastName', token['lastName']);
-          this.sharedID = this.queryParams.id;
-          if(this.shared != null){
-            location.pathname = '/shared';
-          }else{
-            location.href = "/redirect?id="+this.sharedID;
-          }
+          location.pathname = '/shared';
         }
       },
 
