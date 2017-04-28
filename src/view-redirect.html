@@ -47,7 +47,6 @@
         url="[[ backendUrl ]]/files/sharedWith/[[ user.email ]]"
         method="GET"
         content-type="application/x-www-form-urlencoded"
-        headers = "[[headers]]"
         handle-as="json"
         on-response="permissionsResponse"
         on-error="permissionsError"
@@ -57,28 +56,16 @@
   <script>
     Polymer({
       is: 'view-redirect',
-      properties:{
-        headers : {
-            type: Object,
-            computed: 'getHeaders(myHeader)'
-        },
-
-        myHeader :{
-            value : "bearer "+this.token
-        }
-      },
     
       ready: function() {
         this.backendURL = this.backendUrl;
         this.sharedID = this.queryParams.id;
       },
-      getHeaders (myHeader){
-        return {'X-Custom-Header': myHeader}
-      },
       localStorageLoad: function(){
         if(this.user.email == ''){
           location.pathname = "/not-logged";
         }else{
+          this.$.permissions.headers['Authorization'] = 'Bearer ' + this.token;
           this.$.permissions.generateRequest();
         }
       },
@@ -102,19 +89,29 @@
 
       permissionsResponse : function(e){
         val = e.detail.response;
+        entro = false;
         if(val.hasOwnProperty("shared_documents")){
           lista = val["shared_documents"]
-          for (i = 0; i < lista.length; i++) { 
-              if(lista[i] == this.sharedID){
-                location.pathname = "/shared"
-              }
-          }        
+          if(lista == null){
+             entro = true
+          }else{
+            for (i = 0; i < lista.length; i++) { 
+                if(lista[i]["_id"] == this.sharedID){
+                  location.pathname = "/shared"
+                  entro = true;
+                }
+            }   
+          }     
         }
-        errorReason = "No tienes accesso al archivo";
-        this.fire('iron-signal', {
-          name: 'message-dialog',
-          data: {error: errorReason},
-        });
+        if( !entro){
+          errorReason = "No tienes accesso al archivo";
+          this.fire('iron-signal', {
+            name: 'message-dialog',
+            data: {error: errorReason},
+          },function(response){
+            console.log("hola")
+          });
+        }
       }
 
     });
