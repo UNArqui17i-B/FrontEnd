@@ -15,7 +15,7 @@
   <template>
     <style>
       :host {
-        --app-primary-color: #4285f4;
+        --app-primary-color: #673AB7;
         --app-secondary-color: black;
 
         --paper-button-raised-keyboard-focus: {
@@ -40,18 +40,18 @@
 
     <!-- All possible dialogs -->
     <BlinkBox-dialogs
-      backend-url="[[ backendURL ]]">
+      backend-url="[[backendURL]]">
     </BlinkBox-dialogs>
 
     <!-- JWT -->
     <iron-localstorage
-      name="blinkbox-token"
+      name="blinkboxToken"
       value="{{ token }}"
       useRaw="true"
       on-iron-localstorage-load-empty="initializeDefaultToken">
     </iron-localstorage>
     <iron-localstorage
-      name="blinkbox-user"
+      name="blinkboxUser"
       value="{{ user }}"
       on-iron-localstorage-load-empty="initializeDefaultUser">
     </iron-localstorage>
@@ -67,7 +67,7 @@
     <app-drawer-layout fullbleed>
       <!-- Main content -->
       <app-header-layout has-scrolling-region>
-        <custom-header username="[[ user.firstName ]]"></custom-header>
+        <custom-header username="[[user.firstName]]"></custom-header>
 
         <iron-pages
           selected="[[page]]"
@@ -76,12 +76,26 @@
           role="main">
 
           <view-index name="index"></view-index>
-          <view-account name="account"></view-account>
-          <view-shared name="shared" backend-url="[[ backendURL ]]" user="[[user]]" query-params="[[queryParams]]"></view-shared>
-          <view-owned name="owned" backend-url="[[ backendURL ]]" user="[[user]]"></view-owned>
-          <view-upload name="upload" backend-url="[[backendURL]]" user="[[user]]"></view-upload>
+          <view-account name="account" backend-url="[[ backendURL ]]" user-id="[[user.id]]"></view-account>
+          <view-shared name="shared" backend-url="[[backendURL]]" query-params="[[queryParams]]">
+          </view-shared>
+          <view-owned name="owned" backend-url="[[backendURL]]"></view-owned>
+          <view-upload name="upload" backend-url="[[backendURL]]"></view-upload>
+          <view-not-logged backend-url="[[backendURL]]" query-params="[[queryParams]]" name="not-logged"></view-not-logged>
+          <view-confirm
+            route="{{route}}"
+            name="confirm"
+            query-params="[[queryParams]]"
+            backend-url="[[backendURL]]">
+          </view-confirm>
+          <view-redirect
+            route="{{route}}"
+            name="redirect"
+            query-params="[[queryParams]]"
+            backend-url="[[backendURL]]">
+          </view-redirect>
+          <view-loggout name="loggout"></view-loggout>
           <view-404 name="404"></view-404>
-          <view-not-logged name="not-logged"></view-not-logged>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>

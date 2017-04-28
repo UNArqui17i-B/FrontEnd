@@ -10,6 +10,7 @@
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html" >
 
 <dom-module id="view-not-logged">
   <template>
@@ -42,7 +43,7 @@
         margin: 0px 2.5%;
       }
 
-      .not-logged-form{
+      .notLoggedForm{
         margin: 15px;
         min-width: 60%;
       }
@@ -94,7 +95,7 @@
       }
 
       @media screen and (max-width: 1024px) {
-        .not-logged-form{
+        .notLoggedForm{
           width: 100%;
         }
 
@@ -124,7 +125,29 @@
         text-decoration: underline;;
         color: blue;
       }
+
+      paper-progress {
+          width: 100%;
+      }
+
+      paper-progress.fast {
+        --paper-progress-indeterminate-cycle-duration: 2s;
+      }
+
+
     </style>
+
+    <iron-localstorage
+      name="blinkboxToken"
+      value="{{ token }}"
+      useRaw="true"
+      on-iron-localstorage-load-empty="initializeDefaultToken">
+    </iron-localstorage>
+    <iron-localstorage
+      name="blinkboxUser"
+      value="{{ user }}"
+      on-iron-localstorage-load-empty="initializeDefaultUser">
+    </iron-localstorage>
 
     <div id="not-logged-content">
       <paper-card class="joke-logged">
@@ -142,24 +165,34 @@
         </div>
       </paper-card>
 
-      <paper-card class="not-logged-form">
+      <paper-card class="notLoggedForm">
+        <paper-progress indeterminate class="fast" hidden$="[[ dis ]]" ></paper-progress>
         <div class="card-header">INICIA SESION</div>
         <div class="card-content">
-          <form is="iron-form" method="get" action="/" id="sign-in">
-            <paper-input name="email" label="Correo electronico"
+
+          <form is="iron-form" method="post" action="[[ backendUrl ]]/users/login"
+            on-iron-form-presubmit="loginPresubmit"
+            on-iron-form-response="loginResponse"
+            on-iron-form-error="loginError"
+            id="signIn">
+            <paper-input name="email" label="Correo electronico"  id="email"
+            type="email"
+            required auto-validate error-message="Este campo es obligatorio"
                          required error-message="Ingresa Tu Correo Electronico">
+
               <iron-icon class="user-form" icon="communication:mail-outline" prefix></iron-icon>
             </paper-input>
 
-            <paper-input name="password" label="Contraseña"
-                         type="password" minlength="10" error-message="Mínimo 8 caracteres.">
+            <paper-input name="password" label="Contraseña" id="password"
+            required auto-validate error-message="Este campo es obligatorio"
+                         type="password" minlength="3" error-message="Mínimo 8 caracteres.">
               <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
             </paper-input>
 
             <br>
 
             <div align="center">
-              <paper-button class="full-color" onclick="">INICIAR</paper-button>
+              <paper-button class="full-color" onclick="" on-tap="loginSubmit">INICIAR</paper-button>
               <div class="output"></div>
             </div>
 
@@ -175,9 +208,77 @@
   <script>
     Polymer({
       is: 'view-not-logged',
+      properties: {
+        email: String,
+        password: String,
+      },
+
+      token: {
+          type: String,
+        },
+      user: {
+          type: Object,
+        },
+      dis: {
+        type: String,
+      },
+      ready: function() {
+        this.backendURL = this.backendUrl;
+        this.dis = 'true';
+      },
 
       registerDialog: function() {
         this.fire('iron-signal', {name: 'register-dialog', data: null});
+      },
+
+      loginSubmit: function() {
+        if (this.$.signIn.validate()) {
+          this.dis = false;
+          this.$.signIn.submit();
+        }
+      },
+
+      loginPresubmit: function(event) {
+        // this.$.loginForm.request.body
+        // this.$.signIn.request.body
+        // event.preventDefault();
+      },
+
+      loginResponse: function(event) {
+        var token = event.detail.response;
+
+        if (token.hasOwnProperty('token')) {
+          this.set('token', token['token']);
+          this.set('user.id', token['id']);
+          this.set('user.exp_date', token['expDate']);
+          this.set('user.email', token['email']);
+          this.set('user.firstName', token['firstName']);
+          this.set('user.lastName', token['lastName']);
+          this.sharedID = this.queryParams.id;
+          if(this.shared !== null) {
+            location.pathname = '/shared';
+          } else {
+            location.href = '/redirect?id=' + this.sharedID;
+          }
+        }
+      },
+
+      loginError: function(event) {
+        // event.detail
+      },
+
+      initializeDefaultToken: function() {
+        this.token = '';
+      },
+
+      initializeDefaultUser: function() {
+        this.user = {
+          id: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          exp_date: '',
+        };
       },
     });
   </script>

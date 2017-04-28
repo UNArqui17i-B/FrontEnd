@@ -1,51 +1,74 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="custom-vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="shared-styles.html">
 
 <dom-module id="view-upload">
   <template>
     <style include="shared-styles iron-flex">
       :host {
         display: block;
-
         padding: 10px;
       }
 
-      .container{
-        width: 75%;
+      @media screen and (min-width: 769px) {
+        .container{
+          width: 75%;
+        }
+      }
+
+      .container {
         display: block;
         margin-left: auto;
         margin-right: auto;
-        border: dashed 1px lightgray;
-        border-radius: 4px;
+        background-color: #fff;
       }
 
-      .button-block{
+      .button-block {
         @apply(--layout-horizontal);
         @apply(--layout-center-justified);
         padding-bottom: 10px;
       }
 
-      .block{
+      .block {
         width: 90%;
         display: block;
         margin-left: auto;
         margin-right: auto;
         padding: 5px;
       }
+
+      paper-button {
+        background-color: var(--app-primary-color);
+        color: white;
+      }
+
+      vaadin-upload {
+        border: dashed 1px lightgray;
+      }
     </style>
 
     <paper-card>
+      <iron-localstorage
+        name="blinkboxToken"
+        value="{{token}}"
+        useRaw="true"
+        on-iron-localstorage-load="loadStorage"></iron-localstorage>
+      <iron-localstorage
+        name="blinkboxUser"
+        value="{{user}}"
+        useRaw="true"
+        on-iron-localstorage-load="loadStorage"></iron-localstorage>
       <div class="container">
         <div class="block">
           <vaadin-upload no-auto id="uploadFile"
-                         target="[[backendURL]]/upload/[[user.email]]"
+                         target="[[backendURL]]/files/upload/[[user.email]]"
                          max-files="1"
                          on-upload-request="handleRequest"
                          on-upload-success="success">
@@ -83,7 +106,6 @@
     </paper-card>
 
     <paper-dialog id="successDialog">
-
       <h3>El archivo ha sido subido exitosamente</h3>
       <div class="buttons">
         <a href="/owned" tabindex="-1">
@@ -104,12 +126,14 @@
         backendURL: String,
         user: Object,
       },
-      ready: function () {
+
+      ready: function() {
         this.backendURL = this.backendUrl;
       },
+
       addEmail: function(e) {
-        if(e.target.validate()) {
-          if(e.charCode === 13) {
+        if (e.target.validate()) {
+          if (e.charCode === 13) {
             var newEmail = e.target.value;
             this.emails.push(newEmail);
             this.notifyPath('emails');
@@ -118,28 +142,44 @@
           }
         }
       },
+
       handleRequest: function(event) {
         var date = new Date(this.$.datePicker.value);
-        event.detail.formData.append('expiring_date', date.getTime()/1000);
-        if (this.$.sharedEmails.items.length > 0)
-          event.detail.formData.append('shared', this.$.sharedEmails.items.join(","));
-        debugger
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
+        event.detail.formData.append('expiring_date', date.getTime() / 1000);
+        if (this.$.sharedEmails.items.length > 0) {
+          var shared = this.$.sharedEmails.items.join(',');
+          event.detail.formData.append('shared', shared);
+        }
       },
+
       now: function() {
         var auxDate = new Date();
         return auxDate.toISOString().split('T')[0];
       },
+
       maxDate: function() {
         var auxDate = new Date();
         auxDate.setDate(auxDate.getDate() + 7);
         return auxDate.toISOString().split('T')[0];
       },
-      handleTap: function(event) {
+
+      handleTap: function() {
         this.$.uploadFile.uploadFiles();
       },
-      success: function (event) {
+
+      success: function() {
         this.$.successDialog.toggle();
-      }
+      },
+      loadStorage: function() {
+        if (this.token.length === 0) {
+          location.href = '/not-logged';
+        }
+        this.$.uploadFile.headers['Authorization'] = 'Bearer ' + this.token;
+      },
     });
   </script>
 </dom-module>

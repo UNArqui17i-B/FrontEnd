@@ -8,11 +8,17 @@
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="dialog-login">
   <template>
     <style include="shared-styles">
+      :host {
+        /* Label and underline color when the input is focused */
+        --paper-input-container-focus-color: var(--app-primary-color);
+      }
       .container {
         @apply(--layout-horizontal);
         @apply(--layout-justified);
@@ -26,21 +32,27 @@
         background-color: var(--app-primary-color);
         color: white;
       }
+
+      #cancel{
+        background-color: white;
+        color: var(--app-primary-color);
+      }
     </style>
 
     <iron-localstorage
-      name="blinkbox-token"
+      name="blinkboxToken"
       value="{{ token }}"
       useRaw="true"
       on-iron-localstorage-load-empty="initializeDefaultToken">
     </iron-localstorage>
     <iron-localstorage
-      name="blinkbox-user"
+      name="blinkboxUser"
       value="{{ user }}"
       on-iron-localstorage-load-empty="initializeDefaultUser">
     </iron-localstorage>
 
     <iron-signals on-iron-signal-login-dialog="loginDialog"></iron-signals>
+    <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="loginSubmit"></iron-a11y-keys>
     <paper-dialog id="loginDialog" modal>
       <h2>Ingresar</h2>
       <form is="iron-form"
@@ -66,8 +78,8 @@
         <br>
 
         <div class="container">
+          <paper-button raised on-tap="loginDialog" id="cancel">Cancelar</paper-button>
           <paper-button raised on-tap="loginSubmit">Ingresar</paper-button>
-          <paper-button raised on-tap="loginDialog">Cancelar</paper-button>
         </div>
       </form>
     </paper-dialog>
@@ -78,11 +90,20 @@
       is: 'dialog-login',
 
       token: {
-          type: String,
-        },
+        type: String,
+      },
       user: {
+        type: Object,
+      },
+
+      properties: {
+        target: {
           type: Object,
+          value: function() {
+            return this.$.loginForm.setTarget;
+          },
         },
+      },
 
       loginDialog: function() {
         this.$.loginDialog.toggle();
@@ -97,24 +118,27 @@
 
       loginPresubmit: function(event) {
         // this.$.loginForm.request.body
-        console.log(this.$.loginForm.request.body);
         // event.preventDefault();
       },
 
       loginResponse: function(event) {
         // event.detail
 
-        var token = JSON.parse(event.detail);
+        var token = event.detail.response;
+
         if (token.hasOwnProperty('token')) {
           this.set('token', token['token']);
-          this.set('user.exp_date', token['token']);
-          this.set('user.email', this.$.email.value);
+          this.set('user.id', token['id']);
+          this.set('user.exp_date', token['expDate']);
+          this.set('user.email', token['email']);
+          this.set('user.firstName', token['firstName']);
+          this.set('user.lastName', token['lastName']);
+          location.href = '/shared';
         }
       },
 
       loginError: function(event) {
         // event.detail
-        console.log(event.detail);
       },
 
       initializeDefaultToken: function() {
