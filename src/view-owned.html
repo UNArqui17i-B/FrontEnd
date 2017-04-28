@@ -37,20 +37,6 @@
         @apply(--layout-flex-3);
       }
 
-      .flex-vertical {
-        @apply(--layout-vertical);
-        height: 220px;
-      }
-
-      .flexchild-vertical {
-        @apply(--layout-flex);
-        max-height: 350px;
-      }
-
-      #dialogDetail {
-        width: 550px;
-      }
-
       a:link, a:visited {
         color: inherit;
       }
@@ -94,17 +80,10 @@
                  on-response="handleResponse"
                  on-error="handleError"></iron-ajax>
       <iron-ajax id="ajaxDownload"
-                 url="[[backendURL]]/files/download/[[activeItem._id]]/[[user.email]]"
+                 url="[[backendURI]]/download/[[activeItem._id]]/[[user.email]]"
                  method="GET"
                  handle-as="blob"
                  on-response="handleResponseDownload"
-                 on-error="handleError"></iron-ajax>
-      <iron-ajax id="ajaxPut"
-                 url="[[backendURL]]/files/update/[[activeItem._id]]"
-                 method="PUT"
-                 handle-as="json"
-                 content-type="application/json"
-                 on-response="handleResponsePut"
                  on-error="handleError"></iron-ajax>
       <iron-ajax id="ajaxDelete"
                  method="DELETE"
@@ -191,7 +170,7 @@
         <vaadin-grid-column>
           <template class="header">Descarga</template>
           <template>
-              <iron-icon icon="file-download" on-tap="handleTapDownload"></iron-icon>
+            <iron-icon icon="file-download" on-tap="handleTapDownload"></iron-icon>
           </template>
         </vaadin-grid-column>
         <vaadin-grid-column>
@@ -201,103 +180,6 @@
           </template>
         </vaadin-grid-column>
       </vaadin-grid>
-      <paper-dialog id="dialogDetail">
-        <h2>Editar archivo</h2>
-        <paper-dialog-scrollable>
-          <div class="container flex-horizontal-with-ratios">
-            <div class="flexchild" style="width: 95%">
-              <div>
-                <div><b>Nombre</b></div>
-                <p>[[activeItem.name]]</p>
-              </div>
-              <div>
-                <div><b>Extension</b></div>
-                <p>[[activeItem.extension]]</p>
-              </div>
-              <div>
-                <div><b>Tamaño (Kb)</b></div>
-                <p>[[activeItem.size]]</p>
-              </div>
-              <div>
-                <div><b>Fecha subida</b></div>
-                <p>[[activeItem.uploaded_date]]</p>
-              </div>
-              <div>
-                <div><b>Fecha vencimiento</b></div>
-                <vaadin-date-picker id="datePicker"
-                                    label="Disponible hasta"
-                                    value="{{activeItem.expiring_date}}"
-                                    min="[[activeItem.uploaded_date]]"
-                                    max="[[maxDate(activeItem.uploaded_date)]]"
-                                    style="width: 95%"></vaadin-date-picker>
-              </div>
-              <div>
-                <div><b>Checksum</b></div>
-                <p>[[activeItem.md5]]</p>
-              </div>
-            </div>
-            <div class="flexchild">
-              <div class="container flex-vertical">
-                <div class="flexchild-vertical">
-                  <vaadin-grid items="[[activeItem.shared]]" id="gridEmails">
-                    <vaadin-grid-column-group>
-                      <template class="header">Compartidos</template>
-                      <vaadin-grid-column width="80%">
-                        <template class="content">[[item]]</template>
-                        <template class="footer">
-                          <paper-input label="Añadir correo"
-                                       on-keypress="handleKeyEvent"
-                                       type="email"
-                                       error-message="Formato incorrecto"
-                                       auto-validate
-                                       style="padding-bottom: 10px;"></paper-input>
-                        </template>
-                      </vaadin-grid-column>
-                      <vaadin-grid-column width="20%">
-                        <template class="content">
-                          <iron-icon icon="delete" on-tap="handleDeleteEmail"></iron-icon>
-                        </template>
-                      </vaadin-grid-column>
-                    </vaadin-grid-column-group>
-                  </vaadin-grid>
-                </div>
-                <br>
-                <div>
-                  <paper-button raised on-tap="handleDialogDelete">Eliminar archivo</paper-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </paper-dialog-scrollable>
-        <div class="buttons">
-          <paper-button dialog-dismiss>Cerrar</paper-button>
-          <paper-button dialog-confirm on-tap="handleOKEdit">OK</paper-button>
-        </div>
-      </paper-dialog>
-      <paper-dialog id="confirmDelete">
-        <h2>Eliminar archivo</h2>
-        <span>¿Está seguro de eliminar el archivo?</span>
-        <div class="buttons">
-          <paper-button dialog-dismiss>Cancelar</paper-button>
-          <paper-button dialog-confirm on-tap="handleDelete">Confirmar</paper-button>
-        </div>
-      </paper-dialog>
-      <paper-dialog id="successDialog" no-cancel-on-esc-key>
-        <h2>Archivo correctamente [[action]]</h2>
-        <div class="buttons">
-          <paper-button dialog-confirm on-tap="handleReloadGrid">Ok</paper-button>
-        </div>
-      </paper-dialog>
-      <paper-dialog id="errorDialog">
-        <h2>Error</h2>
-        <div>[[errorMessage]]</div>
-      </paper-dialog>
-      <paper-dialog id="noFilesDialog">
-        <h2>No se encontraron archivos</h2>
-        <div class="buttons">
-          <paper-button dialog-confirm>Ok</paper-button>
-        </div>
-      </paper-dialog>
     </div>
   </template>
 
@@ -307,6 +189,10 @@
       properties: {
         backendURL: {
           type: String,
+        },
+        backendURI: {
+          type: String,
+          value: 'http://127.0.0.1:4025/fileAccess',
         },
         user: Object,
         extensionsArray: {
@@ -322,17 +208,14 @@
       loadStorage: function() {
         this.$.ajaxGet.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.ajaxDelete.headers['Authorization'] = 'Bearer ' + this.token;
-        this.$.ajaxPut.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.ajaxDownload.headers['Authorization'] = 'Bearer ' + this.token;
       },
-      maxDate: function() {
-        var auxDate = new Date(this.activeItem.uploaded_date);
-        auxDate.setDate(auxDate.getDate() + 7);
-        return auxDate.toISOString().split('T')[0];
-      },
       handleResponse: function(data) {
-        if(!data.detail.response.shared_documents) {
-          this.$.noFilesDialog.toggle();
+        if (!data.detail.response.shared_documents) {
+          this.fire('iron-signal', {
+            name: 'message-dialog',
+            data: {error: 'No se encontraron archivos'},
+          });
           return;
         }
         var response = data.detail.response.shared_documents;
@@ -354,73 +237,52 @@
       },
       handleResponseDelete: function(data) {
         if (data.detail.xhr.status === 200) {
-          this.action = 'eliminado';
-          this.$.dialogDetail.close();
-          this.$.successDialog.toggle();
+          this.fire('iron-signal', {
+            name: 'message-dialog',
+            data: {message: 'Archivo correctamente eliminado'},
+          });
+          this.$.ajaxGet.generateRequest();
         }
-      },
-      handleResponsePut: function(data) {
-        if (data.detail.xhr.status === 200) {
-          this.action = 'modificado';
-          this.$.dialogDetail.close();
-          this.$.successDialog.toggle();
-        }
-      },
-      handleReloadGrid: function() {
-        this.$.ajaxGet.generateRequest();
       },
       handleEdit: function(e) {
         this.activeItem = e.model.item;
-        this.$.dialogDetail.toggle();
+        this.fire('iron-signal', {
+          name: 'edit-file-dialog',
+          data: {activeItem: this.activeItem},
+        });
       },
       handleDialogDelete: function(e) {
         if (this.activeItem === undefined)
           this.activeItem = e.model.item;
-        this.$.confirmDelete.toggle();
+        this.fire('iron-signal', {
+          name: 'delete-file-dialog',
+          data: {itemId: this.activeItem['_id']},
+        });
       },
       handleDelete: function() {
         this.$.ajaxDelete.generateRequest();
       },
-      handleDeleteEmail: function(e) {
-        var index = this.activeItem.shared.indexOf(e.model.item);
-        this.activeItem.shared.splice(index, 1);
-        this.$.gridEmails.clearCache();
-      },
-      handleOKEdit: function() {
-        var auxEpoch = new Date(this.activeItem['expiring_date']);
-        this.$.ajaxPut.body = JSON.stringify({
-          'date': auxEpoch.getTime() / 1000,
-          'shared': this.activeItem.shared,
-        });
-        this.$.ajaxPut.generateRequest();
-      },
-      handleKeyEvent: function(e) {
-        if (e.target.validate()) {
-          if (e.charCode === 13) {
-            var newEmail = e.target.value;
-            if (this.activeItem.shared.indexOf(newEmail) === -1) {
-              this.activeItem.shared.push(newEmail);
-              this.notifyPath('activeItem.shared');
-              e.target.value = '';
-              this.$.gridEmails.clearCache();
-            }
-          }
-        }
-      },
       handleError: function(e) {
         var ironRequest = e.detail.request;
         var relatedXhr = ironRequest.xhr;
-        this.errorMessage = relatedXhr.status + ' : ' + relatedXhr.statusText;
-        this.$.errorDialog.toggle();
+        var errorMessage = relatedXhr.status + ' : ' + relatedXhr.statusText;
+        this.fire('iron-signal', {
+          name: 'message-dialog',
+          data: {error: errorMessage},
+        });
       },
       handleTapDownload: function(e) {
-        debugger;
-        if(e)
+        if (e)
           this.activeItem = e.model.item;
         this.$.ajaxDownload.generateRequest();
       },
-      handleResponseDownload: function(data) {
-        debugger;
+      handleResponseDownload: function(e) {
+        var blob = e.detail.response;
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.download = this.activeItem.name;
+        link.click();
       },
     });
   </script>

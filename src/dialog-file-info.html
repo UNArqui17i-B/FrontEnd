@@ -1,0 +1,155 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="dialog-file-info">
+  <template>
+    <style include="shared-styles">
+      .container {
+        @apply(--layout-horizontal);
+        @apply(--layout-justified);
+      }
+
+      paper-input {
+        margin: 0 2.5%;
+      }
+
+      div paper-button {
+        background-color: var(--app-primary-color);
+        color: white;
+      }
+
+      .big-icon {
+        --iron-icon-width: 100px;
+        --iron-icon-height: 100px;
+      }
+
+      .flex-horizontal-with-ratios {
+        @apply(--layout-horizontal);
+      }
+
+      .flexchild {
+        @apply(--layout-flex-3);
+      }
+
+      .flexchild2 {
+        @apply(--layout-flex-2);
+      }
+
+      .flex-center {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-justified);
+      }
+
+      paper-dialog {
+        width: 550px;
+      }
+
+      iron-icon:hover {
+        color: var(--app-primary-color);
+        cursor: pointer;
+      }
+    </style>
+    <iron-localstorage
+      name="blinkboxUser"
+      value="{{user}}"
+      useRaw="true"></iron-localstorage>
+    <iron-localstorage
+      name="blinkboxToken"
+      value="{{token}}"
+      useRaw="true"
+      on-iron-localstorage-load="loadStorage"></iron-localstorage>
+    <iron-ajax id="ajaxDownload"
+               method="GET"
+               url="[[backendURI]]/download/[[activeItem._id]]/[[user.email]]"
+               handle-as="blob"
+               on-response="handleResponseDownload"
+               on-error="handleError"></iron-ajax>
+    <iron-signals on-iron-signal-file-info-dialog="fileInfoDialog"></iron-signals>
+    <paper-dialog id="fileInfoDialog" modal>
+      <h2>Detalles del archivo</h2>
+      <paper-dialog-scrollable>
+        <div class="container flex-horizontal-with-ratios">
+          <div class="flexchild">
+            <div>
+              <div><b>Nombre</b></div>
+              <p>[[activeItem.name]]</p>
+            </div>
+            <div>
+              <div><b>Extension</b></div>
+              <p>[[activeItem.extension]]</p>
+            </div>
+            <div>
+              <div><b>Tamaño (Kb)</b></div>
+              <p>[[activeItem.size]]</p>
+            </div>
+            <div>
+              <div><b>Fecha vencimiento</b></div>
+              <p>[[activeItem.expiring_date]]</p>
+            </div>
+          </div>
+          <div class="flexchild2">
+            <div class="flex-center">
+              <iron-icon icon="file-download" class="big-icon" on-tap="handleTapDownload"></iron-icon>
+            </div>
+            <div>
+              <div><b>Checksum</b></div>
+              <p>[[activeItem.md5]]</p>
+            </div>
+          </div>
+        </div>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button dialog-confirm>Cerrar</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'dialog-file-info',
+      properties: {
+        activeItem: Object,
+        backendURI: {
+          type: String,
+          value: 'http://127.0.0.1:4025/fileAccess',
+        },
+      },
+      loadStorage: function() {
+        this.$.ajaxDownload.headers['Authorization'] = 'Bearer ' + this.token;
+      },
+      fileInfoDialog: function(event) {
+        this.activeItem = event.detail.activeItem;
+        this.$.fileInfoDialog.toggle();
+      },
+      handleTapDownload: function(e) {
+        this.$.ajaxDownload.generateRequest();
+      },
+      handleResponseDownload: function(e) {
+        var blob = e.detail.response;
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.download = this.activeItem.name;
+        link.click();
+      },
+      handleError: function(e) {
+        var ironRequest = e.detail.request;
+        var relatedXhr = ironRequest.xhr;
+        var errorMessage = relatedXhr.status + ' : ' + relatedXhr.statusText;
+        this.fire('iron-signal', {
+          name: 'message-dialog',
+          data: {error: errorMessage},
+        });
+      },
+    });
+  </script>
+</dom-module>
