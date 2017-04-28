@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="dialog-register">
@@ -26,9 +27,15 @@
         background-color: var(--app-primary-color);
         color: white;
       }
+
+      #cancel{
+        background-color: white;
+        color: var(--app-primary-color);
+      }
     </style>
 
     <iron-signals on-iron-signal-register-dialog="registerDialog"></iron-signals>
+    <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="registerSubmit"></iron-a11y-keys>
     <paper-dialog id="registerDialog" modal>
       <h2>Crear cuenta</h2>
       <form is="iron-form"
@@ -70,8 +77,8 @@
         <br>
 
         <div class="container">
+          <paper-button raised on-tap="registerDialog" id="cancel">Cancelar</paper-button>
           <paper-button raised on-tap="registerSubmit">Crear cuenta</paper-button>
-          <paper-button raised on-tap="registerDialog">Cancelar</paper-button>
         </div>
       </form>
     </paper-dialog>
@@ -84,6 +91,13 @@
       properties: {
         backendUrl: {
           type: String,
+        },
+
+        target: {
+          type: Object,
+          value: function() {
+            return this.$.registerForm.setTarget;
+          },
         },
       },
 

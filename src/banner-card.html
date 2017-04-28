@@ -8,93 +8,97 @@
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="banner-card">
-    <template>
-        <style>
-            paper-card.banner {
-                @apply(--layout-horizontal);
-                width: 960px;
-                margin: 15px 0px;
-                text-align: justify;
-            }
+  <template>
+    <style>
+      paper-card.banner {
+        @apply(--layout-horizontal);
+        width: 960px;
+        margin: 15px 0;
+        text-align: justify;
+      }
 
-            .banner-image {
-                width: 60%;
-                height: 280px;
-            }
+      .banner-image {
+        width: 60%;
+        height: 280px;
+      }
 
-            .banner-image iron-image {
-                width: 100%;
-                height: 280px;
-            }
+      .banner-image iron-image {
+        width: 100%;
+        height: 280px;
+      }
 
-            .banner-content {
-                background-color: white;
-                @apply(--layout-flex);
-                float: left;
-            }
+      .banner-content {
+        background-color: white;
+        @apply(--layout-flex);
+        float: left;
+      }
 
-            .banner-header { @apply(--paper-font-headline); }
+      .banner-header {
+        @apply(--paper-font-headline);
+        color: var(--app-primary-color);
+      }
 
-            .banner-question { color: var(--paper-grey-600); margin: 10px 0; }
+      .banner-question {
+        color: var(--paper-grey-600);
+        margin: 10px 0;
+      }
 
-            @media screen and (max-width: 1000px) {
-                paper-card.banner {
-                    @apply(--layout-horizontal);
-                    width: 630px;
-                    margin: 15px 0px;
-                    text-align: center;
-                }
+      @media screen and (max-width: 1000px) {
+        paper-card.banner {
+          @apply(--layout-horizontal);
+          width: 630px;
+          margin: 15px 0;
+          text-align: center;
+        }
 
-                .banner-image {
-                    width: 50%;
-                    height: 280px;
-                }
-            }
+        .banner-image {
+          width: 50%;
+          height: 280px;
+        }
+      }
 
-            @media screen and (max-width: 700px) {
-                paper-card.banner {
-                    @apply(--layout-vertical);
-                    width: 90%;
-                    margin: 15px 10px;
-                    text-align: center;
-                }
+      @media screen and (max-width: 700px) {
+        paper-card.banner {
+          @apply(--layout-vertical);
+          width: 90%;
+          margin: 15px 10px;
+          text-align: center;
+        }
 
-                .banner-image {
-                    width: 100%;
-                    height: 280px;
-                }
-            }
-        </style>
+        .banner-image {
+          width: 100%;
+          height: 280px;
+        }
+      }
+    </style>
 
-        <paper-card class="banner">
-            <div class="banner-image">
-                <iron-image sizing="cover" alt="BlinkBox description." src="http://www.quansershare.com/Images/submit-ad.png">
-                </iron-image>
-            </div>
-            <div class="banner-content">
-                <div class="card-content">
-                    <div class="banner-header">BlinkBox</div>
-                    <br>
-                    <div class="banner-question">¿Qué es?</div>
-                    <div>Compartir archivos en la nube.</div>
-                    <br>
-                    <div class="banner-question">¿Cómo?</div>
-                    <div>Compartir archivos en la nube.</div>
-                </div>
-            </div>
-        </paper-card>
+    <paper-card class="banner">
+      <div class="banner-image">
+        <iron-image sizing="cover" alt="BlinkBox description." src="http://www.quansershare.com/Images/submit-ad.png">
+        </iron-image>
+      </div>
+      <div class="banner-content">
+        <div class="card-content">
+          <div class="banner-header"><b>BlinkBox</b></div>
+          <div class="banner-question">¿Qué es?</div>
+          <div>La forma más segura de compartir archivos con quien quieras, sin límite de tamaño.</div>
+          <div class="banner-question">¿Cómo?</div>
+          <div>Sólo tienes que crear una cuenta, y podrás compartir y descargar archivos de manera segura.</div>
+        </div>
+      </div>
+    </paper-card>
 
-    </template>
+  </template>
 
-    <script>
-        Polymer({
-            is: 'banner-card',
+  <script>
+    Polymer({
+      is: 'banner-card',
 
-            properties: {
-                backendUrl: {
-                    type: String,
-                },
-            },
-        });
-    </script>
+      properties: {
+        backendUrl: {
+          type: String,
+        },
+      },
+    });
+  </script>
 </dom-module>
