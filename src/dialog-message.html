@@ -29,7 +29,7 @@
       <h2>[[ title ]]</h2>
       <p>[[ content ]]</p>
       <div class="container">
-        <paper-button raised on-tap="messageDialog">Cerrar</paper-button>
+        <paper-button raised on-tap="closeMessageDialog">Cerrar</paper-button>
       </div>
     </paper-dialog>
   </template>
@@ -40,18 +40,28 @@
       properties: {
         title: String,
         content: String,
+        redirect: String,
       },
 
       messageDialog: function(event) {
         if (event.detail.error) {
           this.title = 'Error';
           this.content = event.detail.error;
+          if(event.detail.redirect){
+            this.redirect = event.detail.redirect
+          }
         } else {
           this.title = 'Yey!';
           this.content = event.detail.message;
         }
         this.$.messageDialog.toggle();
       },
+      closeMessageDialog: function(e){
+        this.$.messageDialog.toggle();
+        if(this.redirect){
+          location.href = this.redirect;
+        }
+      }
     });
   </script>
 </dom-module>

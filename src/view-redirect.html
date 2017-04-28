@@ -99,9 +99,11 @@
 
         // Doesn't have access
         var errorReason = 'No tienes accesso al archivo';
+        var redirectPage = "/index"
         this.fire('iron-signal', {
           name: 'message-dialog',
-          data: {error: errorReason},
+          data: {error: errorReason,
+                 redirect: redirectPage},
         });
       },
     });
