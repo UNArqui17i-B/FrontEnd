@@ -320,6 +320,9 @@
         this.backendURL = this.backendUrl;
       },
       loadStorage: function() {
+        if (this.token.length === 0) {
+          location.href = '/not-logged';
+        }
         this.$.ajaxGet.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.ajaxDelete.headers['Authorization'] = 'Bearer ' + this.token;
         this.$.ajaxPut.headers['Authorization'] = 'Bearer ' + this.token;
