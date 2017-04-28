@@ -11,7 +11,7 @@
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="view-loggout">
+<dom-module id="view-redirect">
   <template>
     <style include="shared-styles iron-flex">
       :host {
@@ -31,44 +31,45 @@
     </style>
     <iron-localstorage
       name="blinkboxToken"
-      id="blinkboxToken"
-      value="{{token}}"
+      value="{{ token }}"
       useRaw="true"
       on-iron-localstorage-load-empty="initializeDefaultToken">
     </iron-localstorage>
     <iron-localstorage
       name="blinkboxUser"
-      id="blinkboxUser"
-      value="{{user}}"
-      on-iron-localstorage-load-empty="initializeDefaultUser">
+      value="{{ user }}"
+      on-iron-localstorage-load-empty="initializeDefaultUser"
+      on-iron-localstorage-load="localStorageLoad">
     </iron-localstorage>
+
+    <iron-ajax
+        id="permissions"
+        url="[[ backendUrl ]]/files/sharedWith/[[ user.email ]]"
+        method="GET"
+        content-type="application/x-www-form-urlencoded"
+        handle-as="json"
+        on-response="permissionsResponse"
+        on-error="permissionsError"
+        ></iron-ajax>
   </template>
 
   <script>
     Polymer({
-      is: 'view-loggout',
-
-      token: {
-          type: String,
-        },
-      user: {
-          type: Object,
-        },
+      is: 'view-redirect',
     
       ready: function() {
-          this.initializeDefaultToken();
-          this.initializeDefaultUser();
-          this.set('token', null);
-          this.set('user.id', '');
-          this.set('user.exp_date', '');
-          this.set('user.email', '');
-          this.set('user.firstName', '');
-          this.set('user.lastName', '');
-          this.$.blinkboxToken.save();
-          this.$.blinkboxUser.save();
-          location.href = "/index";
-
+        this.backendURL = this.backendUrl;
+        this.sharedID = this.queryParams.id;
       },
+      localStorageLoad: function() {
+        if (this.user.email === '') {
+          location.pathname = '/not-logged';
+        } else {
+          this.$.permissions.headers['Authorization'] = 'Bearer ' + this.token;
+          this.$.permissions.generateRequest();
+        }
+      },
+
       initializeDefaultToken: function() {
         this.token = '';
       },
@@ -82,6 +83,27 @@
         };
       },
 
+      permissionsError: console.error,
+
+      permissionsResponse: function(e) {
+        var val = e.detail.response;
+        if (val.shared_documents) {
+          var list = val.shared_documents;
+          for (var i = 0; i < list.length; i++) {
+            if (list[i]['_id'] === this.sharedID) {
+              location.pathname = '/shared';
+              return;
+            }
+          }
+        }
+
+        // Doesn't have access
+        var errorReason = 'No tienes accesso al archivo';
+        this.fire('iron-signal', {
+          name: 'message-dialog',
+          data: {error: errorReason},
+        });
+      },
     });
   </script>
 </dom-module>
