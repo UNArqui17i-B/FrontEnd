@@ -74,12 +74,14 @@
         name="blinkboxUser"
         value="{{user}}"
         useRaw="true"
-        on-iron-localstorage-load="loadStorage"></iron-localstorage>
+        on-iron-localstorage-load="loadStorage"
+        on-iron-localstorage-load-empty="initializeDefaultUser"></iron-localstorage>
       <iron-localstorage
         name="blinkboxToken"
         value="{{token}}"
         useRaw="true"
-        on-iron-localstorage-load="loadStorage"></iron-localstorage>
+        on-iron-localstorage-load="loadStorage"
+        on-iron-localstorage-load-empty="initializeDefaultToken"></iron-localstorage>
       <template is="dom-if" if="[[ajaxError]]">
         <span>Error in url</span>
       </template>
@@ -217,13 +219,14 @@
         ajaxResponse: Object,
         ajaxError: Object,
         searchID: String,
+        token: String,
       },
       ready: function() {
         this.backendURL = this.backendUrl;
         this.searchID = this.queryParams.id;
       },
       loadStorage: function() {
-        if (this.token.length === 0) {
+        if (this.token === '') {
           location.href = '/not-logged';
         }
         this.$.ajaxGet.headers['Authorization'] = 'Bearer ' + this.token;
@@ -273,6 +276,18 @@
         this.$.ajaxDownload.generateRequest();
       },
       handleResponseDownload: function(data) {
+      },
+      initializeDefaultToken: function() {
+        this.token = '';
+      },
+      initializeDefaultUser: function() {
+        this.user = {
+          id: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          exp_date: '',
+        };
       },
     });
   </script>
