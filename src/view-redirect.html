@@ -61,10 +61,10 @@
         this.backendURL = this.backendUrl;
         this.sharedID = this.queryParams.id;
       },
-      localStorageLoad: function(){
-        if(this.user.email == ''){
-          location.pathname = "/not-logged";
-        }else{
+      localStorageLoad: function() {
+        if (this.user.email === '') {
+          location.pathname = '/not-logged';
+        } else {
           this.$.permissions.headers['Authorization'] = 'Bearer ' + this.token;
           this.$.permissions.generateRequest();
         }
@@ -83,37 +83,32 @@
         };
       },
 
-      permissionsError : function(error){
-        console.log(error)
-      },
+      permissionsError: console.error,
 
-      permissionsResponse : function(e){
-        val = e.detail.response;
-        entro = false;
-        if(val.hasOwnProperty("shared_documents")){
-          lista = val["shared_documents"]
-          if(lista == null){
-             entro = true
-          }else{
-            for (i = 0; i < lista.length; i++) { 
-                if(lista[i]["_id"] == this.sharedID){
-                  location.pathname = "/shared"
-                  entro = true;
-                }
-            }   
-          }     
+      permissionsResponse: function(e) {
+        var val = e.detail.response;
+        var access = false;
+        if (val.hasOwnProperty('shared_documents')) {
+          var list = val['shared_documents'];
+          if (list === null) {
+            access = true;
+          } else {
+            for (var i = 0; i < list.length; i++) {
+              if (list[i]['_id'] === this.sharedID) {
+                location.pathname = '/shared';
+                access = true;
+              }
+            }
+          }
         }
-        if( !entro){
-          errorReason = "No tienes accesso al archivo";
+        if (!access) {
+          var errorReason = 'No tienes accesso al archivo';
           this.fire('iron-signal', {
             name: 'message-dialog',
             data: {error: errorReason},
-          },function(response){
-            console.log("hola")
           });
         }
-      }
-
+      },
     });
   </script>
 </dom-module>
