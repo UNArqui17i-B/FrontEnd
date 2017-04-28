@@ -76,18 +76,24 @@
           role="main">
 
           <view-index name="index"></view-index>
-          <view-account name="account"></view-account>
+          <view-account name="account" backend-url="[[ backendURL ]]" user-id="[[user.id]]"></view-account>
           <view-shared name="shared" backend-url="[[backendURL]]" query-params="[[queryParams]]">
           </view-shared>
           <view-owned name="owned" backend-url="[[backendURL]]"></view-owned>
           <view-upload name="upload" backend-url="[[backendURL]]"></view-upload>
-          <view-not-logged backend-url="[[backendURL]]" name="not-logged"></view-not-logged>
+          <view-not-logged backend-url="[[backendURL]]" query-params="[[queryParams]]" name="not-logged"></view-not-logged>
           <view-confirm
             route="{{route}}"
             name="confirm"
             query-params="[[queryParams]]"
             backend-url="[[backendURL]]">
           </view-confirm>
+          <view-redirect
+            route="{{route}}"
+            name="redirect"
+            query-params="[[queryParams]]"
+            backend-url="[[backendURL]]">
+          </view-redirect>
           <view-loggout name="loggout"></view-loggout>
           <view-404 name="404"></view-404>
         </iron-pages>

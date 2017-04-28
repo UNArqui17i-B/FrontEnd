@@ -8,6 +8,8 @@
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="view-account">
@@ -16,9 +18,6 @@
       :host {
         display: block;
         padding: 10px;
-
-        /* Label and underline color when the input is not focused */
-        /* --paper-input-container-color: var(--app-secondary-color); */
 
         /* Label and underline color when the input is focused */
         --paper-input-container-focus-color: var(--app-primary-color);
@@ -33,20 +32,20 @@
         @apply(--layout-center-justified);
       }
 
-      .full-name paper-input{
+      .full-name paper-input {
         width: 45%;
       }
 
-      #my-account paper-input{
+      #my-account paper-input {
         margin: 0px 2.5%;
       }
 
-      .account-form{
+      .account-form {
         margin: 15px;
         min-width: 60%;
       }
 
-      .delete-account{
+      .delete-account {
         margin: 15px;
         width: 30%;
         @apply(--layout-vertical);
@@ -64,7 +63,7 @@
         margin: 20px 0;
       }
 
-      .card-header{
+      .card-header {
         background-color: var(--app-primary-color);
         color: white;
         font-size: large;
@@ -73,89 +72,147 @@
         padding: 15px 0px;
       }
 
-      .card-header-light{
+      .card-header-light {
         color: var(--app-primary-color);
         font-size: large;
         text-align: center;
         font-weight: bold;
       }
 
-      #my-account paper-button{
+      #my-account paper-button {
         font-size: 15px;
       }
 
-      .center{
+      .center {
         text-align: center;
       }
 
-      #update-user{
+      #update-user {
         padding: 0px 20%;
       }
 
+      iron-icon.update-user-form {
+        margin: 8px;
+        color: #ccc;
+      }
+
       @media screen and (max-width: 1024px) {
-        .account-form{
+        .account-form {
           width: 100%;
         }
 
-        .delete-account{
+        .delete-account {
           width: 100%;
         }
       }
 
       @media screen and (max-width: 768px) {
-        #update-user{
+        #update-user {
           padding: 0px 5%;
         }
       }
 
       @media screen and (max-width: 414px) {
-        #update-user{
+        #update-user {
           padding: 0px 2%;
         }
 
-        .full-name paper-input{
+        .full-name paper-input {
           width: 100%;
         }
       }
 
     </style>
 
+
+    <iron-localstorage
+      name="blinkbox-token"
+      value="{{ token }}"
+      useRaw="true"
+      on-iron-localstorage-load="initializeDefaultToken">
+
+    <iron-localstorage
+      name="blinkbox-user"
+      value="{{ userStorage }}">
+    </iron-localstorage>
+
+
+    <iron-ajax auto
+           url="[[backendUrl]]/users/[[userId]]"
+           handle-as="json"
+           on-response="handleResponse"
+           id="getAjax"></iron-ajax>
+
+    <iron-ajax id="deleteAjax"
+          method="DELETE">
+    </iron-ajax>
+
+    <iron-ajax id="putAjax"
+          method="PUT"
+          handle-as="json"
+          on-response="handleUpdateResponse"
+          content-type="application/json"
+          url="[[backendUrl]]/users/[[user._id]]">
+    </iron-ajax>
+
+    <iron-ajax id="postAjax"
+          method="POST"
+          content-type="application/json"
+          on-response="handleLoginResponse"
+          on-error="handleLoginErrorResponse"
+          url="[[backendUrl]]/users/login/">
+    </iron-ajax>
+
     <div id="my-account">
       <paper-card class="account-form">
         <div class="card-header">MI CUENTA</div>
 
         <div class="card-content">
-          <form is="iron-form" method="get" action="/" id="update-user">
+
+
+          <form is="iron-form" method="get" action="/" id="update">
 
             <div class="full-name">
-              <paper-input name="name" label="Nombre">
-                <iron-icon class="user-form" icon="social:person" prefix></iron-icon>
+              <paper-input name="name" label="Nombre"
+                           value="{{ user.firstName }}"
+                           pattern="^[a-zA-Z\s]{3,30}$"
+                           error-message="Debe contener sólo letras y ser de 3 a 30 caracteres."
+                           auto-validate >
+                <iron-icon class="update-user-form" icon="social:person" prefix></iron-icon>
               </paper-input>
 
-              <paper-input name="lastname" label="Apellido">
-                <iron-icon class="user-form" icon="social:people" prefix></iron-icon>
+              <paper-input name="lastname" label="Apellido"
+                           value="{{ user.lastName }}"
+                           pattern="^[a-zA-Z\s]{3,30}$"
+                           error-message="Debe contener sólo letras y ser de 3 a 30 caracteres."
+                           auto-validate >
+                <iron-icon class="update-user-form" icon="social:people" prefix></iron-icon>
               </paper-input>
             </div>
 
-            <paper-input name="old-password" label="Contraseña actual"
-                   type="password" required error-message="Verifica tu contraseña.">
-              <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
+            <paper-input name="old-password" label="Contraseña actual" value="{{ currentPassword }}"
+                         type="password" required error-message="Verifica tu contraseña.">
+              <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
             </paper-input>
 
-            <paper-input name="new-password" label="Nueva contraseña"
-                   type="password" minlength="10" error-message="Mínimo 8 caracteres.">
-              <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
+            <paper-input id="password" name="new-password" label="Nueva contraseña"
+                         type="password" value="{{ user.password }}"
+                         error-message="Mínimo 3 caracteres, sólo se permiten letras y números."
+                         pattern="^[a-zA-Z0-9]{3,30}$" auto-validate>
+              <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
             </paper-input>
 
-            <paper-input name="confirm-new-password" label="Confirmar nueva contraseña"
-                   type="password" minlength="10" error-message="Las contraseñas deben coincidir.">
-              <iron-icon class="user-form" icon="icons:lock-outline" prefix></iron-icon>
+            <paper-input id="confirm"
+                         name="confirm-new-password" label="Confirmar nueva contraseña"
+                         type="password" error-message="Las contraseñas deben coincidir."
+                         value="{{confirmInput}}">
+              <iron-icon class="update-user-form" icon="icons:lock-outline" prefix></iron-icon>
             </paper-input>
 
             <br>
 
             <div align="center">
-              <paper-button class="full-color" onclick="">Guardar cambios</paper-button>
+              <paper-button class="full-color"  on-tap="_submit">Guardar cambios</paper-button>
               <div class="output"></div>
             </div>
           </form>
@@ -176,7 +233,7 @@
           </p>
 
           <div align="center">
-            <paper-button class="full-color">
+            <paper-button class="full-color" on-tap="_delete">
               <!-- <iron-icon icon="clear"></iron-icon> -->
               Desactivar cuenta
             </paper-button>
@@ -184,12 +241,108 @@
 
         </div>
       </paper-card>
+
+      <paper-dialog id="errorDialog">
+        <h2>Error</h2>
+        <div>[[errorMessage]]</div>
+      </paper-dialog>
     </div>
   </template>
 
   <script>
     Polymer({
       is: 'view-account',
+
+      properties: {
+        backendUrl: {
+          type: String,
+        },
+        userId: {
+          type: String,
+        },
+        user: {
+          type: Object,
+        },
+        userStorage: {
+          type: Object,
+        },
+        ajaxResponse: Object,
+        token: String,
+        isCorrectPassword: Boolean,
+        currentPassword: String,
+        confirmInput: String,
+      },
+
+      observers: [
+        'confirmPasswordChanged(confirmInput)',
+      ],
+
+      handleResponse: function(data) {
+        this.user = data.detail.response;
+      },
+
+      handleLoginResponse: function(data) {
+        if (data.detail.xhr.status === 200) {
+          if( this.user.password === undefined ){
+            this.user.password = this.currentPassword;
+          }
+
+          this.$.putAjax.body = JSON.stringify(this.user);
+          this.$.putAjax.generateRequest();
+        }
+      },
+
+      handleLoginErrorResponse: function(e) {
+        var ironRequest = e.detail.request;
+        var relatedXhr = ironRequest.xhr;
+        this.errorMessage = relatedXhr.status + ' : ' + relatedXhr.statusText;
+        this.errorMessage += ' Password is invalid.'
+        this.$.errorDialog.toggle();
+      },
+
+      ready: function() {
+        // debugger;
+      },
+
+      confirmPasswordChanged: function(confirmInput) {
+        if (this.$.password.value != this.$.confirm.value ) {
+          this.$.confirm.invalid = true; //show message error
+        } else { //if matches is ok
+          this.$.confirm.invalid = false; //hide message error
+        }
+      },
+
+      _submit: function() {
+        if (this.$.update.validate()) {
+          var data = {
+            "email": this.user.email,
+            "password": this.currentPassword,
+          };
+          this.$.postAjax.body = JSON.stringify(data);
+          this.$.postAjax.generateRequest();
+        }
+      },
+
+      handleUpdateResponse: function(data) {
+        if (data.detail.xhr.status === 200) {
+          this.set('userStorage.firstName', this.user.firstName);
+          this.set('userStorage.lastName', this.user.lastName);
+          location.pathname = '/account';
+        }
+      },
+
+      _delete: function() {
+        this.$.deleteAjax.url = this.backendUrl + '/users/' + this.user._id;
+        this.$.deleteAjax.generateRequest();
+        open('/', '_self');
+        // this.page = 'index';
+      },
+
+      initializeDefaultToken: function() {
+        this.$.putAjax.headers['Authorization'] = 'Bearer ' + this.token;
+        this.$.deleteAjax.headers['Authorization'] = 'Bearer ' + this.token;
+        // this.$.postAjax.headers['Authorization'] = 'Bearer ' + this.token;
+      },
     });
   </script>
 </dom-module>

@@ -14,6 +14,11 @@
 <dom-module id="dialog-register">
   <template>
     <style include="shared-styles">
+      :host {
+        /* Label and underline color when the input is focused */
+        --paper-input-container-focus-color: var(--app-primary-color);
+      }
+
       .container {
         @apply(--layout-horizontal);
         @apply(--layout-justified);
