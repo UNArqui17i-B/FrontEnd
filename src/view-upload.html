@@ -175,7 +175,7 @@
         this.$.successDialog.toggle();
       },
       loadStorage: function() {
-        if (this.token.length === 0){
+        if (this.token.length === 0) {
           location.href = '/not-logged';
         }
         this.$.uploadFile.headers['Authorization'] = 'Bearer ' + this.token;
