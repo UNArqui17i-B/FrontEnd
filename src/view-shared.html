@@ -65,8 +65,8 @@
                  on-response="handleResponse"
                  on-error="handleError"></iron-ajax>
       <iron-ajax id="ajaxDownload"
-                 url="[[backendURL]]/files/download/[[activeItem._id]]/[[user.email]]"
                  method="GET"
+                 url="[[backendURI]]/download/[[activeItem._id]]/[[user.email]]"
                  handle-as="blob"
                  on-response="handleResponseDownload"
                  on-error="handleError"></iron-ajax>
@@ -206,8 +206,12 @@
     Polymer({
       is: 'view-shared',
       properties: {
-        backendUrl: {
+        backendURL: {
           type: String,
+        },
+        backendURI:{
+          type: String,
+          value: 'http://127.0.0.1:4025/fileAccess'
         },
         user: Object,
         extensionsArray: {
@@ -265,13 +269,17 @@
         this.$.errorDialog.toggle();
       },
       handleTapDownload: function(e) {
-        debugger;
         if(e)
           this.activeItem = e.model.item;
         this.$.ajaxDownload.generateRequest();
       },
-      handleResponseDownload: function(data) {
-        debugger;
+      handleResponseDownload: function(e) {
+        var blob = e.detail.response;
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href=url;
+        link.download= this.activeItem.name;
+        link.click();
       },
     });
   </script>
