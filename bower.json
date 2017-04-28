@@ -32,7 +32,8 @@
     "iron-signals": "PolymerElements/iron-signals#^1.0.3",
     "iron-image": "PolymerElements/iron-image#^1.2.5",
     "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^1.10.4",
-    "paper-progress": "PolymerElements/paper-progress#^1.0.11"
+    "paper-progress": "PolymerElements/paper-progress#^1.0.11",
+    "iron-a11y-keys": "PolymerElements/iron-a11y-keys#^1.0.7"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

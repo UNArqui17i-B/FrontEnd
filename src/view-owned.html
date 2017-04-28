@@ -56,7 +56,7 @@
       }
 
       a:hover, iron-icon:hover {
-        color: red;
+        color: var(--app-primary-color);
         cursor: pointer;
       }
 
@@ -78,8 +78,13 @@
         </div>
       </div>
       <iron-localstorage
-        name="blinkbox-token"
+        name="blinkboxToken"
         value="{{token}}"
+        useRaw="true"
+        on-iron-localstorage-load="loadStorage"></iron-localstorage>
+      <iron-localstorage
+        name="blinkboxUser"
+        value="{{user}}"
         useRaw="true"
         on-iron-localstorage-load="loadStorage"></iron-localstorage>
       <iron-ajax auto

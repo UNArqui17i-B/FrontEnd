@@ -7,42 +7,61 @@
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="feature-card">
-    <template>
-        <style>
-            paper-card.feature{
-                margin: 15px;
-                max-width: 300px;
-            }
+  <template>
+    <style>
+      paper-card.feature{
+        margin: 15px;
+        max-width: 300px;
+      }
 
-            .feature-header {
-                @apply(--paper-font-title);
-                text-align: center;
-                padding-bottom: 10px;
-            }
-        </style>
+      .feature-header {
+        @apply(--paper-font-title);
+        @apply(--layout-self-center);
+        padding-left: 20px;
+      }
+      .circle {
+        display: inline-block;
+        width: 64px;
+        height: 64px;
+        text-align: center;
+        color: white;
+        border-radius: 50%;
+        background: var(--app-primary-color);
+        font-size: 30px;
+        line-height: 64px;
+      }
 
-        <paper-card class="feature" image=[[image]]>
-            <div class="card-content">
-                <div class="feature-header">[[title]]</div>
-                Emmentaler or Emmental is a yellow, medium-hard cheese that originated in the area around Emmental, Switzerland. It is one of the cheeses of Switzerland, and is sometimes known as Swiss cheese.
-                <p>[[content]]</p>
-            </div>
-        </paper-card>
-    </template>
+      .container {
+        @apply(--layout-horizontal);
+      }
+    </style>
 
-    <script>
-        Polymer({
-            is: 'feature-card',
+    <paper-card class="feature">
+      <div class="card-content">
+        <div class="container">
+          <div class="circle">
+            <content></content>
+          </div>
+          <div class="feature-header">[[title]]</div>
+        </div>
+        <p>[[content]]</p>
+      </div>
+    </paper-card>
+  </template>
 
-            properties: {
-                backendUrl: {
-                    type: String,
-                },
+  <script>
+    Polymer({
+      is: 'feature-card',
 
-                title: String,
-                content: String,
-                image: String,
-            },
-        });
-    </script>
+      properties: {
+        backendUrl: {
+          type: String,
+        },
+
+        title: String,
+        content: String,
+        image: String,
+      },
+    });
+  </script>
 </dom-module>

@@ -1,5 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
@@ -8,23 +7,27 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="shared-styles.html">
 
 <dom-module id="view-upload">
   <template>
     <style include="shared-styles iron-flex">
       :host {
         display: block;
-
         padding: 10px;
       }
 
+      @media screen and (min-width: 769px) {
+        .container{
+          width: 75%;
+        }
+      }
+
       .container {
-        width: 75%;
         display: block;
         margin-left: auto;
         margin-right: auto;
-        border: dashed 1px lightgray;
-        border-radius: 4px;
+        background-color: #fff;
       }
 
       .button-block {
@@ -40,12 +43,26 @@
         margin-right: auto;
         padding: 5px;
       }
+
+      paper-button {
+        background-color: var(--app-primary-color);
+        color: white;
+      }
+
+      vaadin-upload {
+        border: dashed 1px lightgray;
+      }
     </style>
 
     <paper-card>
       <iron-localstorage
-        name="blinkbox-token"
+        name="blinkboxToken"
         value="{{token}}"
+        useRaw="true"
+        on-iron-localstorage-load="loadStorage"></iron-localstorage>
+      <iron-localstorage
+        name="blinkboxUser"
+        value="{{user}}"
         useRaw="true"
         on-iron-localstorage-load="loadStorage"></iron-localstorage>
       <div class="container">
@@ -89,7 +106,6 @@
     </paper-card>
 
     <paper-dialog id="successDialog">
-
       <h3>El archivo ha sido subido exitosamente</h3>
       <div class="buttons">
         <a href="/owned" tabindex="-1">
@@ -129,6 +145,10 @@
 
       handleRequest: function(event) {
         var date = new Date(this.$.datePicker.value);
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
         event.detail.formData.append('expiring_date', date.getTime() / 1000);
         if (this.$.sharedEmails.items.length > 0) {
           var shared = this.$.sharedEmails.items.join(',');
