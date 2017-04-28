@@ -29,7 +29,7 @@
       }
 
       paper-button {
-        color: #3b6caa;
+        color: var(--app-primary-color);
         font-size: 16px;
         text-transform: none;
         font-weight: normal;
@@ -58,13 +58,19 @@
         width: 50px;
         color: white;
       }
+
+      ibm-tab {
+        --ibm-tab-color-focused: var(--app-primary-color);
+      }
     </style>
 
     <app-header condenses reveals effects="waterfall">
       <ibm-toolbar>
 
         <div main-title>
-          <a href="/" class="logo">BlinkBox</a>
+          <a href="/" class="logo">
+            <img src="/images/main_logo.png">
+          </a>
         </div>
 
         <!-- not logged -->
