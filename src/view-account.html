@@ -149,6 +149,8 @@
 
     <iron-ajax id="putAjax"
           method="PUT"
+          handle-as="json"
+          on-response="handleUpdateResponse"
           content-type="application/json"
           url="[[backendUrl]]/users/[[user._id]]">
     </iron-ajax>
@@ -261,6 +263,9 @@
         user: {
           type: Object,
         },
+        userStorage: {
+          type: Object,
+        },
         ajaxResponse: Object,
         token: String,
         isCorrectPassword: Boolean,
@@ -281,9 +286,9 @@
           if( this.user.password === undefined ){
             this.user.password = this.currentPassword;
           }
+
           this.$.putAjax.body = JSON.stringify(this.user);
           this.$.putAjax.generateRequest();
-          location.pathname = '/account';
         }
       },
 
@@ -315,6 +320,14 @@
           };
           this.$.postAjax.body = JSON.stringify(data);
           this.$.postAjax.generateRequest();
+        }
+      },
+
+      handleUpdateResponse: function(data) {
+        if (data.detail.xhr.status === 200) {
+          this.set('userStorage.firstName', this.user.firstName);
+          this.set('userStorage.lastName', this.user.lastName);
+          location.pathname = '/account';
         }
       },
 
