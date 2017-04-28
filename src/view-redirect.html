@@ -87,27 +87,22 @@
 
       permissionsResponse: function(e) {
         var val = e.detail.response;
-        var access = false;
-        if (val.hasOwnProperty('shared_documents')) {
-          var list = val['shared_documents'];
-          if (list === null) {
-            access = true;
-          } else {
-            for (var i = 0; i < list.length; i++) {
-              if (list[i]['_id'] === this.sharedID) {
-                location.pathname = '/shared';
-                access = true;
-              }
+        if (val.shared_documents) {
+          var list = val.shared_documents;
+          for (var i = 0; i < list.length; i++) {
+            if (list[i]['_id'] === this.sharedID) {
+              location.pathname = '/shared';
+              return;
             }
           }
         }
-        if (!access) {
-          var errorReason = 'No tienes accesso al archivo';
-          this.fire('iron-signal', {
-            name: 'message-dialog',
-            data: {error: errorReason},
-          });
-        }
+
+        // Doesn't have access
+        var errorReason = 'No tienes accesso al archivo';
+        this.fire('iron-signal', {
+          name: 'message-dialog',
+          data: {error: errorReason},
+        });
       },
     });
   </script>
