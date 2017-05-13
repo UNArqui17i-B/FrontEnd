@@ -25,7 +25,7 @@
     "src/view-owned.html",
     "src/view-redirect.html",
     "src/view-shared.html",
-    "src/view-upload.html",
+    "src/view-upload.html"
   ],
   "sources": [
     "src/**/*",
