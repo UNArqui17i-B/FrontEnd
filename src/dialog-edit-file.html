@@ -9,7 +9,8 @@
 <link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../bower_components/iron-signals/iron-signals.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
-
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column-group.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="dialog-edit-file">
@@ -174,6 +175,8 @@
         if (e.target.validate()) {
           if (e.charCode === 13) {
             var newEmail = e.target.value;
+            if (newEmail === '')
+              return;
             if (this.activeItem.shared.indexOf(newEmail) === -1) {
               this.activeItem.shared.push(newEmail);
               this.notifyPath('activeItem.shared');

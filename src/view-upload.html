@@ -1,6 +1,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column-group.html">
 <link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="custom-vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
@@ -18,7 +22,7 @@
       }
 
       @media screen and (min-width: 769px) {
-        .container{
+        .container {
           width: 75%;
         }
       }
@@ -51,6 +55,15 @@
 
       vaadin-upload {
         border: dashed 1px lightgray;
+      }
+
+      a:link, a:visited {
+        color: inherit;
+      }
+
+      a:hover, iron-icon:hover {
+        color: var(--app-primary-color);
+        cursor: pointer;
       }
     </style>
 
@@ -88,14 +101,21 @@
         <div class="block">
           <p style="color: #737373">Compartir con</p>
           <vaadin-grid items="[[emails]]" id="sharedEmails">
-            <vaadin-grid-column>
+            <vaadin-grid-column-group>
               <template class="header">Email</template>
-              <template>[[item]]</template>
-              <template class="footer">
-                <paper-input label="Añadir correo" auto-validate type="email" style="padding-bottom: 12px"
-                             error-message="Por favor ingrese un email válido" on-keypress="addEmail"></paper-input>
-              </template>
-            </vaadin-grid-column>
+              <vaadin-grid-column width="90%">
+                <template>[[item]]</template>
+                <template class="footer">
+                  <paper-input label="Añadir correo" auto-validate type="email" style="padding-bottom: 12px"
+                               error-message="Por favor ingrese un email válido" on-keypress="addEmail"></paper-input>
+                </template>
+              </vaadin-grid-column>
+              <vaadin-grid-column width="10%">
+                <template class="content">
+                  <iron-icon icon="delete" on-tap="handleDeleteEmail"></iron-icon>
+                </template>
+              </vaadin-grid-column>
+            </vaadin-grid-column-group>
           </vaadin-grid>
         </div>
 
@@ -135,12 +155,19 @@
         if (e.target.validate()) {
           if (e.charCode === 13) {
             var newEmail = e.target.value;
+            if (newEmail === '')
+              return;
             this.emails.push(newEmail);
             this.notifyPath('emails');
             e.target.value = '';
             this.$.sharedEmails.clearCache();
           }
         }
+      },
+      handleDeleteEmail: function(e) {
+        var index = this.emails.indexOf(e.model.item);
+        this.emails.splice(index, 1);
+        this.$.sharedEmails.clearCache();
       },
 
       handleRequest: function(event) {
