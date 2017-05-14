@@ -18,7 +18,7 @@
       }
 
       @media screen and (min-width: 769px) {
-        .container{
+        .container {
           width: 75%;
         }
       }
@@ -68,7 +68,7 @@
       <div class="container">
         <div class="block">
           <vaadin-upload no-auto id="uploadFile"
-                         target="[[backendURL]]/files/upload/[[user.email]]"
+                         target="[[backendURI]]/upload/[[user.email]]"
                          max-files="1"
                          on-upload-request="handleRequest"
                          on-upload-success="success">
@@ -124,6 +124,10 @@
           value: [],
         },
         backendURL: String,
+        backendURI: {
+          type: String,
+          value: 'http://localhost:4015',
+        },
         user: Object,
       },
 
