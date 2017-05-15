@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-polymer build
+npm run build
 node render.js

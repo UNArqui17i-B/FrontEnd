@@ -14,6 +14,6 @@ COPY bower.json /git/frontend/
 RUN bower install --allow-root
 
 COPY . /git/frontend/
-RUN npm run build
 
-CMD [ "npm", "start" ]
+RUN chmod +x start.sh
+CMD ["./start.sh"]
