@@ -2,6 +2,8 @@
 
 const BACK_PORT = process.env.BACK_PORT || '5000';
 const BACK_URL = process.env.BACK_URL || 'localhost';
+const FILE_ACCESS = process.env.FILE_ACCESS || 'localhost';
+const UPLOAD = process.env.UPLOAD || 'localhost';
 
 const del = require('del');
 const gulp = require('gulp');
@@ -58,6 +60,9 @@ function build() {
                     .pipe(gulpif(/\.css$/, cssSlam()))
                     .pipe(gulpif(/\.html$/, htmlMinifier()))
                     .pipe(gulpif(/BlinkBox-app\.html/, replace('BACK_URL', BACK_URL + ':' + BACK_PORT)))
+                    .pipe(gulpif(/view-upload\.html/, replace('UPLOAD', UPLOAD)))
+                    .pipe(gulpif(/view-shared\.html/, replace('FILE_ACCESS', FILE_ACCESS)))
+                    .pipe(gulpif(/view-owned\.html/, replace('FILE_ACCESS', FILE_ACCESS)))
 
                     // Remember, you need to rejoin any split inline code when you're done.
                     .pipe(sourcesStreamSplitter.rejoin());
