@@ -19,6 +19,7 @@
         /* Label and underline color when the input is focused */
         --paper-input-container-focus-color: var(--app-primary-color);
       }
+
       .container {
         @apply(--layout-horizontal);
         @apply(--layout-justified);
@@ -33,7 +34,7 @@
         color: white;
       }
 
-      #cancel{
+      #cancel {
         background-color: white;
         color: var(--app-primary-color);
       }
@@ -138,7 +139,19 @@
       },
 
       loginError: function(event) {
-        // event.detail
+        var statusCode = event.detail.request.xhr.response.statusCode;
+        if (statusCode === 400) {
+          this.fire('iron-signal', {
+            name: 'message-dialog',
+            data: {error: 'El correo no existe'},
+          });
+        }
+        if (statusCode === 401) {
+          this.fire('iron-signal', {
+            name: 'message-dialog',
+            data: {error: 'Contraseña incorrecta'},
+          });
+        }
       },
 
       initializeDefaultToken: function() {
