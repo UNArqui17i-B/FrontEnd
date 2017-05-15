@@ -8,12 +8,20 @@
     "eslint-plugin-html": "^1.7.0"
   },
   "dependencies": {
+    "css-slam": "^1.2.1",
     "express": "^4.15.2",
-    "replace-in-file": "^2.5.0"
+    "gulp": "gulpjs/gulp#4.0",
+    "gulp-html-minifier": "^0.1.8",
+    "gulp-if": "^2.0.0",
+    "gulp-imagemin": "^3.1.0",
+    "gulp-uglify": "^2.1.2",
+    "merge-stream": "^1.0.1",
+    "polymer-build": "^1.0.0"
   },
   "scripts": {
     "lint": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "npm run lint && polymer test",
-    "start": "node render.js"
+    "start": "node render.js",
+    "build": "gulp build"
   }
 }
