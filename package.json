@@ -13,7 +13,7 @@
     "gulp": "gulpjs/gulp#4.0",
     "gulp-html-minifier": "^0.1.8",
     "gulp-if": "^2.0.0",
-    "gulp-imagemin": "^3.1.0",
+    "gulp-string-replace": "^0.4.0",
     "gulp-uglify": "^2.1.2",
     "merge-stream": "^1.0.1",
     "polymer-build": "^1.0.0"

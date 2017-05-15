@@ -1,6 +1,5 @@
 'use strict';
 
-const replace = require('replace-in-file');
 const express = require('express');
 const app = express();
 const HOST_PORT = process.env.HOST_PORT || '5010';
