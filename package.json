@@ -10,14 +10,14 @@
   "dependencies": {
     "css-slam": "^1.2.1",
     "del": "^2.2.2",
-    "express": "^4.15.2",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-html-minifier": "^0.1.8",
     "gulp-if": "^2.0.0",
     "gulp-string-replace": "^0.4.0",
     "gulp-uglify": "^2.1.2",
     "merge-stream": "^1.0.1",
-    "polymer-build": "^1.0.0"
+    "polymer-build": "^1.0.0",
+    "spa-server": "^1.0.0"
   },
   "scripts": {
     "lint": "eslint . --ext js,html --ignore-path .gitignore",
