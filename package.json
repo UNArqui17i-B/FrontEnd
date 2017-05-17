@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "css-slam": "^1.2.1",
+    "del": "^2.2.2",
     "express": "^4.15.2",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-html-minifier": "^0.1.8",
